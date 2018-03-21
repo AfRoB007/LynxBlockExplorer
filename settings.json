@@ -13,7 +13,7 @@
   "port" : 80,
 
   // coin name
-  "coin": "Lynxcoin",
+  "coin": "Lynx",
 
   // coin symbol
   "symbol": "LYNX",
@@ -91,9 +91,9 @@
   //default market is loaded by default and determines last price in header
   "markets": {
     "coin": "LYNX",
-    "exchange": "LTC",
+    "exchange": "BTC",
     "enabled": ["cryptopia"],
-    "cryptopia_id": "2867",
+    "cryptopia_id": "245",
     "ccex_key" : "937be7d871de4de8a809886d66ed2370",
     "default": "cryptopia"
   },
@@ -115,7 +115,7 @@
   },
 
   // twitter, facebook, googleplus
-  "twitter": "jonDoe",
+  "twitter": "getlynxio",
   "facebook": "jonDoe",
   "googleplus": "jonDoe",
 
