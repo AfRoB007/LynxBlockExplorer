@@ -1,12 +1,17 @@
 #!/bin/bash
 
 if [ -f tmp/index.pid ]; then
-  echo "file index.pid exists"
-  if test "`find tmp/index.pid -mmin +5`"; then
-    echo "file index.pid is older then 5 minutes"
-    if [ $(ps fax | grep "sync.js index update" | grep -v grep | wc -l) -ne 1 ]; then
-      echo "we don't need index.pid anymore"
-      rm -rf tmp/index.pid
-    fi
+  echo "file index.pid exists" >>/tmp/index-state.log
+  ls -lt >>/tmp/index-state.log
+  if [ $(ps fax | grep "sync.js index update" | grep -v grep | wc -l) -gt 1 ]; then
+    echo "stop all sync.js processes" >>/tmp/index-state.log
+      #killall nodejs
+    echo "remove index.pid" >>/tmp/index-state.log
+      #rm -rf tmp/index.pid
   fi
+  if [ $(ps fax | grep "sync.js index update" | grep -v grep | wc -l) -eq 0 ]; then
+    echo "remove index.pid" >>/tmp/index-state.log
+      rm -rf tmp/index.pid
+  fi
+  ls -lt >>/tmp/index-state.log
 fi
