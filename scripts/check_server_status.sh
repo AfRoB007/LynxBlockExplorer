@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PM2='/root/.npm-global/bin/pm2'
+PM2=$(whereis pm2 | awk -F' ' '{ print $2 }')
 if [ $($PM2 status | grep online | grep IquidusExplorer | wc -l) -ne 1 ]; then
   echo "Script not running"
   $PM2 delete IquidusExplorer
