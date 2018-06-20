@@ -29,6 +29,44 @@ gulp.task('build:jqplot-js',['clean:jqplot-js'],function(){
         .pipe(gulp.dest('./public/dist/js'));
 });
 
-gulp.task('build:jqplot',['build:jqplot-js']);
+//javascript
+gulp.task('clean:app-js',function () {
+    return del([
+        './public/dist/js/app.min.js'
+    ]);
+});
+gulp.task('build:app-js',['clean:app-js'],function(){
+    return gulp.src([
+        './public/vendor/jquery/jquery.min.js',
+        './public/vendor/bootstrap/bootstrap.min.js',
+        './public/vendor/moment/moment.min.js',
+        './public/vendor/data-tables/jquery.dataTables.min.js',
+        './public/vendor/responsive/dataTables.responsive.js',
+        './public/vendor/data-tables/dataTables.bootstrap.js'
+        ])
+        .pipe(sourcemaps.init())
+        .pipe(concat('app.min.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('/'))
+        .pipe(gulp.dest('./public/dist/js'));
+});
+//css
+gulp.task('clean:app-css',function () {
+    return del([
+        './public/dist/js/site.min.css'
+    ]);
+});
+gulp.task('build:app-css',['clean:app-css'],function(){
+    return gulp.src([
+        './public/themes/Spacelab/bootstrap.min.css',
+        './public/vendor/data-tables/dataTables.bootstrap.css',
+        './public/stylesheets/style.css'
+        ])
+        .pipe(sourcemaps.init())
+        .pipe(concat('site.min.css'))
+        //.pipe(uglify())
+        .pipe(sourcemaps.write('/'))
+        .pipe(gulp.dest('./public/dist/css'));
+});
 
-gulp.task('default', ['build:jqplot']);
+gulp.task('default', ['build:jqplot-js','build:app-js','build:app-css']);
