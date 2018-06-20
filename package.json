@@ -16,7 +16,7 @@
     "debug": "~0.7.4",
     "express": "~4.2.0",
     "jsonminify": "0.2.3",
-    "markdown-js": "0.0.3",
+    "marked": "^0.4.0",
     "mongoose": "^5.1.5",
     "morgan": "~1.0.0",
     "pug": "^2.0.3",

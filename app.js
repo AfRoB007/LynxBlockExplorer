@@ -8,11 +8,16 @@ var express = require('express')
   , settings = require('./lib/settings')
   , routes = require('./routes/index')
   , lib = require('./lib/explorer')
-  , db = require('./lib/database')
+  , db = require('./lib/database')  
   , locale = require('./lib/locale')
+  , pug = require('pug')
+  , markdown = require('marked')
   , request = require('request');
 
 var app = express();
+
+//registering filters
+pug.filters.markdown = markdown;
 
 // bitcoinapi
 bitcoinapi.setWalletDetails(settings.wallet);
