@@ -10,8 +10,10 @@
     "start-dev": "node ./bin/instance"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bitcoin": "^3.0.1",
     "body-parser": "~1.0.0",
+    "co": "^4.6.0",
     "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",
     "express": "~4.2.0",

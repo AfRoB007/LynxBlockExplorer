@@ -7,6 +7,7 @@ var express = require('express')
   , bodyParser = require('body-parser')
   , settings = require('./lib/settings')
   , routes = require('./routes/index')
+  , explorerRoutes = require('./routes/explorer.routes')
   , lib = require('./lib/explorer')
   , db = require('./lib/database')  
   , locale = require('./lib/locale')
@@ -56,6 +57,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // routes
 app.use('/api', bitcoinapi.app);
 app.use('/', routes);
+app.use('/explorer',explorerRoutes);
 app.use('/ext/getmoneysupply', function(req,res){
   lib.get_supply(function(supply){
     res.send(' '+supply);
