@@ -4,6 +4,7 @@ var express = require('express')
   , locale = require('../lib/locale')
   , db = require('../lib/database')
   , lib = require('../lib/explorer')
+  , markdown = require('marked')
   , qr = require('qr-image');
 
 function route_get_block(res, blockhash) {
@@ -122,77 +123,76 @@ function route_get_address(res, hash, count) {
 }
 
 /* GET home page. */
-router.get('/', function(req, res) {
-  route_get_index(res, null);
-});
+// router.get('/', function(req, res) {
+//   route_get_index(res, null);
+// });
 
-router.get('/info', function(req, res) {
-  res.render('info', { active: 'info', address: settings.address, hashes: settings.api });
-});
+// router.get('/info', function(req, res) {  
+//   res.render('info', { active: 'info', address: settings.address, hashes: settings.api, markdown:markdown });
+// });
 
-router.get('/markets/:market', function(req, res) {
-  var market = req.params['market'];
-  if (settings.markets.enabled.indexOf(market) != -1) {
-    db.get_market(market, function(data) {
-      /*if (market === 'bittrex') {
-        data = JSON.parse(data);
-      }*/
-      console.log(data);
-      res.render('./markets/' + market, {
-        active: 'markets',
-        marketdata: {
-          coin: settings.markets.coin,
-          exchange: settings.markets.exchange,
-          data: data,
-        },
-        market: market
-      });
-    });
-  } else {
-    route_get_index(res, null);
-  }
-});
+// router.get('/markets/:market', function(req, res) {
+//   var market = req.params['market'];
+//   if (settings.markets.enabled.indexOf(market) != -1) {
+//     db.get_market(market, function(data) {
+//       /*if (market === 'bittrex') {
+//         data = JSON.parse(data);
+//       }*/      
+//       res.render('./markets/' + market, {
+//         active: 'markets',
+//         marketdata: {
+//           coin: settings.markets.coin,
+//           exchange: settings.markets.exchange,
+//           data: data,
+//         },
+//         market: market
+//       });
+//     });
+//   } else {
+//     route_get_index(res, null);
+//   }
+// });
 
-router.get('/richlist', function(req, res) {
-  if (settings.display.richlist == true ) {
-    db.get_stats(settings.coin, function (stats) {
-      db.get_richlist(settings.coin, function(richlist){
-        //console.log(richlist);
-        if (richlist) {
-          db.get_distribution(richlist, stats, function(distribution) {
-            //console.log(distribution);
-            res.render('richlist', {
-              active: 'richlist',
-              balance: richlist.balance,
-              received: richlist.received,
-              stats: stats,
-              dista: distribution.t_1_25,
-              distb: distribution.t_26_50,
-              distc: distribution.t_51_75,
-              distd: distribution.t_76_100,
-              diste: distribution.t_101plus,
-              show_dist: settings.richlist.distribution,
-              show_received: settings.richlist.received,
-              show_balance: settings.richlist.balance,
-            });
-          });
-        } else {
-          route_get_index(res, null);
-        }
-      });
-    });
-  } else {
-    route_get_index(res, null);
-  }
-});
+// router.get('/richlist', function(req, res) {
+//   if (settings.display.richlist == true ) {
+//     db.get_stats(settings.coin, function (stats) {
+//       db.get_richlist(settings.coin, function(richlist){
+//         //console.log(richlist);
+//         if (richlist) {
+//           db.get_distribution(richlist, stats, function(distribution) {
+//             //console.log(distribution);
+//             res.render('richlist', {
+//               active: 'richlist',
+//               balance: richlist.balance,
+//               received: richlist.received,
+//               stats: stats,
+//               dista: distribution.t_1_25,
+//               distb: distribution.t_26_50,
+//               distc: distribution.t_51_75,
+//               distd: distribution.t_76_100,
+//               diste: distribution.t_101plus,
+//               show_dist: settings.richlist.distribution,
+//               show_received: settings.richlist.received,
+//               show_balance: settings.richlist.balance,
+//             });
+//           });
+//         } else {
+//           route_get_index(res, null);
+//         }
+//       });
+//     });
+//   } else {
+//     route_get_index(res, null);
+//   }
+// });
 
-router.get('/movement', function(req, res) {
-  res.render('movement', {active: 'movement', flaga: settings.movement.low_flag, flagb: settings.movement.high_flag, min_amount:settings.movement.min_amount});
-});
+// router.get('/movement', function(req, res) {
+//   res.render('movement', {active: 'movement', flaga: settings.movement.low_flag, flagb: settings.movement.high_flag, min_amount:settings.movement.min_amount});
+// });
 
-router.get('/network', function(req, res) {
-  res.render('network', {active: 'network'});
-});
+// router.get('/network', function(req, res) {
+//   res.render('network', {active: 'network'});
+// });
 
 router.get('/reward', function(req, res){
   //db.get_stats(settings.coin, function (stats) {
@@ -281,39 +281,41 @@ router.get('/qr/:string', function(req, res) {
   }
 });
 
-router.get('/ext/summary', function(req, res) {
-  lib.get_difficulty(function(difficulty) {
-    difficultyHybrid = ''
-    if (difficulty['proof-of-work']) {
-            if (settings.index.difficulty == 'Hybrid') {
-              difficultyHybrid = 'POS: ' + difficulty['proof-of-stake'];
-              difficulty = 'POW: ' + difficulty['proof-of-work'];
-            } else if (settings.index.difficulty == 'POW') {
-              difficulty = difficulty['proof-of-work'];
-            } else {
-        difficulty = difficulty['proof-of-stake'];
-      }
-    }
-    lib.get_hashrate(function(hashrate) {
-      lib.get_connectioncount(function(connections){
-        lib.get_blockcount(function(blockcount) {
-          db.get_stats(settings.coin, function (stats) {
-            if (hashrate == 'There was an error. Check your console.') {
-              hashrate = 0;
-            }
-            res.send({ data: [{
-              difficulty: difficulty,
-              difficultyHybrid: difficultyHybrid,
-              supply: stats.supply,
-              hashrate: hashrate,
-              lastPrice: stats.last_price,
-              connections: connections,
-              blockcount: blockcount
-            }]});
-          });
-        });
-      });
-    });
-  });
-});
+// router.get('/ext/summary', function(req, res) {
+//   console.time('/ext/summary');
+//   lib.get_difficulty(function(difficulty) {
+//     difficultyHybrid = ''
+//     if (difficulty['proof-of-work']) {
+//             if (settings.index.difficulty == 'Hybrid') {
+//               difficultyHybrid = 'POS: ' + difficulty['proof-of-stake'];
+//               difficulty = 'POW: ' + difficulty['proof-of-work'];
+//             } else if (settings.index.difficulty == 'POW') {
+//               difficulty = difficulty['proof-of-work'];
+//             } else {
+//         difficulty = difficulty['proof-of-stake'];
+//       }
+//     }
+//     lib.get_hashrate(function(hashrate) {
+//       lib.get_connectioncount(function(connections){
+//         lib.get_blockcount(function(blockcount) {
+//           db.get_stats(settings.coin, function (stats) {
+//             if (hashrate == 'There was an error. Check your console.') {
+//               hashrate = 0;
+//             }
+//             console.timeEnd('/ext/summary');
+//             res.send({ data: [{
+//               difficulty: difficulty,
+//               difficultyHybrid: difficultyHybrid,
+//               supply: stats.supply,
+//               hashrate: hashrate,
+//               lastPrice: stats.last_price,
+//               connections: connections,
+//               blockcount: blockcount
+//             }]});
+//           });
+//         });
+//       });
+//     });
+//   });
+// });
 module.exports = router;

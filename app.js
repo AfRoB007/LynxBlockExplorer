@@ -7,6 +7,7 @@ var express = require('express')
   , bodyParser = require('body-parser')
   , settings = require('./lib/settings')
   , routes = require('./routes/index')
+  , homeRoutes = require('./routes/home.routes')
   , explorerRoutes = require('./routes/explorer.routes')
   , lib = require('./lib/explorer')
   , db = require('./lib/database')  
@@ -57,7 +58,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // routes
 app.use('/api', bitcoinapi.app);
 app.use('/', routes);
-app.use('/explorer',explorerRoutes);
+app.use('/', homeRoutes);
+app.use('/ext',explorerRoutes);
 app.use('/ext/getmoneysupply', function(req,res){
   lib.get_supply(function(supply){
     res.send(' '+supply);
@@ -91,27 +93,33 @@ app.use('/ext/getbalance/:hash', function(req,res){
   });
 });
 
-app.use('/ext/getdistribution', function(req,res){
-  db.get_richlist(settings.coin, function(richlist){
-    db.get_stats(settings.coin, function(stats){
-      db.get_distribution(richlist, stats, function(dist){
-        res.send(dist);
-      });
-    });
-  });
-});
+// app.use('/ext/getdistribution', function(req,res){
+//   console.time(req.originalUrl);
+//   db.get_richlist(settings.coin, function(richlist){
+//     db.get_stats(settings.coin, function(stats){
+//       db.get_distribution(richlist, stats, function(dist){
+//         console.timeEnd(req.originalUrl);
+//         res.send(dist);
+//       });
+//     });
+//   });
+// });
 
-app.use('/ext/getlasttxs/:min', function(req,res){
-  db.get_last_txs(settings.index.last_txs, (req.params.min * 100000000), function(txs){
-    res.send({data: txs});
-  });
-});
+// app.use('/ext/getlasttxs/:min', function(req,res){
+//   console.time(req.originalUrl);
+//   db.get_last_txs(settings.index.last_txs, (req.params.min * 100000000), function(txs){
+//     console.timeEnd(req.originalUrl);
+//     res.send({data: txs});
+//   });
+// });
 
-app.use('/ext/connections', function(req,res){
-  db.get_peers(function(peers){
-    res.send({data: peers});
-  });
-});
+// app.use('/ext/connections', function(req,res){
+//   console.time(req.originalUrl);
+//   db.get_peers(function(peers){
+//     console.timeEnd(req.originalUrl);
+//     res.send({data: peers});
+//   });
+// });
 
 // locals
 app.set('title', settings.title);

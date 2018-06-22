@@ -4,21 +4,6 @@ var { bitcoin, db } = require('../helpers');
 exports.getSummary = ()=>{
     return new Promise((resolve,reject)=>{
         co(function* getSummary(){
-            // let { difficulty, difficultyHybrid }  = yield bitcoin.getDifficulty();
-            // let hashrate = yield bitcoin.getHashRate();
-            // let connections = yield bitcoin.getConnections();
-            // let blockcount = yield bitcoin.getBlockCount();
-            // let { supply, last_price : lastPrice   } = yield db.coinStats.getCoinStats();
-            
-            // resolve({                
-            //     difficulty,
-            //     difficultyHybrid,
-            //     supply,
-            //     hashrate,
-            //     lastPrice,
-            //     connections,
-            //     blockcount
-            // });
             let difficulty  = bitcoin.getDifficulty();
             let hashrate = bitcoin.getHashRate();
             let connections = bitcoin.getConnections();
@@ -30,13 +15,32 @@ exports.getSummary = ()=>{
 
             resolve({                
                 ...difficulty,
-                difficultyHybrid,
                 supply,
                 hashrate,
                 lastPrice,
                 connections,
                 blockcount
             });
+        }).catch(err=>{
+            reject(err);
+        });
+    });    
+};
+
+exports.getLastTransactions = (min)=>{
+    return new Promise((resolve,reject)=>{
+        co(function* getLastTransactions(){
+            resolve(yield db.tx.getLastTransactions(min));
+        }).catch(err=>{
+            reject(err);
+        });
+    });    
+};
+
+exports.getPeerConnections = (min)=>{
+    return new Promise((resolve,reject)=>{
+        co(function* getPeerConnections(){
+            resolve(yield db.peers.getPeers());
         }).catch(err=>{
             reject(err);
         });
