@@ -1,6 +1,8 @@
-var { display, movement, address, api, richlist, markets } = require('../lib/settings');
+var { display, movement, address, api, richlist, markets,
+    genesis_tx, genesis_block, txcount } = require('../lib/settings');
 var repository = require('../data-access/richlist.repository');
 var marketsRepository = require('../data-access/markets.repository');
+var searchRepository = require('../data-access/search.repository');
 
 exports.index = (req,res) =>{
     res.render('index', { 
@@ -83,4 +85,72 @@ exports.market = (req,res) =>{
     }else{
         res.redirect('/');
     }
+};
+
+const searchAddress = (req,res)=>{
+    let { search } = req.body;
+    searchRepository.getAddress(search).then(address=>{
+        if (address) {
+            res.redirect('/address/' + address.a_id);
+        } else {
+            searchRepository.getBlockHash(search).then(hash=>{
+                if (hash != 'There was an error. Check your console.') {
+                    res.redirect('/block/' + hash);
+                } else {
+                    res.render('index', {
+                        active: 'home', 
+                        error: null, 
+                        warning: null
+                    });
+                }
+            });
+        }
+    }).catch(err=>{
+        console.log('err',err);
+        res.redirect('/');
+    });
+};
+
+exports.search = (req,res) =>{
+    let { search } = req.body;
+    if(search.length === 64){
+        if(search === genesis_tx) {
+            res.redirect('/block/' + genesis_block);
+        }else{            
+            searchRepository.findTransactionById(search).then(txn=>{
+                if(txn){
+                    res.redirect('/tx/' +txn.txid);
+                }else{
+                    searchRepository.getBlockHash(search).then(hash=>{
+                        if (hash != 'There was an error. Check your console.') {
+                            res.redirect('/block/' + hash);
+                        } else {
+                            res.render('index', {
+                                active: 'home', 
+                                error: locale.ex_search_error, 
+                                warning: null
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    }else{
+        searchAddress(req,res);
+    }
+};
+
+exports.address = (req,res) =>{
+    let hash = req.param('hash');
+    let count = req.param('count') || txcount;
+    searchRepository.getAddressAndTxns(hash,count).then(data=>{
+        data.active = 'address';
+        res.render('address', data);
+    }).catch(err=>{
+        res.render('index', {
+            active: 'home', 
+            error: err.message, 
+            warning: null
+        });
+    });
 };

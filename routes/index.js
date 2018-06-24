@@ -93,34 +93,34 @@ function route_get_index(res, error) {
   res.render('index', { theme:'Spacelab', active: 'home', error: error, warning: null});
 }
 
-function route_get_address(res, hash, count) {
-  db.get_address(hash, function(address) {
-    if (address) {
-      var txs = [];
-      var hashes = address.txs.reverse();
-      if (address.txs.length < count) {
-        count = address.txs.length;
-      }
-      lib.syncLoop(count, function (loop) {
-        var i = loop.iteration();
-        db.get_tx(hashes[i].addresses, function(tx) {
-          if (tx) {
-            txs.push(tx);
-            loop.next();
-          } else {
-            loop.next();
-          }
-        });
-      }, function(){
+// function route_get_address(res, hash, count) {
+//   db.get_address(hash, function(address) {
+//     if (address) {
+//       var txs = [];
+//       var hashes = address.txs.reverse();
+//       if (address.txs.length < count) {
+//         count = address.txs.length;
+//       }
+//       lib.syncLoop(count, function (loop) {
+//         var i = loop.iteration();
+//         db.get_tx(hashes[i].addresses, function(tx) {
+//           if (tx) {
+//             txs.push(tx);
+//             loop.next();
+//           } else {
+//             loop.next();
+//           }
+//         });
+//       }, function(){
 
-        res.render('address', { active: 'address', address: address, txs: txs});
-      });
+//         res.render('address', { active: 'address', address: address, txs: txs});
+//       });
 
-    } else {
-      route_get_index(res, hash + ' not found');
-    }
-  });
-}
+//     } else {
+//       route_get_index(res, hash + ' not found');
+//     }
+//   });
+// }
 
 /* GET home page. */
 // router.get('/', function(req, res) {
@@ -195,7 +195,7 @@ function route_get_address(res, hash, count) {
 // });
 
 router.get('/reward', function(req, res){
-  //db.get_stats(settings.coin, function (stats) {
+  db.get_stats(settings.coin, function (stats) {
     console.log(stats);
     db.get_heavy(settings.coin, function (heavy) {
       //heavy = heavy;
@@ -212,7 +212,7 @@ router.get('/reward', function(req, res){
 
       res.render('reward', { active: 'reward', stats: stats, heavy: heavy, votes: heavy.votes });
     });
-  //});
+  });
 });
 
 router.get('/tx/:txid', function(req, res) {
@@ -223,50 +223,53 @@ router.get('/block/:hash', function(req, res) {
   route_get_block(res, req.param('hash'));
 });
 
-router.get('/address/:hash', function(req, res) {
-  route_get_address(res, req.param('hash'), settings.txcount);
-});
+// router.get('/address/:hash', function(req, res) {
+//   route_get_address(res, req.param('hash'), settings.txcount);
+// });
 
-router.get('/address/:hash/:count', function(req, res) {
-  route_get_address(res, req.param('hash'), req.param('count'));
-});
+// router.get('/address/:hash/:count', function(req, res) {
+//   route_get_address(res, req.param('hash'), req.param('count'));
+// });
 
-router.post('/search', function(req, res) {
-  var query = req.body.search;
-  if (query.length == 64) {
-    if (query == settings.genesis_tx) {
-      res.redirect('/block/' + settings.genesis_block);
-    } else {
-      db.get_tx(query, function(tx) {
-        if (tx) {
-          res.redirect('/tx/' +tx.txid);
-        } else {
-          lib.get_block(query, function(block) {
-            if (block != 'There was an error. Check your console.') {
-              res.redirect('/block/' + query);
-            } else {
-              route_get_index(res, locale.ex_search_error + query );
-            }
-          });
-        }
-      });
-    }
-  } else {
-    db.get_address(query, function(address) {
-      if (address) {
-        res.redirect('/address/' + address.a_id);
-      } else {
-        lib.get_blockhash(query, function(hash) {
-          if (hash != 'There was an error. Check your console.') {
-            res.redirect('/block/' + hash);
-          } else {
-            route_get_index(res, locale.ex_search_error + query );
-          }
-        });
-      }
-    });
-  }
-});
+// router.post('/search/new', function(req, res) {
+//   var query = req.body.search;
+//   console.log('query',query);
+//   if (query.length == 64) {
+//     console.log('if');
+//     if (query == settings.genesis_tx) {
+//       res.redirect('/block/' + settings.genesis_block);
+//     } else {
+//       db.get_tx(query, function(tx) {
+//         if (tx) {
+//           res.redirect('/tx/' +tx.txid);
+//         } else {
+//           lib.get_block(query, function(block) {
+//             if (block != 'There was an error. Check your console.') {
+//               res.redirect('/block/' + query);
+//             } else {
+//               route_get_index(res, locale.ex_search_error + query );
+//             }
+//           });
+//         }
+//       });
+//     }
+//   } else {
+//     console.log('else');
+//     db.get_address(query, function(address) {
+//       if (address) {
+//         res.redirect('/address/' + address.a_id);
+//       } else {
+//         lib.get_blockhash(query, function(hash) {
+//           if (hash != 'There was an error. Check your console.') {
+//             res.redirect('/block/' + hash);
+//           } else {
+//             route_get_index(res, locale.ex_search_error + query );
+//           }
+//         });
+//       }
+//     });
+//   }
+// });
 
 router.get('/qr/:string', function(req, res) {
   if (req.param('string')) {

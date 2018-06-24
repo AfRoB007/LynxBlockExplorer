@@ -1,5 +1,6 @@
 var repository = require('../data-access/explorer.repository');
 var richListRepository = require('../data-access/richlist.repository');
+var searchRepository = require('../data-access/search.repository');
 
 exports.getSummary = (req,res) =>{
     console.time(req.originalUrl);
@@ -41,5 +42,50 @@ exports.getDistribution = (req,res) =>{
         res.send(distribution);
     }).catch(err=>{
         res.send(err);
+    });
+};
+
+exports.getAddress = (req,res) =>{
+    let hash = req.param('hash');
+    searchRepository.getAddress(hash).then(address=>{
+        if (address) {
+            let a_ext = {
+              address: address.a_id,
+              sent: (address.sent / 100000000),
+              received: (address.received / 100000000),
+              balance: (address.balance / 100000000).toString().replace(/(^-+)/mg, ''),
+              last_txs: address.txs,
+            };
+            res.send(a_ext);
+        } else {
+            res.send({ 
+                error: 'address not found.', 
+                hash
+            });
+        }
+    }).catch(err=>{
+        res.send({ 
+            error: 'address not found.', 
+            hash
+        });
+    });
+};
+
+exports.getBalance = (req,res) =>{
+    let hash = req.param('hash');
+    searchRepository.getAddress(hash).then(address=>{
+        if (address) {
+            res.send((address.balance / 100000000).toString().replace(/(^-+)/mg, ''));           
+        } else {
+            res.send({ 
+                error: 'address not found.', 
+                hash
+            });
+        }
+    }).catch(err=>{
+        res.send({ 
+            error: 'address not found.', 
+            hash
+        });
     });
 };

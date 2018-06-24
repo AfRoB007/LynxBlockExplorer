@@ -6,3 +6,7 @@ exports.getLastTransactions = (min)=>{
     min = min * 100000000;
     return Tx.find({'total': {$gt: min}}).sort({_id: 'desc'}).limit(count).exec();
 };
+
+exports.findOne = (txnId)=>{
+    return Tx.findOne({ txid: txnId });
+}

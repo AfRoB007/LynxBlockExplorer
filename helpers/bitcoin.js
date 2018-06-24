@@ -95,8 +95,20 @@ exports.getConnections = ()=>{
     });    
 };
 
+exports.getBlock = (height)=>{
+    return new Promise((resolve,reject)=>{
+        axios.get(BASE_URL + 'getblock?height='+height).then(res=>resolve(res.data)).catch(error=>reject(error));
+    });    
+};
+
 exports.getBlockCount = ()=>{
     return new Promise((resolve,reject)=>{
         axios.get(BASE_URL + 'getblockcount').then(res=>resolve(res.data)).catch(error=>reject(error));
+    });    
+};
+
+exports.getBlockHash = (height)=>{
+    return new Promise((resolve,reject)=>{
+        axios.get(BASE_URL + 'getblockhash?height='+height).then(res=>resolve(res.data)).catch(error=>reject(error));
     });    
 };
