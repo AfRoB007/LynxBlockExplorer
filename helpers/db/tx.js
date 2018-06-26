@@ -8,5 +8,21 @@ exports.getLastTransactions = (min)=>{
 };
 
 exports.findOne = (txnId)=>{
-    return Tx.findOne({ txid: txnId });
+    return new Promise((resolve,reject)=>{
+        Tx.findOne({ txid: txnId }, (err,data)=>{
+            if(err) reject(err);
+            else resolve(data);
+        });
+    });
+}
+
+exports.findByTxnIds = (txnIds)=>{
+    return new Promise((resolve,reject)=>{
+        Tx.find({ txid: {
+            $in : txnIds
+        }}, (err,data)=>{
+            if(err) reject(err);
+            else resolve(data);
+        });
+    });
 }

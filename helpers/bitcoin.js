@@ -95,6 +95,12 @@ exports.getConnections = ()=>{
     });    
 };
 
+exports.getBlockByHash = (hash)=>{
+    return new Promise((resolve,reject)=>{
+        axios.get(BASE_URL + 'getblock?hash='+hash).then(res=>resolve(res.data)).catch(error=>reject(error));
+    });
+};
+
 exports.getBlock = (height)=>{
     return new Promise((resolve,reject)=>{
         axios.get(BASE_URL + 'getblock?height='+height).then(res=>resolve(res.data)).catch(error=>reject(error));
@@ -111,4 +117,11 @@ exports.getBlockHash = (height)=>{
     return new Promise((resolve,reject)=>{
         axios.get(BASE_URL + 'getblockhash?height='+height).then(res=>resolve(res.data)).catch(error=>reject(error));
     });    
+};
+
+exports.getRawTransaction = (hash)=>{
+    let uri = BASE_URL + 'getrawtransaction?txid=' + hash + '&decrypt=1';
+    return new Promise((resolve,reject)=>{
+        axios.get(uri).then(res=>resolve(res.data)).catch(error=>reject(error));
+    });
 };

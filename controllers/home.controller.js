@@ -3,13 +3,19 @@ var { display, movement, address, api, richlist, markets,
 var repository = require('../data-access/richlist.repository');
 var marketsRepository = require('../data-access/markets.repository');
 var searchRepository = require('../data-access/search.repository');
+var rewardRepository = require('../data-access/reward.repository');
+var blockRepository = require('../data-access/block.repository');
 
-exports.index = (req,res) =>{
+const handleError = (res,error)=>{
     res.render('index', { 
         active: 'home', 
-        error: null, 
+        error: error, 
         warning: null
     });
+};
+
+exports.index = (req,res) =>{
+    handleError(res,null);
 };
 
 exports.network = (req,res) =>{
@@ -97,11 +103,7 @@ const searchAddress = (req,res)=>{
                 if (hash != 'There was an error. Check your console.') {
                     res.redirect('/block/' + hash);
                 } else {
-                    res.render('index', {
-                        active: 'home', 
-                        error: null, 
-                        warning: null
-                    });
+                    handleError(res,null);
                 }
             });
         }
@@ -125,11 +127,7 @@ exports.search = (req,res) =>{
                         if (hash != 'There was an error. Check your console.') {
                             res.redirect('/block/' + hash);
                         } else {
-                            res.render('index', {
-                                active: 'home', 
-                                error: locale.ex_search_error, 
-                                warning: null
-                            });
+                            handleError(res,locale.ex_search_error);
                         }
                     });
                 }
@@ -147,10 +145,40 @@ exports.address = (req,res) =>{
         data.active = 'address';
         res.render('address', data);
     }).catch(err=>{
-        res.render('index', {
-            active: 'home', 
-            error: err.message, 
-            warning: null
+        handleError(res,err.message);
+    });
+};
+
+exports.reward = (req,res) =>{
+    console.time(req.originalUrl);
+    rewardRepository.getReward().then(data=>{
+        console.timeEnd(req.originalUrl);
+        res.render('reward', { 
+            active: 'reward', 
+            ...data
         });
+    }).catch(err=>{
+        res.redirect('/');
+    });
+};
+
+exports.block = (req,res) =>{
+    console.time(req.originalUrl);
+    let hash = req.param('hash');
+    blockRepository.getBlock(hash).then(data=>{
+        console.timeEnd(req.originalUrl);   
+        data.txs = []; 
+        if(data.txs.length>0){
+            res.render('block', { 
+                active: 'block', 
+                ...data
+            });
+        }else{
+            blockRepository.createTxs(data.block).then(data=>{
+                console.log('block',data);
+            });
+        }
+    }).catch(err=>{
+        handleError(res,err.message);
     });
 };
