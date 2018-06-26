@@ -7,33 +7,33 @@ var express = require('express')
   , markdown = require('marked')
   , qr = require('qr-image');
 
-function route_get_block(res, blockhash) {
-  lib.get_block(blockhash, function (block) {
-    if (block != 'There was an error. Check your console.') {
-      if (blockhash == settings.genesis_block) {
-        res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: 'GENESIS'});
-      } else {
-        db.get_txs(block, function(txs) {
-          if (txs.length > 0) {
-            res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: txs});
-          } else {
-            db.create_txs(block, function(){
-              db.get_txs(block, function(ntxs) {
-                if (ntxs.length > 0) {
-                  res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: ntxs});
-                } else {
-                  route_get_index(res, 'Block not found: ' + blockhash);
-                }
-              });
-            });
-          }
-        });
-      }
-    } else {
-      route_get_index(res, 'Block not found: ' + blockhash);
-    }
-  });
-}
+// function route_get_block(res, blockhash) {
+//   lib.get_block(blockhash, function (block) {
+//     if (block != 'There was an error. Check your console.') {
+//       if (blockhash == settings.genesis_block) {
+//         res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: 'GENESIS'});
+//       } else {
+//         db.get_txs(block, function(txs) {
+//           if (txs.length > 0) {
+//             res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: txs});
+//           } else {
+//             db.create_txs(block, function(){
+//               db.get_txs(block, function(ntxs) {
+//                 if (ntxs.length > 0) {
+//                   res.render('block', { active: 'block', block: block, confirmations: settings.confirmations, txs: ntxs});
+//                 } else {
+//                   route_get_index(res, 'Block not found: ' + blockhash);
+//                 }
+//               });
+//             });
+//           }
+//         });
+//       }
+//     } else {
+//       route_get_index(res, 'Block not found: ' + blockhash);
+//     }
+//   });
+// }
 /* GET functions */
 
 function route_get_tx(res, txid) {
@@ -222,9 +222,9 @@ router.get('/tx/:txid', function(req, res) {
   route_get_tx(res, req.param('txid'));
 });
 
-router.get('/block/:hash', function(req, res) {
-  route_get_block(res, req.param('hash'));
-});
+// router.get('/block/:hash', function(req, res) {
+//   route_get_block(res, req.param('hash'));
+// });
 
 // router.get('/address/:hash', function(req, res) {
 //   route_get_address(res, req.param('hash'), settings.txcount);

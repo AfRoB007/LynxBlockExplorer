@@ -174,8 +174,11 @@ exports.block = (req,res) =>{
                 ...data
             });
         }else{
-            blockRepository.createTxs(data.block).then(data=>{
-                console.log('block',data);
+            blockRepository.createTxs(data.block).then(data=>{                
+                res.render('block', { 
+                    active: 'block', 
+                    ...data
+                });
             });
         }
     }).catch(err=>{

@@ -125,3 +125,8 @@ exports.getRawTransaction = (hash)=>{
         axios.get(uri).then(res=>resolve(res.data)).catch(error=>reject(error));
     });
 };
+
+exports.convertToSatoshi = (amount)=> {
+    let fixed = amount.toFixed(8).toString(); 
+    return parseInt(fixed.replace('.', ''));
+};

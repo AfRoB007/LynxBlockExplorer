@@ -26,3 +26,13 @@ exports.findByTxnIds = (txnIds)=>{
         });
     });
 }
+
+exports.save = (model)=>{
+    return new Promise((resolve,reject)=>{
+        let tx = new Tx(model);
+        tx.save(function(err) {
+            if (err) reject(err);
+            else resolve(tx);
+        });
+    });  
+};
