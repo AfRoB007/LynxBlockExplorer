@@ -17,9 +17,18 @@ exports.getSummary = (req,res) =>{
 
 exports.getLastTransactions = (req,res) =>{
     console.time(req.originalUrl);
-    repository.getLastTransactions(req.params.min).then(data=>{
+    let pageIndex = 1;
+    let pageSize = 10;
+    if(req.query.pageIndex){
+        pageIndex = parseInt(req.query.pageIndex);
+    }
+    if(req.query.pageSize){
+        pageSize = parseInt(req.query.pageSize);
+    }
+
+    repository.getLastTransactions(req.params.min,pageIndex,pageSize).then(data=>{
         console.timeEnd(req.originalUrl);
-        res.send({ data });
+        res.send(data);
     }).catch(err=>{
         res.status(500).send(err.message);
     });

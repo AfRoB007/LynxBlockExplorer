@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 var bitcoin = require('./bitcoin');
 var lib = require('./lib');
 var coinStats = require('./db/coin-stats');
@@ -18,4 +19,16 @@ exports.db = {
     markets,
     address,
     heavy
+};
+
+exports.connect = (database, cb)=> {
+    mongoose.connect(database, function(err) {
+      if (err) {
+        console.log('Unable to connect to database: %s', database);
+        console.log('Aborting');
+        process.exit(1);
+      }
+      console.log('Successfully connected to MongoDB');
+      return cb();
+    });
 };

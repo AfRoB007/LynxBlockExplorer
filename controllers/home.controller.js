@@ -5,6 +5,7 @@ var marketsRepository = require('../data-access/markets.repository');
 var searchRepository = require('../data-access/search.repository');
 var rewardRepository = require('../data-access/reward.repository');
 var blockRepository = require('../data-access/block.repository');
+var txRepository = require('../data-access/tx.repository');
 
 const handleError = (res,error)=>{
     res.render('index', { 
@@ -166,8 +167,7 @@ exports.block = (req,res) =>{
     console.time(req.originalUrl);
     let hash = req.param('hash');
     blockRepository.getBlock(hash).then(data=>{
-        console.timeEnd(req.originalUrl);   
-        data.txs = []; 
+        console.timeEnd(req.originalUrl);            
         if(data.txs.length>0){
             res.render('block', { 
                 active: 'block', 
@@ -181,6 +181,25 @@ exports.block = (req,res) =>{
                 });
             });
         }
+    }).catch(err=>{
+        handleError(res,err.message);
+    });
+};
+
+
+exports.tx = (req,res) =>{
+    console.time(req.originalUrl);
+    let hash = req.param('txid');
+    if(hash === genesis_tx){
+        return res.redirect('/block/'+hash);
+    }
+    txRepository.getTx(hash).then(data=>{
+        console.timeEnd(req.originalUrl);
+        console.log('tx',data); 
+        res.render('tx', { 
+            active: 'tx', 
+            ...data
+        });
     }).catch(err=>{
         handleError(res,err.message);
     });

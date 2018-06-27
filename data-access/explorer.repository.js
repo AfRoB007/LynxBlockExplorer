@@ -3,7 +3,7 @@ var { bitcoin, db } = require('../helpers');
 
 exports.getSummary = ()=>{
     return new Promise((resolve,reject)=>{
-        co(function* getSummary(){
+        co(function* (){
             let difficulty  = bitcoin.getDifficulty();
             let hashrate = bitcoin.getHashRate();
             let connections = bitcoin.getConnections();
@@ -27,10 +27,16 @@ exports.getSummary = ()=>{
     });    
 };
 
-exports.getLastTransactions = (min)=>{
+exports.getLastTransactions = (min,pageIndex,pageSize)=>{
     return new Promise((resolve,reject)=>{
-        co(function* getLastTransactions(){
-            resolve(yield db.tx.getLastTransactions(min));
+        co(function* (){
+            let grid = {
+                data : yield db.tx.getLastTransactions(min, pageIndex, pageSize),
+                count : yield db.tx.getLastTransactionsCount(min),
+                pageIndex,
+                pageSize
+            };
+            resolve(grid);
         }).catch(err=>{
             reject(err);
         });
@@ -39,7 +45,7 @@ exports.getLastTransactions = (min)=>{
 
 exports.getPeerConnections = (min)=>{
     return new Promise((resolve,reject)=>{
-        co(function* getPeerConnections(){
+        co(function* (){
             resolve(yield db.peers.getPeers());
         }).catch(err=>{
             reject(err);

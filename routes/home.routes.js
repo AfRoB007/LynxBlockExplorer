@@ -12,6 +12,7 @@ router.get('/markets/:market', controller.market);
 router.get('/address/:hash/:count?', controller.address);
 router.get('/reward', controller.reward);
 router.get('/block/:hash', controller.block);
+router.get('/tx/:txid', controller.tx);
 router.post('/search', controller.search);
 
 module.exports = router;
