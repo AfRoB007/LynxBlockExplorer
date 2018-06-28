@@ -4,23 +4,18 @@ var { bitcoin, db } = require('../helpers');
 exports.getSummary = ()=>{
     return new Promise((resolve,reject)=>{
         co(function* (){
-            let difficulty  = bitcoin.getDifficulty();
-            let hashrate = bitcoin.getHashRate();
-            let connections = bitcoin.getConnections();
-            let blockcount = bitcoin.getBlockCount();
-            let stats = db.coinStats.getCoinStats();
-            
-            yield [difficulty,hashrate,connections,blockcount,stats];            
-            let { supply, last_price : lastPrice   } = stats;
-
-            resolve({                
-                ...difficulty,
-                supply,
-                hashrate,
-                lastPrice,
-                connections,
-                blockcount
-            });
+            let data = {
+                ... yield bitcoin.getDifficulty(),
+                hashrate : yield bitcoin.getHashRate(),
+                connections : yield bitcoin.getConnections(),
+                blockcount : yield bitcoin.getBlockCount(),
+                stats : yield db.coinStats.getCoinStats()
+            };
+            let { supply, last_price : lastPrice   } = data.stats;
+            delete data.stats;
+            data.supply = supply;
+            data.lastPrice = lastPrice;
+            resolve(data);
         }).catch(err=>{
             reject(err);
         });

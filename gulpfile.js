@@ -41,8 +41,9 @@ gulp.task('build:app-js',['clean:app-js'],function(){
         './public/vendor/bootstrap/bootstrap.min.js',
         './public/vendor/moment/moment.min.js',
         './public/vendor/data-tables/jquery.dataTables.min.js',
-        './public/vendor/responsive/dataTables.responsive.js',
-        './public/vendor/data-tables/dataTables.bootstrap.js'
+        './public/vendor/responsive/dataTables.responsive.min.js',
+        './public/vendor/data-tables/dataTables.bootstrap.js',
+        './public/vendor/esimakin-twbs-pagination/jquery.twbsPagination.min.js'
         ])
         .pipe(sourcemaps.init())
         .pipe(concat('app.min.js'))
