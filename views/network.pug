@@ -3,34 +3,10 @@ extends layout
 block content   
   script.
     $(document).ready(function(){
-      var ctable = $('#connections-table').dataTable( {  
-        autoWidth: true,      
-        searching: false,
-        ordering: false,
-        responsive: true,
-        lengthChange: true,
-        processing: true,
-        ajax: {
-          url: '/ext/connections',
-          dataSrc: function ( json ) {
-            /*for ( var i=0;i<json.data.length; i++ ) {
-              json.data[i]['timestamp'] = new Date((json.data[i]['timestamp']) * 1000).toUTCString();
-              json.data[i]['txid'] = "<a href='/tx/" + json.data[i]['txid'] + "'>" + json.data[i]['txid'] + "</a>";
-              json.data[i]['blockindex'] = "<a href='/block/" + json.data[i]['blockhash'] + "'>" + json.data[i]['blockindex'] + "</a>";
-              var amount = json.data[i]['total'] / 100000000;
-              json.data[i]['total'] = amount.toFixed(8);
-              json.data[i]['recipients'] = json.data[i]['vout'].length;
-            }*/
-            return json.data;
-          }
-        },
-        columns: [
-          { data: 'address', width: '25%' },
-          { data: 'protocol', width: '25%' },
-          { data: 'version', width:'25%' },
-          { data: 'country', width: '25%'}
-        ]
-      });
+      if(window.Lynx_Network){
+        var table = new window.Lynx_Network.ConnectionsTable();
+        table.load();
+      }
     });
   .col-md-12(style="margin-bottom: 4%")
     .row.text-center(style='margin-bottom:15px;')
@@ -38,11 +14,22 @@ block content
     .panel.panel-default
       .panel-heading
         strong #{settings.locale.net_connections}
-      table#connections-table.table.table-bordered.table-striped
-        thead
-          tr
-            th.text-center #{settings.locale.net_address}
-            th.text-center #{settings.locale.net_protocol}
-            th.text-center #{settings.locale.net_subversion}
-            th.text-center #{settings.locale.net_country}
-        tbody.text-center
+      .table-responsive#connections-table
+        table.table.table-bordered.table-striped
+          colgroup
+            col(width="25%")
+            col(width="25%")
+            col(width="25%")
+            col(width="25%")            
+          thead
+            tr
+              th.text-center #{settings.locale.net_address}
+              th.text-center #{settings.locale.net_protocol}
+              th.text-center #{settings.locale.net_subversion}
+              th.text-center #{settings.locale.net_country}
+          tbody
+          tfoot
+              tr              
+                td(colspan="5")
+                  p.page-info
+                  ul.pagination.pull-right

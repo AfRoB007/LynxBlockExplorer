@@ -38,10 +38,16 @@ exports.getLastTransactions = (min,pageIndex,pageSize)=>{
     });    
 };
 
-exports.getPeerConnections = (min)=>{
+exports.getPeerConnections = (pageIndex,pageSize)=>{
     return new Promise((resolve,reject)=>{
         co(function* (){
-            resolve(yield db.peers.getPeers());
+            let grid = {
+                data : yield db.peers.getPeers(pageIndex, pageSize),
+                count : yield db.peers.getPeersCount(),
+                pageIndex,
+                pageSize
+            };
+            resolve(grid);
         }).catch(err=>{
             reject(err);
         });

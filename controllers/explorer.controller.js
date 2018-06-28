@@ -36,9 +36,17 @@ exports.getLastTransactions = (req,res) =>{
 
 exports.getPeerConnections = (req,res) =>{
     console.time(req.originalUrl);
-    repository.getPeerConnections().then(data=>{
+    let pageIndex = 1;
+    let pageSize = 10;
+    if(req.query.pageIndex){
+        pageIndex = parseInt(req.query.pageIndex);
+    }
+    if(req.query.pageSize){
+        pageSize = parseInt(req.query.pageSize);
+    }
+    repository.getPeerConnections(pageIndex,pageSize).then(data=>{
         console.timeEnd(req.originalUrl);
-        res.send({ data });
+        res.send(data);
     }).catch(err=>{
         res.status(500).send(err.message);
     });

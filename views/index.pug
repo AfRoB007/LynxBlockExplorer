@@ -3,80 +3,13 @@ extends layout
 block content
   script.
     $(document).ready(function(){
-      var LAST_TXNS_URL ='/ext/getlasttxs/0.00000001';
-      function getStartIndex(result){
-        return ((result.pageIndex - 1) * result.pageSize) + 1;
+      if(window.Lynx_Explorer){
+        var lastTrasaction = new window.Lynx_Explorer.LastTransactionTable();
+        lastTrasaction.load();
+        setInterval(function () {     
+          lastTrasaction.reload();         
+        },60000);
       }
-      function getEndIndex(result){
-        var index = (result.pageIndex * result.pageSize);
-        if (index < result.count) {
-          return index;
-        }
-        return result.count;
-      }
-
-      function loadLastTxnData(url){
-        $.ajax({
-          url:url,
-          contentType:'application/json',
-          dataType:'json',
-          success:function(result){
-            var tbody = '';
-            var data = result.data;
-            var length = result.data.length;
-            for(var i=0;i<length;i++){
-              var blockindex = "<a href='/block/" + data[i].blockhash + "'>" + data[i].blockindex + "</a>";
-              var txnId = "<a href='/tx/" + data[i].txid + "'>" + data[i].txid + "</a>";
-              var recipients = data[i].vout.length;
-              var total = (data[i].total / 100000000).toFixed(8);
-              var timeStamp = new Date((data[i].timestamp) * 1000).toUTCString();
-              tbody += '<tr><td>'+blockindex+'</td><td>'+txnId+'</td><td>'+recipients+'</td><td>'+total+'</td><td>'+timeStamp+'</td></tr>';
-            }
-            $('#last-transactions-table tbody').html(tbody);
-            //pagination
-            $('#last-txn-pagination').twbsPagination({
-              totalPages: Math.ceil(result.count/result.pageSize),
-              onPageClick: function (event, page) {
-                  loadLastTxnData(LAST_TXNS_URL+'?pageIndex='+page+'&pageSize='+result.pageSize);
-              }
-            });
-            //update page info
-            $('#last-transactions-table .page-info')
-            .html('Showing '+getStartIndex(result)+' to '+getEndIndex(result)+' of '+result.count+' entries');
-          }        
-        });
-      }
-      loadLastTxnData(LAST_TXNS_URL);
-
-      var stable = $('#block-table').dataTable( {  
-        autoWidth: true,      
-        searching: true,
-        ordering: false,
-        responsive: true,
-        lengthChange: false,
-        processing: true,
-        paging: false,
-        info: false,
-        ajax: {
-          url: '/ext/summary',
-          dataSrc: function ( json ) {
-            json.data[0]['height'] = "<a href='/block/" + json.data[0]['hash'] + "'>" + json.data[0]['height'] + "</a>";
-            return json.data;
-          }
-        },
-        columns: [
-          //{ data: 'height', width: '8%' },
-          { data: 'difficulty', width: '10%' },
-          //{ data: 'size', width:'10%' },
-          //{ data: 'txs', width: '10%' },
-          { data: 'supply', width: '15%' },
-          //{ data: 'time', width: '20%' },
-        ]
-      });
-      setInterval( function () {     
-        loadLastTxnData(LAST_TXNS_URL);   
-        stable.api().ajax.reload(null, false);
-      }, 60000 );
     });
   .row
     .col-md-12
@@ -107,12 +40,11 @@ block content
               th.hidden-xs.text-center #{settings.locale.tx_recipients}
               th.text-center #{settings.locale.mkt_amount} (#{settings.symbol})
               th.text-center #{settings.locale.timestamp}
-          tbody.text-center
+          tbody
           tfoot
             tr              
               td(colspan="5")
-                p.page-info Showing 1 to 10 of 10 entries 
-                ul.pagination.pull-right#last-txn-pagination
-        .footer-padding
+                p.page-info
+                ul.pagination.pull-right#last-txn-pagination        
       
               

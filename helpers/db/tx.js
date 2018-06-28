@@ -1,10 +1,8 @@
 var Tx = require('../../models/tx');
 var { index } = require('../../lib/settings');
 
-exports.getLastTransactions = (min, pageIndex, pageSize)=>{
-    //let count = index.last_txs;
+exports.getLastTransactions = (min, pageIndex, pageSize)=>{    
     min = min * 100000000;
-    //return Tx.find({'total': {$gt: min}}).sort({_id: 'desc'}).limit(count).exec();
     return new Promise((resolve,reject)=>{
         Tx
         .find({

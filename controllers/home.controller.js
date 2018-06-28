@@ -72,11 +72,11 @@ exports.richList = (req,res) =>{
 };
 
 exports.market = (req,res) =>{
-    let { market } = req.params;
+    let { market } = req.params;   
     if (markets.enabled.indexOf(market) != -1) {
         console.time(req.originalUrl);
         marketsRepository.getMarkets(market).then(data=>{
-            console.timeEnd(req.originalUrl);            
+            console.timeEnd(req.originalUrl);
             res.render('./markets/' + market, {
                 active: 'markets',
                 marketdata: {
