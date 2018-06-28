@@ -1,0 +1,34 @@
+extends layout
+
+block content
+  script.
+    $(document).ready(function(){
+      if(window.Lynx_Movement){
+        var alertsTable = new window.Lynx_Movement.AlertsTable();
+        alertsTable.setUrl('/ext/getlasttxs/#{min_amount}');
+        alertsTable.flagA = '#{flaga}';
+        alertsTable.flagB = '#{flagb}';
+
+        alertsTable.load();
+        setInterval(function () {     
+          alertsTable.reload();         
+        },45000);
+      }
+    });    
+  .col-xs-12.col-md-10.col-md-offset-1(style="margin-bottom: 5%")
+    .table-responsive#alerts-table
+      table.table.table-striped.table-bordered
+        colgroup
+            col(width="25%")
+            col(width="60%")
+            col(width="15%")
+        thead
+          th timestamp
+          th txid
+          th amount
+        tbody
+        tfoot
+          tr              
+            td(colspan="3")
+              p.page-info Showing 1 to 10 of 10 entries 
+              ul.pagination.pull-right

@@ -1,18 +1,22 @@
 #!/usr/bin/env node
 var debug = require('debug')('explorer');
 var settings = require('../lib/settings');
-var db = require('../lib/database');
+var helpers = require('../helpers');
 var app = require('../app');
 
 app.set('port', process.env.PORT || settings.port);
 
-var dbString = 'mongodb://' + settings.dbsettings.user;
-dbString = dbString + ':' + settings.dbsettings.password;
+var dbString = 'mongodb://';
+if(settings.dbsettings.user && settings.dbsettings.password){  
+  dbString = dbString + settings.dbsettings.user;
+  dbString = dbString + ':' + settings.dbsettings.password;
+}
 dbString = dbString + '@' + settings.dbsettings.address;
 dbString = dbString + ':' + settings.dbsettings.port;
 dbString = dbString + '/' + settings.dbsettings.database;
 
-db.connect(dbString, function() {
+helpers.connect(dbString, function() {
+  
   db.check_stats(settings.coin, function(exists) {
     if (exists == false) {
       console.log('no stats entry found, creating now..');
@@ -55,8 +59,9 @@ db.connect(dbString, function() {
       }
     }); 
   }
+});
 
-  var server = app.listen(app.get('port'), function() {
-    debug('Express server listening on port ' + server.address().port);
-  });
+let server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+  console.log('Express server listening on port ' + server.address().port);
 });

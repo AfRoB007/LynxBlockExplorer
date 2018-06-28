@@ -164,3 +164,16 @@ tr {
 	bottom: 0px;
 }
 
+/* table  start */
+.table tfoot .pagination{
+	margin:0;
+}
+.table .page-info{
+	display: inline-block;
+    margin-bottom: 0;
+    line-height: 38px;
+}
+
+.panel.extend-margin{
+	margin-bottom: 80px;
+}

@@ -5,25 +5,34 @@
   "scripts": {
     "start": "node --stack-size=10000 ./bin/cluster",
     "stop": "kill -2 $(cat tmp/cluster.pid)",
-    "test": "node ./node_modules/jasmine/bin/jasmine.js"
+    "test": "node ./node_modules/jasmine/bin/jasmine.js",
+    "build": "./node_modules/.bin/gulp",
+    "start-dev": "node ./bin/instance"
   },
   "dependencies": {
-    "express": "~4.2.0",
-    "static-favicon": "~1.0.0",
-    "morgan": "~1.0.0",
-    "cookie-parser": "~1.0.1",
+    "axios": "^0.18.0",
+    "bitcoin": "^3.0.1",
     "body-parser": "~1.0.0",
+    "co": "^4.6.0",
+    "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",
-    "jade": "~1.3.0",
-    "bitcoin-node-api": "0.1.0",
-    "request": "2.74.0",
+    "express": "~4.2.0",
     "jsonminify": "0.2.3",
-    "mongodb": "2.0.45",
-    "mongoose": "4.1.10",
-    "markdown-js": "0.0.3",
-    "qr-image": "~2.0.0"
+    "marked": "^0.4.0",
+    "mongoose": "^5.1.5",
+    "morgan": "~1.0.0",
+    "pug": "^2.0.3",
+    "qr-image": "~2.0.0",
+    "request": "^2.87.0",
+    "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
-    "jasmine": "~2.1.0"
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^3.0.0",
+    "jasmine": "^3.1.0"
   }
 }

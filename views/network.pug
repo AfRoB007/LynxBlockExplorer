@@ -1,0 +1,35 @@
+extends layout
+
+block content   
+  script.
+    $(document).ready(function(){
+      if(window.Lynx_Network){
+        var table = new window.Lynx_Network.ConnectionsTable();
+        table.load();
+      }
+    });
+  .col-md-12(style="margin-bottom: 4%")
+    .row.text-center(style='margin-bottom:15px;')
+      i #{settings.locale.net_warning}
+    .panel.panel-default
+      .panel-heading
+        strong #{settings.locale.net_connections}
+      .table-responsive#connections-table
+        table.table.table-bordered.table-striped
+          colgroup
+            col(width="25%")
+            col(width="25%")
+            col(width="25%")
+            col(width="25%")            
+          thead
+            tr
+              th.text-center #{settings.locale.net_address}
+              th.text-center #{settings.locale.net_protocol}
+              th.text-center #{settings.locale.net_subversion}
+              th.text-center #{settings.locale.net_country}
+          tbody
+          tfoot
+              tr              
+                td(colspan="5")
+                  p.page-info
+                  ul.pagination.pull-right

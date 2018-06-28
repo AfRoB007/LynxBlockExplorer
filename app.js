@@ -1,18 +1,24 @@
 var express = require('express')
   , path = require('path')
-  , bitcoinapi = require('bitcoin-node-api')
-  , favicon = require('static-favicon')
+  , bitcoinapi = require('./lib/middlewares/bitcoin-api')
+  , favicon = require('serve-favicon')
   , logger = require('morgan')
   , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
-  , settings = require('./lib/settings')
-  , routes = require('./routes/index')
+  , settings = require('./lib/settings')  
+  , homeRoutes = require('./routes/home.routes')
+  , explorerRoutes = require('./routes/explorer.routes')
   , lib = require('./lib/explorer')
-  , db = require('./lib/database')
+  , db = require('./lib/database')  
   , locale = require('./lib/locale')
+  , pug = require('pug')
+  , markdown = require('marked')
   , request = require('request');
 
 var app = express();
+
+//registering filters
+pug.filters.markdown = markdown;
 
 // bitcoinapi
 bitcoinapi.setWalletDetails(settings.wallet);
@@ -39,7 +45,7 @@ if (settings.heavy != true) {
 }
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(favicon(path.join(__dirname, settings.favicon)));
 app.use(logger('dev'));
@@ -50,59 +56,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
 app.use('/api', bitcoinapi.app);
-app.use('/', routes);
+app.use('/', homeRoutes);
+app.use('/ext',explorerRoutes);
 app.use('/ext/getmoneysupply', function(req,res){
   lib.get_supply(function(supply){
     res.send(' '+supply);
-  });
-});
-
-app.use('/ext/getaddress/:hash', function(req,res){
-  db.get_address(req.param('hash'), function(address){
-    if (address) {
-      var a_ext = {
-        address: address.a_id,
-        sent: (address.sent / 100000000),
-        received: (address.received / 100000000),
-        balance: (address.balance / 100000000).toString().replace(/(^-+)/mg, ''),
-        last_txs: address.txs,
-      };
-      res.send(a_ext);
-    } else {
-      res.send({ error: 'address not found.', hash: req.param('hash')})
-    }
-  });
-});
-
-app.use('/ext/getbalance/:hash', function(req,res){
-  db.get_address(req.param('hash'), function(address){
-    if (address) {
-      res.send((address.balance / 100000000).toString().replace(/(^-+)/mg, ''));
-    } else {
-      res.send({ error: 'address not found.', hash: req.param('hash')})
-    }
-  });
-});
-
-app.use('/ext/getdistribution', function(req,res){
-  db.get_richlist(settings.coin, function(richlist){
-    db.get_stats(settings.coin, function(stats){
-      db.get_distribution(richlist, stats, function(dist){
-        res.send(dist);
-      });
-    });
-  });
-});
-
-app.use('/ext/getlasttxs/:min', function(req,res){
-  db.get_last_txs(settings.index.last_txs, (req.params.min * 100000000), function(txs){
-    res.send({data: txs});
-  });
-});
-
-app.use('/ext/connections', function(req,res){
-  db.get_peers(function(peers){
-    res.send({data: peers});
   });
 });
 

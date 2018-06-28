@@ -1,26 +1,13 @@
 doctype html
 html
   head
-    title= settings.title
-    link(rel='stylesheet', href='/themes/#{settings.theme}/bootstrap.min.css')
-    link(rel='stylesheet', href='/vendor/jqplot/jquery.jqplot.css')
-    link(rel='stylesheet', href='//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.css')
+    title= settings.title    
     link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
-    script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
-    script(src='/vendor/jqplot/jquery.jqplot.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.dateAxisRenderer.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.ohlcRenderer.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.highlighter.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.pieRenderer.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.barRenderer.min.js')
-    script(src='/vendor/jqplot/plugins/jqplot.categoryAxisRenderer.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js')
-    script(src='//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js')  
-    script(src='//cdn.datatables.net/responsive/1.0.1/js/dataTables.responsive.js')
-    script(src='//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.js')
-    script(src='/javascripts/chart.js')
+    link(rel='stylesheet', href='/dist/css/site.min.css')
+    script(src='/dist/js/app.min.js')
+    if (active==='richlist')
+      link(rel='stylesheet', href='/vendor/jqplot/jquery.jqplot.css')
+      script(src='/dist/js/jqplot.min.js')
     script.
       $(document).ready(function(){
         $('##{active}').addClass('active');
@@ -117,7 +104,7 @@ html
                   span.menu-text #{settings.locale.menu_richlist}
             if settings.display.markets == true
               li#markets
-                a.navbar-link.loading(href='/markets/#{settings.markets.default}') 
+                a.navbar-link.loading(href='/markets/'+settings.markets.default) 
                   span.fa.fa-line-chart
                   span.menu-text #{settings.locale.menu_markets}
             if settings.display.api == true
@@ -161,7 +148,7 @@ html
               else
                label#difficulty -
         .col-md-2.col-sm-12
-          img(src='#{settings.logo}', style='margin-top:-15px;height:128px;')
+          img(src=settings.logo, style='margin-top:-15px;height:128px;')
         .col-md-2
           .panel.panel-default.hidden-sm.hidden-xs
             .panel-heading
@@ -188,7 +175,7 @@ html
       .row.text-center(style='margin-top:10px;margin-bottom:20px;')
         form.form-inline(method='post', action='/search')      
           #index-search.form-group
-            input.form-control(type='text', name='search', placeholder='#{settings.locale.ex_search_message}', style='min-width:80%;margin-right:5px;')
+            input.form-control(type='text', name='search', placeholder=settings.locale.ex_search_message, style='min-width:80%;margin-right:5px;')
             button.btn.btn-success(type='submit') #{settings.locale.ex_search_button}
     block content
     .navbar.navbar-default.navbar-fixed-bottom.hidden-xs
