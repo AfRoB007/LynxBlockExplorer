@@ -12,16 +12,19 @@ html
       $(document).ready(function(){
         $('##{active}').addClass('active');
         function update_stats(){   
-          $.ajax({url: '/ext/summary', success: function(json){
-            $("#supply").text(parseFloat(json.data[0].supply).toLocaleString('en-US', { style: 'decimal', maximumFractionDigits: 0 }));
-            $("#difficulty").text(json.data[0].difficulty);
-            $("#difficultyHybrid").text(json.data[0].difficultyHybrid);
-            $("#hashrate").text(json.data[0].hashrate);
-            $("#lastPrice").text(json.data[0].lastPrice.toFixed(8));
-            $("#lblConnections").text(json.data[0].connections + ' connections');
-            $("#lblBlockcount").text(json.data[0].blockcount + ' blocks');
-            $("#lblX1").text(' ');
-          }});
+          $.ajax({
+            url: '/ext/summary', 
+            success: function(json){
+              $("#supply").text(parseFloat(json.data[0].supply).toLocaleString('en-US', { style: 'decimal', maximumFractionDigits: 0 }));
+              $("#difficulty").text(json.data[0].difficulty);
+              $("#difficultyHybrid").text(json.data[0].difficultyHybrid);
+              $("#hashrate").text(json.data[0].hashrate);
+              $("#lastPrice").text(json.data[0].lastPrice.toFixed(8));
+              $("#lblConnections").text(json.data[0].connections + ' connections');
+              $("#lblBlockcount").text(json.data[0].blockcount + ' blocks');
+              $("#lblX1").text(' ');
+            }
+          });
         }
         $('.block-last-next').tooltip({
           animation: true,
@@ -184,17 +187,17 @@ html
           ul.nav.navbar-nav
             li.pull-left
               a#twitter-icon(href="https://twitter.com/#{settings.twitter}", target='_blank')
-                span.glyphicon.fa.fa-twitter
+                span.fa.fa-twitter
         if settings.display.facebook
           ul.nav.navbar-nav
             li.pull-left
               a#facebook-icon(href="https://www.facebook.com/#{settings.facebook}", target='_blank')
-                span.glyphicon.fa.fa-facebook
+                span.fa.fa-facebook
         if settings.display.googleplus
           ul.nav.navbar-nav
             li.pull-left
               a#googleplus-icon(href="https://plus.google.com/#{settings.googleplus}", target='_blank')
-                span.glyphicon.fa.fa-google-plus
+                span.fa.fa-google-plus
       .col-md-4
         ul.nav
           li.text-center(style='margin-left:80px;margin-right:80px;')
