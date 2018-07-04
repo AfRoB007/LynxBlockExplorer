@@ -33,7 +33,6 @@ function LastTransactionTable(){
                 pageIndex : 1,
                 pageSize : value
             };
-            console.log('init');
             _this.load();
         });
     }
@@ -76,7 +75,6 @@ function LastTransactionTable(){
         var _this = this;
         if(this.result.count>0){
             if($('#last-transactions-table tfoot .page-info').length===0){
-                console.log('create tfoot');
                 this.selector.tfoot.html('<tr><td colspan="5"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>');
                 this.selector.pageInfo = $('#last-transactions-table tfoot .page-info');
                 this.selector.pagination = $('#last-transactions-table tfoot .pagination');
