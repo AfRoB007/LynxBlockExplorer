@@ -466,4 +466,21 @@ tr {
 .panel.extend-margin{
 	margin-bottom: 80px;
 }
+
+.table-page-size label{
+	float: left;
+	text-align: left;
+	display: block;
+    width: 100%;
+	padding: 10px 0 10px 10px;
+	border-bottom: solid 1px #dddddd;
+	font-weight: normal;
+	margin-bottom: 0;
+}
+.table-page-size .form-control{
+	display: inline-block;
+    width: auto;
+	vertical-align: middle;
+	margin: 0 4px;
+}
 /*# sourceMappingURL=site.min.css.map */

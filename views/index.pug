@@ -5,6 +5,7 @@ block content
     $(document).ready(function(){
       if(window.Lynx_Explorer){
         var lastTrasaction = new window.Lynx_Explorer.LastTransactionTable();
+        lastTrasaction.init();
         lastTrasaction.load();
         setInterval(function () {     
           lastTrasaction.reload();         
@@ -26,6 +27,15 @@ block content
       .panel-heading
         strong #{settings.locale.ex_latest_transactions}
       .table-responsive
+        .table-page-size
+          label 
+            |Show  
+            select.form-control.input-sm
+              option(value="10") 10
+              option(value="25") 25
+              option(value="50") 50
+              option(value="100") 100
+            |entries
         table#last-transactions-table.table.table-bordered.table-striped
           colgroup
             col(width="8%")
@@ -41,10 +51,6 @@ block content
               th.text-center #{settings.locale.mkt_amount} (#{settings.symbol})
               th.text-center #{settings.locale.timestamp}
           tbody
-          tfoot
-            tr              
-              td(colspan="5")
-                p.page-info
-                ul.pagination.pull-right#last-txn-pagination        
+          tfoot    
       
               

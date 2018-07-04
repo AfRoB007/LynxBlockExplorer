@@ -4,11 +4,18 @@ function LastTransactionTable(){
         pageIndex : 1,
         pageSize : 10
     };
-    this.result = null;
+    this.result = {
+        count : 0,
+        data : [],
+        pageIndex : 1,
+        pageSize : 10
+    };
     this.selector = {
         tbody : $('#last-transactions-table tbody'),
+        tfoot : $('#last-transactions-table tfoot'),
         pageInfo :  $('#last-transactions-table .page-info'),
-        pagination : $('#last-txn-pagination')
+        pagination : $('#last-transactions-table tfoot .pagination'),
+        pageSize : $('.table-page-size .form-control')     
     };
 
     this.getStartIndex = function(){
@@ -18,8 +25,26 @@ function LastTransactionTable(){
         var index = (this.result.pageIndex * this.result.pageSize);
         return (index < this.result.count) ? index : this.result.count;
     }
-    this.load = function(){
+    this.createFooter = function(){
+        if(this.result.count>0){
+            this.selector.tfoot.html('<tr><td colspan="5"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>');
+        }else{
+            this.selector.tfoot.html('<tr><td class="text-center" colspan="5">No items found.</td></tr>');
+        }
+    }
+    this.init = function(){
         var _this = this;
+        this.selector.pageSize.on('change',function(e){
+            var value = +e.target.value;
+            _this.params = {
+                pageIndex : 1,
+                pageSize : value
+            };
+            _this.load();
+        });
+    }
+    this.load = function(){
+        var _this = this;               
         $.ajax({
             url: this.url,
             data : this.params,
@@ -28,6 +53,7 @@ function LastTransactionTable(){
             success: function (result) {
                 _this.result = result;
                 _this.render();
+                _this.createFooter();
                 _this.paginate();               
             }
         });
