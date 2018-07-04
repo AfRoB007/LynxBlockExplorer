@@ -96,7 +96,7 @@ function LastTransactionTable(){
                     }
                 });
                 _this.updatePageInfo();
-            },300);                           
+            },1000);                           
         }
     }
     this.updatePageInfo = function(){
