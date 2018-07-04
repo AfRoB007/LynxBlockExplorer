@@ -25,15 +25,6 @@ function LastTransactionTable(){
         var index = (this.result.pageIndex * this.result.pageSize);
         return (index < this.result.count) ? index : this.result.count;
     }
-    this.createFooter = function(){
-        if(this.result.count>0){
-            this.selector.tfoot.html('<tr><td colspan="5"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>');
-            this.selector.pageInfo = $('#last-transactions-table tfoot .page-info');
-            this.selector.pagination = $('#last-transactions-table tfoot .pagination');
-        }else{
-            this.selector.tfoot.html('<tr><td class="text-center" colspan="5">No items found.</td></tr>');
-        }
-    }
     this.init = function(){
         var _this = this;
         this.selector.pageSize.on('change',function(e){
@@ -42,6 +33,7 @@ function LastTransactionTable(){
                 pageIndex : 1,
                 pageSize : value
             };
+            console.log('init');
             _this.load();
         });
     }
@@ -52,10 +44,9 @@ function LastTransactionTable(){
             data : this.params,
             contentType: 'application/json',
             dataType: 'json',
-            success: function (result) {
+            success: function (result) {                
                 _this.result = result;
                 _this.render();
-                _this.createFooter();
                 _this.paginate();               
             }
         });
@@ -84,6 +75,12 @@ function LastTransactionTable(){
     this.paginate = function(){
         var _this = this;
         if(this.result.count>0){
+            if($('#last-transactions-table tfoot .page-info').length===0){
+                console.log('create tfoot');
+                this.selector.tfoot.html('<tr><td colspan="5"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>');
+                this.selector.pageInfo = $('#last-transactions-table tfoot .page-info');
+                this.selector.pagination = $('#last-transactions-table tfoot .pagination');
+            }
             setTimeout(function(){
                 _this.selector.pagination.twbsPagination({
                     totalPages: Math.ceil(_this.result.count / _this.result.pageSize),
@@ -96,7 +93,9 @@ function LastTransactionTable(){
                     }
                 });
                 _this.updatePageInfo();
-            },1000);                           
+            },1000);
+        }else{
+            this.selector.tfoot.html('<tr><td class="text-center" colspan="5">No items found.</td></tr>');
         }
     }
     this.updatePageInfo = function(){
