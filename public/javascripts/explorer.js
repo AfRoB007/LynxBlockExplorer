@@ -12,10 +12,10 @@ function LastTransactionTable(){
     };
     this.selector = {
         tbody : $('#last-transactions-table tbody'),
-        tfoot : $('#last-transactions-table tfoot'),
-        pageInfo :  $('#last-transactions-table .page-info'),
-        pagination : $('#last-transactions-table tfoot .pagination'),
-        pageSize : $('.table-page-size .form-control')     
+        tfoot : $('#last-transactions-table tfoot'),       
+        pageSize : $('.table-page-size .form-control'),
+        pageInfo :  null,
+        pagination : null,
     };
 
     this.getStartIndex = function(){
@@ -28,6 +28,8 @@ function LastTransactionTable(){
     this.createFooter = function(){
         if(this.result.count>0){
             this.selector.tfoot.html('<tr><td colspan="5"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>');
+            this.selector.pageInfo = $('#last-transactions-table tfoot .page-info');
+            this.selector.pagination = $('#last-transactions-table tfoot .pagination');
         }else{
             this.selector.tfoot.html('<tr><td class="text-center" colspan="5">No items found.</td></tr>');
         }
@@ -81,18 +83,20 @@ function LastTransactionTable(){
     }
     this.paginate = function(){
         var _this = this;
-        if(this.result.count>0){               
-            this.selector.pagination.twbsPagination({
-                totalPages: Math.ceil(this.result.count / this.result.pageSize),
-                onPageClick: function (event, page) {
-                    _this.params = {
-                        pageIndex : page,
-                        pageSize : _this.result.pageSize
-                    };
-                    _this.load();
-                }
-            });
-            this.updatePageInfo();
+        if(this.result.count>0){
+            setTimeout(function(){
+                _this.selector.pagination.twbsPagination({
+                    totalPages: Math.ceil(_this.result.count / _this.result.pageSize),
+                    onPageClick: function (event, page) {
+                        _this.params = {
+                            pageIndex : page,
+                            pageSize : _this.result.pageSize
+                        };
+                        _this.load();
+                    }
+                });
+                _this.updatePageInfo();
+            },300);                           
         }
     }
     this.updatePageInfo = function(){
