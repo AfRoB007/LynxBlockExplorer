@@ -50,17 +50,19 @@ function ConnectionsTable(){
     }
     this.paginate = function(){
         var _this = this;
-        this.selector.pagination.twbsPagination({
-            totalPages: Math.ceil(this.result.count / this.result.pageSize),
-            onPageClick: function (event, page) {
-                _this.params = {
-                    pageIndex : page,
-                    pageSize : _this.result.pageSize
-                };
-                _this.load();
-            }
-        });
-        this.updatePageInfo();
+        if(this.result.count>0){
+            this.selector.pagination.twbsPagination({
+                totalPages: Math.ceil(this.result.count / this.result.pageSize),
+                onPageClick: function (event, page) {
+                    _this.params = {
+                        pageIndex : page,
+                        pageSize : _this.result.pageSize
+                    };
+                    _this.load();
+                }
+            });
+            this.updatePageInfo();
+        }
     }
     this.updatePageInfo = function(){
         var info = 'Showing ' + this.getStartIndex() + ' to ' + this.getEndIndex() + ' of ' + this.result.count + ' entries';
