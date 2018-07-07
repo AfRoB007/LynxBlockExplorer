@@ -2,6 +2,43 @@ var repository = require('../data-access/explorer.repository');
 var richListRepository = require('../data-access/richlist.repository');
 var searchRepository = require('../data-access/search.repository');
 
+exports.index = (req,res) =>{
+    repository.getSummary().then(summary=>{
+        console.timeEnd(req.originalUrl);
+        res.render('explorer', {
+            active: 'explorer',
+            ...summary
+        });
+    }).catch(err=>{
+        console.log(err.message);
+        res.status(500).send(err.message);
+    });    
+};
+
+exports.latestBlocks = (req,res) =>{
+    console.time(req.originalUrl);
+    let pageIndex = 1;
+    let pageSize = 10;
+    let min = 0.00000001;
+    if(req.query.pageIndex){
+        pageIndex = parseInt(req.query.pageIndex);
+    }
+    if(req.query.pageSize){
+        pageSize = parseInt(req.query.pageSize);
+    }
+
+    repository.getLastTransactions(min,pageIndex,pageSize).then(data=>{
+        console.timeEnd(req.originalUrl);
+        console.log('data',data);
+        res.render('latest-blocks', {
+            active: 'explorer',
+            ...data
+        });
+    }).catch(err=>{
+        res.status(500).send(err.message);
+    });
+};
+
 exports.getSummary = (req,res) =>{
     console.time(req.originalUrl);
     repository.getSummary().then(summary=>{

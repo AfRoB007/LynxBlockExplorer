@@ -16,7 +16,9 @@ const handleError = (res,error)=>{
 };
 
 exports.index = (req,res) =>{
-    handleError(res,null);
+    res.render('index', {
+        active: 'index'
+    });
 };
 
 exports.network = (req,res) =>{
@@ -48,8 +50,8 @@ exports.richList = (req,res) =>{
         repository.getData().then(data=>{
             console.timeEnd(req.originalUrl);
             let { richlist:{ balance, received }, distribution:{ t_1_25, t_26_50, t_51_75, t_76_100, t_101plus  }, stats } = data;
-            res.render('richlist', {
-                active: 'richlist',
+            res.render('rich-list', {
+                active: 'explorer',
                 balance: balance,
                 received: received,
                 stats: stats,

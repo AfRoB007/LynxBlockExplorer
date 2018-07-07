@@ -12,6 +12,8 @@ var express = require('express')
   , db = require('./lib/database')  
   , locale = require('./lib/locale')
   , pug = require('pug')
+  , exphbs  = require('express-handlebars')
+  , viewHelpers = require('./helpers/view-helpers')
   , markdown = require('marked')
   , request = require('request');
 
@@ -44,8 +46,24 @@ if (settings.heavy != true) {
     'getnextrewardwhensec', 'getsupply', 'gettxoutsetinfo']);
 }
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'pug');
+//app.use(require('express-blocks'));
+
+var handlebars = exphbs.create({
+    defaultLayout: 'main',
+    helpers      : viewHelpers,
+    extname      : '.html',
+    layoutsDir: path.join(__dirname, 'views-new','layouts'),
+    partialsDir: [
+        'views-new/shared/',
+        'views-new/partials/'
+    ]
+});
+
+app.set('views', path.join(__dirname, 'views-new'));
+app.engine('html', handlebars.engine);
+app.set('view engine', 'html');
 
 app.use(favicon(path.join(__dirname, settings.favicon)));
 app.use(logger('dev'));
@@ -57,7 +75,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // routes
 app.use('/api', bitcoinapi.app);
 app.use('/', homeRoutes);
-app.use('/ext',explorerRoutes);
+app.use('/',explorerRoutes);
 app.use('/ext/getmoneysupply', function(req,res){
   lib.get_supply(function(supply){
     res.send(' '+supply);
@@ -95,6 +113,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
+        console.log('err',err);
         res.render('error', {
             message: err.message,
             error: err
