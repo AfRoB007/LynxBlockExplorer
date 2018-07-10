@@ -7,7 +7,7 @@
 					<h1>Blockchain Explorer</h1>
 				</div>
 				<div class="offset-lg-3 col-lg-6">
-					<p>Up To Block {{blockcount}}</p>
+					<p>Up To Block {{coin.General.BlockNumber}}</p>
 				</div>
 			</div>
 		</div>
@@ -51,7 +51,7 @@
 						<h5>BTC Price</h5>
 					</div>
 					<div class="text">
-						<span>3623 Satoshis</span>
+						<span>{{coinPrice}} Satoshis</span>
 					</div>
 				</div>
 			</div>
@@ -62,7 +62,7 @@
 						<h5>USD Price</h5>
 					</div>
 					<div class="text">
-						<span>$0.333</span>
+						<span>${{usdPrice}}</span>
 					</div>
 				</div>
 			</div>
@@ -73,7 +73,7 @@
 						<h5>Market Cap</h5>
 					</div>
 					<div class="text">
-						<span>$72.29 M</span>
+						<span>${{formatNumber marketCap}} M</span>
 					</div>
 				</div>
 			</div>
@@ -95,7 +95,7 @@
 						<h5>Difficulty</h5>
 					</div>
 					<div class="text">
-						<span>{{difficulty}} <i class="dark fa fa-long-arrow-up"></i></span>
+						<span>{{toFixed difficulty 1}} <i class="dark fa fa-long-arrow-up"></i></span>
 					</div>
 				</div>
 			</div>
@@ -117,7 +117,7 @@
 						<h5>Transactions Per Day</h5>
 					</div>
 					<div class="text">
-						<span>208919</span>
+						<span>{{coin.General.BlockNumber}}</span>
 					</div>
 				</div>
 			</div>

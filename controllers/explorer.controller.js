@@ -2,17 +2,29 @@ var repository = require('../data-access/explorer.repository');
 var richListRepository = require('../data-access/richlist.repository');
 var searchRepository = require('../data-access/search.repository');
 
+var co = require('co');
+var { bitcoin, cryptoCompare, db } = require('../helpers');
+
 exports.index = (req,res) =>{
-    repository.getSummary().then(summary=>{
-        console.timeEnd(req.originalUrl);
+    co(function* (){
+        let data = {
+            ... yield bitcoin.getDifficulty(),
+            hashrate : yield bitcoin.getHashRate(),
+            connections : yield bitcoin.getConnections(),
+            liteCoin : yield cryptoCompare.getLitecoin(),
+            liteCoinPrice : yield cryptoCompare.getCoinPrice('LTC','USD'),
+            coin : yield cryptoCompare.getCoin(),
+            coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC')
+        };
+        data.usdPrice = data.liteCoinPrice * data.coinPrice;
+        data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.usdPrice;
         res.render('explorer', {
             active: 'explorer',
-            ...summary
+            ...data
         });
     }).catch(err=>{
-        console.log(err.message);
         res.status(500).send(err.message);
-    });    
+    });   
 };
 
 exports.latestBlocks = (req,res) =>{

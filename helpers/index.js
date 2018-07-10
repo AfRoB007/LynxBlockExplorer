@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var bitcoin = require('./bitcoin');
+var cryptoCompare = require('./cryptoCompare');
 var lib = require('./lib');
 var coinStats = require('./db/coin-stats');
 var tx = require('./db/tx');
@@ -11,6 +12,7 @@ var heavy = require('./db/heavy');
 
 exports.lib = lib;
 exports.bitcoin = bitcoin;
+exports.cryptoCompare = cryptoCompare;
 exports.db = {
     tx,
     peers,

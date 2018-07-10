@@ -124,7 +124,7 @@
                             <div class="token-info">
                                 <div class="item">
                                     <strong>Ticker</strong>
-                                    <span>LYNX</span>
+                                    <span>{{coin.General.Symbol}}</span>
                                 </div>
                                 <div class="item">
                                     <strong>Network</strong>
@@ -132,23 +132,23 @@
                                 </div>
                                 <div class="item">
                                     <strong>Algorithm</strong>
-                                    <span>Scrypt</span>
+                                    <span>{{coin.General.Algorithm}}</span>
                                 </div>
                                 <div class="item">
                                     <strong>Block Reward</strong>
-                                    <span>1 LYNX</span>
+                                    <span>{{toFixed coin.General.BlockReward 1}} LYNX</span>
                                 </div>
                                 <div class="item">
                                     <strong>Total Supply</strong>
-                                    <span>92,000,000,000 LYNX</span>
+                                    <span>{{formatNumber coin.General.TotalCoinSupply}} LYNX</span>
                                 </div>
                                 <div class="item">
                                     <strong>Circulating Supply</strong>
-                                    <span>77,871,440,509 LYNX</span>
+                                    <span>{{formatNumber coin.General.TotalCoinsMined}} LYNX</span>
                                 </div>
                                 <div class="item">
                                     <strong>Market Cap</strong>
-                                    <span>$6,991,220</span>
+                                    <span>${{formatNumber marketCap}}</span>
                                 </div>
                             </div>
                             <!-- ***** Token Info Table End ***** -->

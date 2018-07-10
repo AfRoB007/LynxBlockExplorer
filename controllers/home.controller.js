@@ -1,11 +1,14 @@
 var { display, movement, address, api, richlist, markets,
-    genesis_tx, genesis_block, txcount } = require('../lib/settings');
+    genesis_tx, genesis_block, txcount, symbol } = require('../lib/settings');
 var repository = require('../data-access/richlist.repository');
 var marketsRepository = require('../data-access/markets.repository');
 var searchRepository = require('../data-access/search.repository');
 var rewardRepository = require('../data-access/reward.repository');
 var blockRepository = require('../data-access/block.repository');
 var txRepository = require('../data-access/tx.repository');
+
+var co = require('co');
+var { bitcoin, cryptoCompare, db } = require('../helpers');
 
 const handleError = (res,error)=>{
     res.render('index', { 
@@ -16,9 +19,21 @@ const handleError = (res,error)=>{
 };
 
 exports.index = (req,res) =>{
-    res.render('index', {
-        active: 'index'
-    });
+    co(function* (){
+        let data = {
+            liteCoinPrice : yield cryptoCompare.getCoinPrice('LTC','USD'),
+            coin : yield cryptoCompare.getCoin(),
+            coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC')
+        }
+        data.usdPrice = data.liteCoinPrice * data.coinPrice;
+        data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.usdPrice;
+        res.render('index', {
+            active: 'index',
+            ...data
+        });
+    }).catch(err=>{
+        console.log('err',err);
+    });    
 };
 
 exports.network = (req,res) =>{
@@ -48,6 +63,7 @@ exports.richList = (req,res) =>{
     if (display.richlist){
         console.time(req.originalUrl);
         repository.getData().then(data=>{
+            console.log('data',data);
             console.timeEnd(req.originalUrl);
             let { richlist:{ balance, received }, distribution:{ t_1_25, t_26_50, t_51_75, t_76_100, t_101plus  }, stats } = data;
             res.render('rich-list', {
@@ -63,7 +79,7 @@ exports.richList = (req,res) =>{
                 show_dist: richlist.distribution,
                 show_received: richlist.received,
                 show_balance: richlist.balance,
-              });
+            });
         }).catch(err=>{
             console.log('err',err);
             res.redirect('/');
