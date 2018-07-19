@@ -10,8 +10,7 @@ exports.getSummary = (req,res) =>{
             data:[summary]
         });
     }).catch(err=>{
-        console.log(err.message);
-        res.status(500).send(err.message);
+        res.status(500).send(err);
     });
 };
 
@@ -30,7 +29,7 @@ exports.getLastTransactions = (req,res) =>{
         console.timeEnd(req.originalUrl);
         res.send(data);
     }).catch(err=>{
-        res.status(500).send(err.message);
+        res.status(500).send(err);
     });
 };
 
