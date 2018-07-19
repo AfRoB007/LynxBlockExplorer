@@ -22,7 +22,17 @@ exports.db = {
 };
 
 exports.connect = (database, cb)=> {
-    mongoose.connect(database, function(err) {
+    var options = {
+      useNewUrlParser:true,
+      server: { 
+        // sets how many times to try reconnecting
+        reconnectTries: Number.MAX_VALUE,
+        // sets the delay between every retry (milliseconds)
+        reconnectInterval: 1000 
+      }
+    };
+
+    mongoose.connect(database, options, function(err) {
       if (err) {
         console.log('Unable to connect to database: %s', database);
         console.log('Aborting');
