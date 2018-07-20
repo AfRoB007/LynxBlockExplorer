@@ -3,9 +3,7 @@ var richListRepository = require('../data-access/richlist.repository');
 var searchRepository = require('../data-access/search.repository');
 
 exports.getSummary = (req,res) =>{
-    console.time(req.originalUrl);
-    repository.getSummary().then(summary=>{
-        console.timeEnd(req.originalUrl);
+    repository.getSummary().then(summary=>{        
         res.send({
             data:[summary]
         });
@@ -16,7 +14,6 @@ exports.getSummary = (req,res) =>{
 };
 
 exports.getLastTransactions = (req,res) =>{
-    console.time(req.originalUrl);
     let pageIndex = 1;
     let pageSize = 10;
     if(req.query.pageIndex){
@@ -26,8 +23,7 @@ exports.getLastTransactions = (req,res) =>{
         pageSize = parseInt(req.query.pageSize);
     }
 
-    repository.getLastTransactions(req.params.min,pageIndex,pageSize).then(data=>{
-        console.timeEnd(req.originalUrl);
+    repository.getLastTransactions(req.params.min,pageIndex,pageSize).then(data=>{        
         res.send(data);
     }).catch(err=>{
         console.log('getLastTransactions',err);
@@ -36,7 +32,6 @@ exports.getLastTransactions = (req,res) =>{
 };
 
 exports.getPeerConnections = (req,res) =>{
-    console.time(req.originalUrl);
     let pageIndex = 1;
     let pageSize = 10;
     if(req.query.pageIndex){
@@ -46,7 +41,6 @@ exports.getPeerConnections = (req,res) =>{
         pageSize = parseInt(req.query.pageSize);
     }
     repository.getPeerConnections(pageIndex,pageSize).then(data=>{
-        console.timeEnd(req.originalUrl);
         res.send(data);
     }).catch(err=>{
         res.status(500).send(err.message);
@@ -54,9 +48,7 @@ exports.getPeerConnections = (req,res) =>{
 };
 
 exports.getDistribution = (req,res) =>{
-    console.time(req.originalUrl);
-    richListRepository.getDistribution().then(distribution=>{
-        console.timeEnd(req.originalUrl);
+    richListRepository.getDistribution().then(distribution=>{        
         res.send(distribution);
     }).catch(err=>{
         res.send(err);

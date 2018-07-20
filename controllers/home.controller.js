@@ -44,9 +44,7 @@ exports.info = (req,res) =>{
 
 exports.richList = (req,res) =>{
     if (display.richlist){
-        console.time(req.originalUrl);
         repository.getData().then(data=>{
-            console.timeEnd(req.originalUrl);
             let { richlist:{ balance, received }, distribution:{ t_1_25, t_26_50, t_51_75, t_76_100, t_101plus  }, stats } = data;
             res.render('richlist', {
                 active: 'richlist',
@@ -74,9 +72,7 @@ exports.richList = (req,res) =>{
 exports.market = (req,res) =>{
     let { market } = req.params;   
     if (markets.enabled.indexOf(market) != -1) {
-        console.time(req.originalUrl);
         marketsRepository.getMarkets(market).then(data=>{
-            console.timeEnd(req.originalUrl);
             res.render('./markets/' + market, {
                 active: 'markets',
                 marketdata: {
@@ -151,9 +147,7 @@ exports.address = (req,res) =>{
 };
 
 exports.reward = (req,res) =>{
-    console.time(req.originalUrl);
     rewardRepository.getReward().then(data=>{
-        console.timeEnd(req.originalUrl);
         res.render('reward', { 
             active: 'reward', 
             ...data
@@ -164,10 +158,8 @@ exports.reward = (req,res) =>{
 };
 
 exports.block = (req,res) =>{
-    console.time(req.originalUrl);
     let hash = req.param('hash');
-    blockRepository.getBlock(hash).then(data=>{
-        console.timeEnd(req.originalUrl);            
+    blockRepository.getBlock(hash).then(data=>{        
         if(data.txs.length>0){
             res.render('block', { 
                 active: 'block', 
@@ -188,14 +180,11 @@ exports.block = (req,res) =>{
 
 
 exports.tx = (req,res) =>{
-    console.time(req.originalUrl);
     let hash = req.param('txid');
     if(hash === genesis_tx){
         return res.redirect('/block/'+hash);
     }
     txRepository.getTx(hash).then(data=>{
-        console.timeEnd(req.originalUrl);
-        console.log('tx',data); 
         res.render('tx', { 
             active: 'tx', 
             ...data

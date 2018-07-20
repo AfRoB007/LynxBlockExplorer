@@ -1,8 +1,8 @@
 var axios = require('axios');
 var settings = require('../lib/settings');
 
-const BASE_URL = 'http://127.0.0.1:' + settings.port + '/api/';
-//const BASE_URL = 'http://seed06.getlynx.io/api/';
+//const BASE_URL = 'http://127.0.0.1:' + settings.port + '/api/';
+const BASE_URL = 'http://seed06.getlynx.io/api/';
 
 exports.getDifficulty = ()=>{
     return new Promise((resolve,reject)=>{
