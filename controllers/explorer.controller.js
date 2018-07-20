@@ -1,14 +1,16 @@
 var repository = require('../data-access/explorer.repository');
 var richListRepository = require('../data-access/richlist.repository');
 var searchRepository = require('../data-access/search.repository');
+var logger = require('winston');
 
 exports.getSummary = (req,res) =>{
     repository.getSummary().then(summary=>{        
+        logger.info(summary);
         res.send({
             data:[summary]
         });
     }).catch(err=>{
-        console.log('getSummary',err);
+        logger.error(err);        
         res.status(500).send(err);
     });
 };
