@@ -112,11 +112,16 @@ function exit() {
   });
 }
 
-var dbString = 'mongodb://' + settings.dbsettings.user;
-dbString = dbString + ':' + settings.dbsettings.password;
+var dbString = 'mongodb://';
+if(settings.dbsettings.user && settings.dbsettings.password){  
+  dbString = dbString + settings.dbsettings.user;
+  dbString = dbString + ':' + settings.dbsettings.password;
+}
 dbString = dbString + '@' + settings.dbsettings.address;
 dbString = dbString + ':' + settings.dbsettings.port;
 dbString = dbString + '/' + settings.dbsettings.database;
+
+console.log('dbString',dbString);
 
 is_locked(function (exists) {
   if (exists) {

@@ -57,17 +57,15 @@
 								<td>Extracted by</td>
 							</tr>
 						</thead>
-						<tbody>
-							{{#each data}}
+						<tbody>							
 							<tr>
-								<td><a href="dark-block-explorer-address-detail.html">{{this.blockindex}}</a></td>
+								<td><a href="dark-block-explorer-address-detail.html"></a></td>
 								<td>26 minutes</td>
-								<td>1 - 0.3 kB</td>
-								<td>4.00000000 LYNX</td>
-								<td>2487.2 </td>
-								<td><a href="dark-block-explorer-address-detail.html">{{this.txid}}</a></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><a href="dark-block-explorer-address-detail.html"></a></td>
 							</tr>
-							{{/each}}
 						</tbody>
 					</table>
 				</div>
@@ -90,3 +88,15 @@
 	</div>
 </footer>
 <!-- ***** Contact & Footer End ***** -->
+<script type="text/javascript">
+	$(function(){
+		$.ajax({
+			url:'/api/latest-transactions',
+			type:'GET'		
+		}).done(function(result){
+			console.log('result',result);
+		}).catch(function(err){
+			console.log('err',err);
+		});
+	});
+</script>
