@@ -5,6 +5,7 @@ var searchRepository = require('../data-access/search.repository');
 var co = require('co');
 var { bitcoin, cryptoCompare, db } = require('../helpers');
 
+//explorer
 exports.index = (req,res) =>{
     co(function* (){
         let data = {
@@ -27,6 +28,7 @@ exports.index = (req,res) =>{
     });   
 };
 
+//latest-blocks
 exports.latestBlocks = (req,res) =>{
     co(function* (){
         let data = {           
@@ -41,6 +43,7 @@ exports.latestBlocks = (req,res) =>{
     });
 };
 
+//explorer/latest-transactions
 exports.getLatestTransactions = (req,res) =>{    
     // let pageIndex = 1;
     // let pageSize = 10;
@@ -82,6 +85,26 @@ exports.getLatestTransactions = (req,res) =>{
     // }).catch(err=>{
     //     res.status(500).send(err.message);
     // });
+};
+
+
+exports.block = (req,res) =>{
+    let { hash } = req.params;
+    co(function* (){
+        let block = yield bitcoin.getBlockByHash(hash);
+        console.log('block',block);
+        res.send(block);
+        // if(block==='There was an error. Check your console.'){
+        //     reject(new Error('Block not found: ' + hash));
+        // } else if(block !== 'There was an error. Check your console.' && hash === genesis_block){
+        //     resolve({ block, confirmations, txs : 'GENESIS' });                
+        // }else{
+        //     let txs = yield db.tx.findByTxnIds(block.tx);
+        //     resolve({ block, confirmations, txs });                           
+        // }
+    }).catch(err=>{
+        res.status(500).send(err.message);
+    });
 };
 
 exports.getSummary = (req,res) =>{

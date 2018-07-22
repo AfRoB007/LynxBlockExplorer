@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get('/explorer', controller.index);
 router.get('/latest-blocks', controller.latestBlocks);
+router.get('/latest-blocks/block/:hash', controller.block);
 
 
 router.get('/ext/summary', controller.getSummary);

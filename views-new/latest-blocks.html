@@ -103,8 +103,9 @@
 				let table = $('.table-latests tbody');
 				let rows = '';
 				this.data.latestTxns.forEach(function(p){
+					let blockUrl = '/latest-blocks/block/'+p.blockhash;
 					let row = '<tr>';
-					row += '<td><a href="dark-block-explorer-address-detail.html">'+p.blockindex+'</a></td>';
+					row += '<td><a href="'+blockUrl+'">'+p.blockindex+'</a></td>';
 					row += '<td>'+_this._getTime(p)+'</td>';
 					row += '<td></td>';
 					row += '<td>'+_this._getValueOut(p)+' LYNX</td>';

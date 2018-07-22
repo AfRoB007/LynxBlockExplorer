@@ -7,16 +7,7 @@ var db = require('../lib/database');
 
 app.set('port', process.env.PORT || settings.port);
 
-var dbString = 'mongodb://';
-if(settings.dbsettings.user && settings.dbsettings.password){  
-  dbString = dbString + settings.dbsettings.user;
-  dbString = dbString + ':' + settings.dbsettings.password;
-}
-dbString = dbString + '@' + settings.dbsettings.address;
-dbString = dbString + ':' + settings.dbsettings.port;
-dbString = dbString + '/' + settings.dbsettings.database;
-
-helpers.connect(dbString, function() {
+helpers.connect(function() {
   
   db.check_stats(settings.coin, function(exists) {
     if (exists == false) {
