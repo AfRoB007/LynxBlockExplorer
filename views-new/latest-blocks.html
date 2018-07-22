@@ -7,7 +7,7 @@
 					<h1>Blockchain Explorer</h1>
 				</div>
 				<div class="offset-lg-3 col-lg-6">
-					<p>Up To Block 1883224</p>
+					<p>Up To Block {{coin.General.BlockNumber}}</p>
 				</div>
 			</div>
 		</div>
@@ -59,12 +59,7 @@
 						</thead>
 						<tbody>							
 							<tr>
-								<td><a href="dark-block-explorer-address-detail.html"></a></td>
-								<td>26 minutes</td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td><a href="dark-block-explorer-address-detail.html"></a></td>
+								<td class="text-center" colspan="6">Loading ...</td>
 							</tr>
 						</tbody>
 					</table>
@@ -90,13 +85,76 @@
 <!-- ***** Contact & Footer End ***** -->
 <script type="text/javascript">
 	$(function(){
-		$.ajax({
-			url:'/api/latest-transactions',
-			type:'GET'		
-		}).done(function(result){
-			console.log('result',result);
-		}).catch(function(err){
-			console.log('err',err);
-		});
+		function LatestTransactionsTable(){
+			this.data = [];
+			this.load = function(){
+				let _this = this;
+				$.ajax({
+					url:'/explorer/latest-transactions',
+					type:'GET'		
+				}).done(function(result){
+					_this.data = result;
+					_this.render();
+				});
+
+			}
+			this.render = function(){
+				let _this = this;
+				let table = $('.table-latests tbody');
+				let rows = '';
+				this.data.latestTxns.forEach(function(p){
+					let row = '<tr>';
+					row += '<td><a href="dark-block-explorer-address-detail.html">'+p.blockindex+'</a></td>';
+					row += '<td>'+_this._getTime(p)+'</td>';
+					row += '<td></td>';
+					row += '<td>'+_this._getValueOut(p)+' LYNX</td>';
+					row += '<td>'+_this.data.difficulty+'</td>';
+					row += '<td><a href="dark-block-explorer-address-detail.html">'+_this._getExtractedBy(p)+'</a></td>';
+					row +='</tr>';
+					rows += row;						
+				});
+				table.html(rows);				
+			}
+			this._getTime = function(p){
+				var date = new Date((p.timestamp) * 1000);
+				var seconds = Math.floor((new Date() - date) / 1000);
+				var interval = Math.floor(seconds / 31536000);
+				if (interval > 1) {
+					return interval + " years";
+				}
+				interval = Math.floor(seconds / 2592000);
+				if (interval > 1) {
+					return interval + " months";
+				}
+				interval = Math.floor(seconds / 86400);
+				if (interval > 1) {
+					return interval + " days";
+				}
+				interval = Math.floor(seconds / 3600);
+				if (interval > 1) {
+					return interval + " hours";
+				}
+				interval = Math.floor(seconds / 60);
+				if (interval > 1) {
+					return interval + " minutes";
+				}
+				return Math.floor(seconds) + " seconds";
+			}
+			this._getValueOut = function(p){				
+				return total = (p.total / 100000000).toFixed(8);
+			}
+			this._getExtractedBy = function(p){
+				let extractedBy = '';
+				if(p.vout.length>0){
+					extractedBy = p.vout[0].addresses;
+				}
+				return extractedBy;
+			}
+		}
+		var latestTxns = new LatestTransactionsTable();
+		latestTxns.load();
+		setInterval(function () {     
+			latestTxns.load();         
+        },60000);
 	});
 </script>
