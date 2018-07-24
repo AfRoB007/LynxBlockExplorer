@@ -63,3 +63,12 @@ exports.save = (model)=>{
         });
     });  
 };
+
+exports.removeAll = ()=>{
+    return new Promise((resolve,reject)=>{
+        Tx.remove({}, function(err, result) {
+            if(err) reject(err);
+            else resolve(result);
+        });
+    });   
+};

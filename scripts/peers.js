@@ -57,7 +57,7 @@ helpers.connect(function() {
     }else{
       console.log('Already up to date');
     }
-    process.exit(1);
+    process.exit(0);
   }).catch(err=>{
       console.log('Aborting:',err.message);
       process.exit(1);

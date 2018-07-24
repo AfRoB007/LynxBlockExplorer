@@ -9,3 +9,14 @@ exports.getCoinStats = ()=>{
         });
     });
 };
+
+exports.update = (model)=>{
+    return new Promise((resolve,reject)=>{
+        CoinStats.update({coin: coin}, model, function(err,stat) {
+            if(err) reject(err);
+            else resolve(stat);
+        });
+    });
+};
+
+

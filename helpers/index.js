@@ -1,28 +1,15 @@
 var mongoose = require('mongoose');
 var bitcoin = require('./bitcoin');
+var { db } = require('./db/index');
 var cryptoCompare = require('./cryptoCompare');
 var lib = require('./lib');
-var coinStats = require('./db/coin-stats');
-var tx = require('./db/tx');
-var peers = require('./db/peers');
-var richlist = require('./db/rich-list');
-var markets = require('./db/markets');
-var address = require('./db/address');
-var heavy = require('./db/heavy');
+
 var settings = require('../lib/settings');
 
 exports.lib = lib;
 exports.bitcoin = bitcoin;
 exports.cryptoCompare = cryptoCompare;
-exports.db = {
-  tx,
-  peers,
-  richlist,
-  coinStats,
-  markets,
-  address,
-  heavy
-};
+exports.db = db;
 
 exports.connect = (cb) => {
   var dbString = 'mongodb://';

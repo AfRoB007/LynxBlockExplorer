@@ -1,5 +1,6 @@
 var axios = require('axios');
 var settings = require('../lib/settings');
+var address = require('./db/address');
 
 //const BASE_URL = 'http://127.0.0.1:' + settings.port + '/api/';
 const BASE_URL = 'http://seed06.getlynx.io/api/';
@@ -91,42 +92,110 @@ exports.getHashRate = ()=>{
 
 exports.getConnections = ()=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getconnectioncount').then(res=>resolve(res.data)).catch(error=>reject(error));
+        axios.get(BASE_URL + 'getconnectioncount').then(res=>resolve(res.data)).catch(reject);
     });    
 };
 
 exports.getBlockByHash = (hash)=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblock?hash='+hash).then(res=>resolve(res.data)).catch(error=>reject(error));
+        axios.get(BASE_URL + 'getblock?hash='+hash).then(res=>resolve(res.data)).catch(reject);
     });
 };
 
 exports.getBlock = (height)=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblock?height='+height).then(res=>resolve(res.data)).catch(error=>reject(error));
+        axios.get(BASE_URL + 'getblock?height='+height).then(res=>resolve(res.data)).catch(reject);
     });    
 };
 
 exports.getBlockCount = ()=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblockcount').then(res=>resolve(res.data)).catch(error=>reject(error));
+        axios.get(BASE_URL + 'getblockcount').then(res=>resolve(res.data)).catch(reject);
     });    
 };
 
 exports.getBlockHash = (height)=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblockhash?height='+height).then(res=>resolve(res.data)).catch(error=>reject(error));
+        axios.get(BASE_URL + 'getblockhash?height='+height).then(res=>resolve(res.data)).catch(reject);
     });    
 };
 
 exports.getRawTransaction = (hash)=>{
     let uri = BASE_URL + 'getrawtransaction?txid=' + hash + '&decrypt=1';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(error=>reject(error));
+        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
     });
 };
 
 exports.convertToSatoshi = (amount)=> {
     let fixed = amount.toFixed(8).toString(); 
     return parseInt(fixed.replace('.', ''));
+};
+
+exports.getMaxMoney = ()=>{
+    let uri = BASE_URL + 'getmaxmoney';
+    return new Promise((resolve,reject)=>{
+        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+    });
+};
+
+exports.getMaxVote = ()=>{
+    let uri = BASE_URL + 'getmaxvote';
+    return new Promise((resolve,reject)=>{
+        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+    });
+};
+
+exports.getVote = ()=>{
+    let uri = BASE_URL + 'getvote';
+    return new Promise((resolve,reject)=>{
+        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+    });
+};
+
+exports.getPhase = ()=>{
+    let uri = BASE_URL + 'getphase';
+    return new Promise((resolve,reject)=>{
+        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+    });
+};
+
+exports.getReward = ()=>{
+    let uri = BASE_URL + 'getreward';
+    return new Promise((resolve,reject)=>{
+        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+    });
+};
+
+exports.getEstNext = ()=>{
+    let uri = BASE_URL + 'getnextrewardestimate';
+    return new Promise((resolve,reject)=>{
+        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+    });
+};
+
+exports.getNextIn = ()=>{
+    let uri = BASE_URL + 'getnextrewardwhenstr';
+    return new Promise((resolve,reject)=>{
+        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+    });
+};
+
+exports.getSupply =()=>{
+    return new Promise((resolve,reject)=>{
+        let uri = BASE_URL + 'getsupply';
+        if(settings.supply == 'HEAVY'){
+            uri = BASE_URL + 'getsupply';
+            axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+        }else if (settings.supply == 'GETINFO') {
+            uri = BASE_URL + 'getinfo';
+            axios.get(uri).then(res=>resolve(res.data.moneysupply)).catch(reject);
+        }else if (settings.supply == 'TXOUTSET') {
+            uri = BASE_URL + 'gettxoutsetinfo';
+            axios.get(uri).then(res=>resolve(res.data.total_amount)).catch(reject);           
+        }else if (settings.supply == 'BALANCES') {
+            address.balanceSupply().then(resolve).catch(reject);   
+        }
+        address.coinBaseSupply().then(resolve).catch(reject);
+    });
 };
