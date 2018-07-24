@@ -1,49 +1,34 @@
 var fs = require('fs');
-var co = require('co');
-var helpers = require('../helpers');
-var settings = require('../lib/settings');
 
-module.exports.isLocked =(database) => {
+module.exports.isLocked =() => {
     return new Promise(function (resolve) {
-        if (database == 'index') {
-            let fname = './tmp/' + database + '.pid';
-            fs.exists(fname, function (exists) {
-                resolve(exists);
-            });
-        } else {
-            resolve(false);
-        }
+        let fname = './tmp/index.pid';
+        fs.exists(fname, function (exists) {
+            resolve(exists);
+        });
     });
 };
 
-module.exports.createLock =(database) => {
-    return new Promise(function (resolve,reject) {
-        if (database == 'index') {
-            let fname = './tmp/' + database + '.pid';
-            fs.appendFile(fname, process.pid, function (err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(true);
-                }
-            });
-        } else {
-            resolve(false);
-        }
+module.exports.createLock = () => {
+    return new Promise(function (resolve, reject) {
+        let fname = './tmp/index.pid';
+        fs.appendFile(fname, process.pid, function (err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(true);
+            }
+        });
     });
 };
 
-module.exports.removeLock =(database) => {
-    return new Promise(function (resolve,reject) {
-        if (database == 'index') {
-            let fname = './tmp/' + database + '.pid';
-            fs.unlink(fname, function (err){
-                if(err) reject(err);
-                else resolve();
-            });
-        } else {
-            resolve(false);
-        }
+module.exports.removeLock = () => {
+    return new Promise(function (resolve, reject) {
+        let fname = './tmp/index.pid';
+        fs.unlink(fname, function (err) {
+            if (err) reject(err);
+            else resolve();
+        });
     });
 };
 

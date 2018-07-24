@@ -3,7 +3,8 @@ var settings = require('../lib/settings');
 var address = require('./db/address');
 
 //const BASE_URL = 'http://127.0.0.1:' + settings.port + '/api/';
-const BASE_URL = 'http://seed06.getlynx.io/api/';
+const BASE_URL = 'http://seed00.getlynx.io/api/';
+const CONSOLE_ERROR = 'There was an error. Check your console.';
 
 exports.getDifficulty = ()=>{
     return new Promise((resolve,reject)=>{
@@ -92,38 +93,62 @@ exports.getHashRate = ()=>{
 
 exports.getConnections = ()=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getconnectioncount').then(res=>resolve(res.data)).catch(reject);
+        axios.get(BASE_URL + 'getconnectioncount').then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });    
 };
 
 exports.getBlockByHash = (hash)=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblock?hash='+hash).then(res=>resolve(res.data)).catch(reject);
+        axios.get(BASE_URL + 'getblock?hash='+hash).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });
 };
 
 exports.getBlock = (height)=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblock?height='+height).then(res=>resolve(res.data)).catch(reject);
+        axios.get(BASE_URL + 'getblock?height='+height).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });    
 };
 
 exports.getBlockCount = ()=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblockcount').then(res=>resolve(res.data)).catch(reject);
+        axios.get(BASE_URL + 'getblockcount').then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });    
 };
 
 exports.getBlockHash = (height)=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblockhash?height='+height).then(res=>resolve(res.data)).catch(reject);
+        axios.get(BASE_URL + 'getblockhash?height='+height).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });    
 };
 
 exports.getRawTransaction = (hash)=>{
     let uri = BASE_URL + 'getrawtransaction?txid=' + hash + '&decrypt=1';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+        axios.get(uri).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });
 };
 
@@ -135,49 +160,77 @@ exports.convertToSatoshi = (amount)=> {
 exports.getMaxMoney = ()=>{
     let uri = BASE_URL + 'getmaxmoney';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+        axios.get(uri).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });
 };
 
 exports.getMaxVote = ()=>{
     let uri = BASE_URL + 'getmaxvote';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+        axios.get(uri).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });
 };
 
 exports.getVote = ()=>{
     let uri = BASE_URL + 'getvote';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+        axios.get(uri).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });
 };
 
 exports.getPhase = ()=>{
     let uri = BASE_URL + 'getphase';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+        axios.get(uri).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });
 };
 
 exports.getReward = ()=>{
     let uri = BASE_URL + 'getreward';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+        axios.get(uri).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });
 };
 
 exports.getEstNext = ()=>{
     let uri = BASE_URL + 'getnextrewardestimate';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+        axios.get(uri).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });
 };
 
 exports.getNextIn = ()=>{
     let uri = BASE_URL + 'getnextrewardwhenstr';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(reject);
+        axios.get(uri).then(res=>resolve(res.data))
+        .catch(err=>{
+            console.log(err.message);
+            resolve(CONSOLE_ERROR);
+        });
     });
 };
 

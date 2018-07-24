@@ -30,3 +30,7 @@ exports.connect = (cb) => {
     return cb();
   });
 };
+
+exports.disconnect = ()=>{
+  mongoose.disconnect();
+};

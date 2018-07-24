@@ -2,6 +2,8 @@ var co = require('co');
 var { db } = require('./db');
 var lib = require('./lib');
 var bitcoin = require('./bitcoin');
+var markets = require('./markets');
+var settings = require('../lib/settings');
 
 const updateDb = function(coin){
     return new Promise(function (resolve,reject) {
@@ -35,18 +37,17 @@ const updateTxnsDb =(start,end)=>{
                         last: start + index - 1,
                         last_txs: '' //not used anymore left to clear out existing objects
                     });
-                }
-                console.log('start',start,index);
+                }                
                 let blockHash = yield bitcoin.getBlockHash(start + index);
                 if(blockHash!=='There was an error. Check your console.'){                    
                     let block = yield bitcoin.getBlockByHash(blockHash);
                     if(block!=='There was an error. Check your console.'){                        
                         let txLength = block.tx.length;
-                        for(let index=0; index < txLength; index++){
-                            let txnId = block.tx[index];
+                        for(let i=0; i < txLength; i++){
+                            let txnId = block.tx[i];
                             let tx = yield db.tx.findOne(txnId);
                             if(tx===null){
-                                tx = yield saveTx(txnId);
+                                yield saveTx(txnId);                                
                             }
                         }
                     }
@@ -100,34 +101,60 @@ const updateHeavy =(height, count)=>{
     });
 };
 
+const updateMarketsDb =(market)=>{
+    return new Promise(function (resolve,reject) {
+        co(function* () {            
+            let data = yield markets.getMarketData(market);
+            if(data){
+                yield db.markets.update(market,{
+                    chartdata: JSON.stringify(data.chartdata),
+                    buys: data.buys,
+                    sells: data.sells,
+                    history: data.trades,
+                    summary: data.stats
+                });
+                if (market == settings.markets.default ) {
+                    yield db.coinStats.update({
+                        last_price: data.stats.last
+                    });                    
+                }
+            }
+            resolve();
+        }).catch(reject);
+    });
+};
+
 const saveTx = (hash)=>{
     return new Promise((resolve,reject)=>{
         co(function* (){
             let tx = yield bitcoin.getRawTransaction(hash);
-            let block = yield bitcoin.getBlockByHash(tx.blockhash);
-            if(block){                
-                console.log('tx',tx);
-                let vin = yield lib.prepare_vin(tx);                
-                let { vout, nvin } = yield lib.prepare_vout(tx.vout, hash, vin);               
-                //update vin address
-                let vinAddresses =  yield nvin.map(p=> updateAddress(p.addresses, hash, p.amount, 'vin'));                
-                //update vout address
-                let voutAddresses = yield vout.map(p=> updateAddress(p.addresses, hash, p.amount, 'vout'));
-                //calculate total
-                let total = vout.reduce((acc, p) => acc + p.amount, 0);
-                let newTx = yield db.tx.save({
-                    txid: tx.txid,
-                    vin: nvin,
-                    vout: vout,
-                    total: total.toFixed(8),
-                    timestamp: tx.time,
-                    blockhash: tx.blockhash,
-                    blockindex: block.height,
-                });                
-                resolve(newTx);
-            }else{
-                reject(new Error('Block not found: ' + tx.blockhash));
-            }     
+            if(tx==='There was an error. Check your console.'){
+                resolve();
+            }else{          
+                let block = yield bitcoin.getBlockByHash(tx.blockhash);
+                if(block){                                    
+                    let vin = yield lib.prepare_vin(tx);                
+                    let { vout, nvin } = yield lib.prepare_vout(tx.vout, hash, vin);               
+                    //update vin address
+                    let vinAddresses =  yield nvin.map(p=> updateAddress(p.addresses, hash, p.amount, 'vin'));                
+                    //update vout address
+                    let voutAddresses = yield vout.map(p=> updateAddress(p.addresses, hash, p.amount, 'vout'));
+                    //calculate total
+                    let total = vout.reduce((acc, p) => acc + p.amount, 0);
+                    let newTx = yield db.tx.save({
+                        txid: tx.txid,
+                        vin: nvin,
+                        vout: vout,
+                        total: total.toFixed(8),
+                        timestamp: tx.time,
+                        blockhash: tx.blockhash,
+                        blockindex: block.height,
+                    });                
+                    resolve(newTx);
+                }else{
+                    reject(new Error('Block not found: ' + tx.blockhash));
+                }
+            }            
         });
     });
 };
@@ -204,4 +231,5 @@ const updateAddress = (hash, txid, amount,type)=>{
 module.exports.updateDb = updateDb;
 module.exports.updateTxnsDb = updateTxnsDb;
 module.exports.updateHeavy = updateHeavy;
+module.exports.updateMarketsDb = updateMarketsDb;
 module.exports.saveTx = saveTx;

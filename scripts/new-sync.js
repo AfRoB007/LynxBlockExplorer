@@ -34,13 +34,12 @@ if (process.argv[2] == 'index') {
 
 helpers.connect(function () {
     co(function* () {
-        if(yield helper.isLocked(database)){
+        if(yield helper.isLocked()){
             console.log("Script already running ...");
         }else{
-            if(yield helper.createLock(database)){                
+            if(yield helper.createLock()){                
                 if(database==='index'){
-                    let stats = yield common.updateDb(settings.coin);
-                    console.log('update db done',mode,stats);
+                    let stats = yield common.updateDb(settings.coin);                    
                     if(stats){
                         if (settings.heavy) {
                             // update heavy stats for coin
@@ -65,7 +64,7 @@ helpers.connect(function () {
                         }else if (mode == 'check'){
                             let newStats = yield common.updateTxnsDb(1,  stats.count);
                             console.log('check complete (block: %s)', newStats.last);
-                        }else if (mode == 'update'){
+                        }else if (mode == 'update'){                            
                             let newStats = yield common.updateTxnsDb(stats.last,  stats.count);
                             yield helpers.db.richlist.updateReceivedRichlist();
                             yield helpers.db.richlist.updateBalanceRichlist();
@@ -75,20 +74,26 @@ helpers.connect(function () {
                         console.log('Run \'npm start\' to create database structures before running this script.');
                     }                 
                 }else{
-                    console.log('update markets');
+                    //update markets
+                    let markets = settings.markets.enabled;
+                    let marketsLength = markets.length;                   
+                    for (let index = 0; index < marketsLength; index++) {
+                        let market = markets[index];
+                        let isAlreadyExist = yield helpers.db.markets.isAlreadyExist(market);
+                        if(isAlreadyExist){
+                            yield common.updateMarketsDb(market);
+                            console.log('markets db updated for %s',market);
+                        }else{
+                            console.log('error: entry for %s does not exists in markets db.', market);
+                        }
+                    }
                 }
             }
         }
+        helpers.disconnect();
         process.exit(0);
     }).catch(err => {
-        console.log('Aborting:', err.message);
         console.log('Aborting:', err);
-        helper.removeLock()
-        .then(()=>{
-            process.exit(1);
-        }).catch(err=>{
-            console.log('Unable to remove lock:', err.message);
-            process.exit(1);
-        });        
+        process.exit(1);       
     });
 });
