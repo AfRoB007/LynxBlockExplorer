@@ -40,6 +40,7 @@ helpers.connect(function () {
             if(yield helper.createLock(database)){                
                 if(database==='index'){
                     let stats = yield common.updateDb(settings.coin);
+                    console.log('update db done',mode,stats);
                     if(stats){
                         if (settings.heavy) {
                             // update heavy stats for coin
@@ -81,6 +82,13 @@ helpers.connect(function () {
         process.exit(0);
     }).catch(err => {
         console.log('Aborting:', err.message);
-        process.exit(1);
+        console.log('Aborting:', err);
+        helper.removeLock()
+        .then(()=>{
+            process.exit(1);
+        }).catch(err=>{
+            console.log('Unable to remove lock:', err.message);
+            process.exit(1);
+        });        
     });
 });

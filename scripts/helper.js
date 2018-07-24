@@ -33,6 +33,20 @@ module.exports.createLock =(database) => {
     });
 };
 
+module.exports.removeLock =(database) => {
+    return new Promise(function (resolve,reject) {
+        if (database == 'index') {
+            let fname = './tmp/' + database + '.pid';
+            fs.unlink(fname, function (err){
+                if(err) reject(err);
+                else resolve();
+            });
+        } else {
+            resolve(false);
+        }
+    });
+};
+
 module.exports.usage = () => {
     console.log('Usage: node scripts/sync.js [database] [mode]');
     console.log('');
