@@ -6,6 +6,7 @@ var express = require('express')
   , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
   , settings = require('./lib/settings')  
+  , apiRoutes = require('./routes/api.routes')
   , homeRoutes = require('./routes/home.routes')
   , explorerRoutes = require('./routes/explorer.routes')
   , lib = require('./lib/explorer')
@@ -74,6 +75,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
 app.use('/api', bitcoinapi.app);
+app.use('/data', apiRoutes);
 app.use('/', homeRoutes);
 app.use('/',explorerRoutes);
 app.use('/ext/getmoneysupply', function(req,res){

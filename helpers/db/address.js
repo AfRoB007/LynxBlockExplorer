@@ -1,8 +1,13 @@
 var Address = require('../../models/address');
 var { coin } = require('../../lib/settings');
 
-exports.findAddress = (hash)=>{
-    return Address.findOne({ a_id: hash });    
+exports.findOne = (hash)=>{
+    return new Promise((resolve,reject)=>{
+        Address.findOne({ a_id: hash },function(err,address) {
+            if (err) reject(err);
+            else resolve(address);
+        });
+    });
 };
 
 exports.save = (model)=>{

@@ -8,6 +8,7 @@ var blockRepository = require('../data-access/block.repository');
 var txRepository = require('../data-access/tx.repository');
 
 var co = require('co');
+var qr = require('qr-image');
 var { bitcoin, cryptoCompare, db } = require('../helpers');
 
 const handleError = (res,error)=>{
@@ -160,12 +161,30 @@ exports.search = (req,res) =>{
 exports.address = (req,res) =>{
     let hash = req.param('hash');
     let count = req.param('count') || txcount;
-    searchRepository.getAddressAndTxns(hash,count).then(data=>{
-        data.active = 'address';
-        res.render('address', data);
+    co(function* (){
+        let data = {           
+            coin : yield cryptoCompare.getCoin()
+        };
+        res.render('address', {
+            active: 'explorer',
+            ...data,
+            hash
+        });
     }).catch(err=>{
-        handleError(res,err.message);
+        res.status(500).send(err.message);
+    });    
+};
+
+exports.getQRImage = (req,res) =>{
+    let hash = req.param('hash');
+    let address = qr.image(hash, {
+        type: 'png',
+        size: 7,
+        margin: 1,
+        ec_level: 'M'
     });
+    res.type('png');
+    address.pipe(res);
 };
 
 exports.reward = (req,res) =>{

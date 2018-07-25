@@ -9,10 +9,11 @@ router.get('/movement', controller.movement);
 router.get('/info', controller.info);
 router.get('/rich-list', controller.richList);
 router.get('/markets/:market', controller.market);
-router.get('/address/:hash/:count?', controller.address);
+router.get('/address/:hash', controller.address);
 router.get('/reward', controller.reward);
 router.get('/block/:hash', controller.block);
 router.get('/tx/:txid', controller.tx);
+router.get('/qr/:hash', controller.getQRImage);
 router.post('/search', controller.search);
 
 module.exports = router;

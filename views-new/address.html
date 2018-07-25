@@ -1,0 +1,218 @@
+<section class="block-explorer-section section bg-bottom">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="center-heading">
+					<h2 class="section-title">Details for Address</h2>
+				</div>
+			</div>
+			<div class="offset-lg-3 col-lg-6">
+				<div class="center-text">
+					<p>Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.</p>
+				</div>
+			</div>
+		</div>
+		<div class="row m-bottom-70">
+			<div class="col-lg-9 col-md-9 col-sm-12">
+				<div class="table-responsive">
+					<table class="table table-striped table-latests table-detail">
+						<tbody>
+							<tr>
+								<td>
+									<strong>Address</strong>
+								</td>
+								<td id="address_a_id"></td>
+							</tr>
+							<tr>
+								<td>
+									<strong>Hash</strong>
+								</td>
+								<td>{{hash}}</td>
+							</tr>
+							<tr>
+								<td>
+									<strong>No. Transactions</strong>
+								</td>
+								<td>64</td>
+							</tr>
+							<tr>
+								<td>
+									<strong>Balance</strong>
+								</td>
+								<td id="address_balance"></td>
+							</tr>
+							<tr>
+								<td>
+									<strong>Total Received</strong>
+								</td>
+								<td>$3,209.53</td>
+							</tr>
+							<tr>
+								<td>
+									<strong>Final Balance</strong>
+								</td>
+								<td>$2,357.27</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-12">
+				<div class="qr">
+					<img src="/qr/{{hash}}" class="img-fluid d-block mx-auto" alt="">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="center-heading">
+					<h2 class="section-title">Transactions</h2>
+				</div>
+			</div>
+			<div class="offset-lg-3 col-lg-6">
+				<div class="center-text">
+					<p>Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="table-responsive">
+					<table class="table table-striped table-txs">
+						<thead>
+							<tr>
+								<th>Hash</th>
+								<th>Block</th>
+								<th>Date/Time</th>
+								<th>Amount</th>
+								<th>Balance</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>d3e4f72db22777a3</td>
+								<td>1863796</td>
+								<td>2018-04-13 10:14:27</td>
+								<td>
+									<span class="red">- 99,999
+										<small>.99</small> LYNX</span>
+								</td>
+								<td>8,355,004
+									<small>.71</small> LYNX</td>
+							</tr>
+							<tr>
+								<td>2f04876ba83f63d6</td>
+								<td>1837529</td>
+								<td>2018-03-23 22:12:16</td>
+								<td>
+									<span class="dark">+ 99,999
+										<small>.99</small> LYNX</span>
+								</td>
+								<td>8,555,004
+									<small>.69</small> LYNX</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+	$(function(){
+		function AddressDetails(){
+			this.data = [];
+			this.load = function(){
+				let _this = this;
+				$.ajax({
+					url:'/data/address/{{hash}}',
+					type:'GET'		
+				}).done(function(result){
+					_this.data = result;
+					_this.render();
+				});
+			}
+			this.render = function(){
+				let _this = this;
+				let { address, txs } = _this.data;
+				let sent = address.sent /100000000;
+				let balance = (address.received - address.sent) / 100000000;
+				$('#address_a_id').html(address.a_id);
+				$('#address_balance').html(balance+' LYNX');
+
+				let table = $('.table-txs tbody');
+				let rows = '';
+				txs.forEach(function(p){
+					let row = '<tr>';
+					row += '<td><a href="/tx/'+p.txid+'">'+p.txid+'</a></td>';
+					row += '<td>'+p.blockindex+'</td>';
+					row += '<td>'+_this._formatUnixTime(p.timestamp)+'</td>';
+					row += '<td>'+_this._getAmount(p)+'</td>';
+					row += '<td></td>';					
+					row +='</tr>';
+					rows += row;						
+				});
+				table.append(rows);				
+			}
+			this._getAmount = function(tx){
+				let amount;
+				let out = 0;
+				tx.vout.forEach(p=>{
+					if(p.addresses === '{{hash}}'){
+						out = p.amount;
+					}
+				});
+				if(out > 0){
+					amount = out / 100000000;
+					amount = '<span class="dark">+ '+amount.toFixed(8)+'LYNX</span>';
+				}else{
+					let vin = 0;
+					tx.vin.forEach(p=>{
+						if(p.addresses === '{{hash}}'){
+							vin = p.amount;
+						}
+					});
+					amount = vin / 100000000;
+					amount = '<span class="red">- '+amount.toFixed(8)+'LYNX</span>';
+				}
+				return amount;
+			}
+			this._formatUnixTime = function (unixtime) {
+				var a = new Date(unixtime * 1000);
+				var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+				var year = a.getFullYear();
+				var month = months[a.getMonth()];
+				var date = a.getDate();
+				var hour = a.getHours();
+				var min = a.getMinutes();
+				var sec = a.getSeconds();
+				var suffix = 'th'
+				if (date == 1 || date == 21 || date == 31) {
+					suffix = 'st';
+				}
+				if (date == 2 || date == 22 || date == 32) {
+					suffix = 'nd';
+				}
+				if (date == 3 || date == 23) {
+					suffix = 'rd';
+				}
+				if (hour < 10) {
+					hour = '0' + hour;
+				}
+				if (min < 10) {
+					min = '0' + min;
+				}
+				if (sec < 10) {
+					sec = '0' + sec;
+				}
+				var time = date + suffix + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+				return time;
+    		}
+		}
+		var details = new AddressDetails();
+		details.load();
+		setInterval(function () {     
+			details.load();         
+        },60000);
+	});
+</script>
