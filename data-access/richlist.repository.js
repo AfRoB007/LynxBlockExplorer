@@ -1,13 +1,14 @@
 var co = require('co');
-var { bitcoin, db, lib } = require('../helpers');
+var { bitcoin, cryptoCompare, db, lib } = require('../helpers');
 
 exports.getData = ()=>{
     return new Promise((resolve,reject)=>{        
         co(function* getData(){            
             let stats = db.coinStats.getCoinStats();
             let richlist = db.richlist.getRichList();
+            let coin = cryptoCompare.getCoin();
 
-            let data = yield { richlist, stats };
+            let data = yield { richlist, stats, coin };
             if(data.richlist){                
                 let distribution = yield getDistributionFromRichList(data);
                 resolve({ ...data, distribution });

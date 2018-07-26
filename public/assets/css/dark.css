@@ -960,6 +960,7 @@ header
   -moz-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
+  height:60px;
 }
 
 .header-area .main-nav .dark-logo {
@@ -1286,8 +1287,9 @@ header
 }
 
 .header-area.header-sticky .logo {
-  margin-top: 10px;
+  margin: 10px 0;
 }
+
 
 .header-area.header-sticky .light-logo {
   display: none;

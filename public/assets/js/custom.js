@@ -98,15 +98,6 @@
 			var progress = $(".token-progress ul .progress-active").data('progress');
 			$(".token-progress ul .progress-active").css('width', progress);
 		}
-
-		// Rich List Progress
-		if($('.table-progress').length){
-			$(".table-latests").find(".table-progress").each(function(i){
-				$('.table-progress:eq(' +[i]+ ') .progress-line').css("width", parseInt($('.table-progress:eq(' +[i]+ ') .progress-line').data('value'),10) + parseInt(70, 10)  + '%');
-			});
-		}
-
-
 		// Roadmap Carousel Init
 		if($('.roadmap-modern-wrapper').length){
 			$('.roadmap-modern-wrapper').owlCarousel({

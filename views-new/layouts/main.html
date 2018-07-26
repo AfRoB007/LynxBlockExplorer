@@ -37,8 +37,8 @@
 					<nav class="main-nav">
 						<!-- ***** Logo Start ***** -->
 						<a href="/" class="logo">
-							<img src="/assets/images/logos/transparent-logo-dark.png" class="light-logo" alt="Lynx "/>
-							<img src="/assets/images/logos/white-logo-dark.png" class="dark-logo" alt="Lynx "/>
+							<img src="/assets/images/logos/bitcoin64.png" class="light-logo" alt="Lynx "/>
+							<img src="/assets/images/logos/bitcoin64.png" class="dark-logo" alt="Lynx "/>
 							<!--
 							<img src="assets/images/logos/white-logo-lynx.png" class="light-logo" alt="Lynx "/>
 							<img src="assets/images/logos/black-logo-lynx.png" class="dark-logo" alt="Lynx "/>
@@ -106,6 +106,7 @@
 	<!-- jQuery -->
 	<script src="/assets/js/jquery-2.1.0.min.js"></script>
 	
+	{{#ifEquals active 'explorer'}}
 	<!-- ***** Wellcome Area Start ***** -->
 	<section class="block-explorer-wrapper bg-bottom-center" id="welcome-1">
 		<div class="block-explorer text">
@@ -136,6 +137,7 @@
 		</div>	
 	</section>
 	<!-- ***** Wellcome Area End ***** -->
+	{{/ifEquals}}
 	{{{body}}}
 
 	<!-- Bootstrap -->

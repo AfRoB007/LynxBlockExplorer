@@ -62,28 +62,14 @@ exports.info = (req,res) =>{
 
 exports.richList = (req,res) =>{
     if (display.richlist){
-        console.time(req.originalUrl);
-        repository.getData().then(data=>{
-            console.log('data',data);
-            console.timeEnd(req.originalUrl);
-            let { richlist:{ balance, received }, distribution:{ t_1_25, t_26_50, t_51_75, t_76_100, t_101plus  }, stats } = data;
+        co(function* (){
+            let coin = yield cryptoCompare.getCoin();
             res.render('rich-list', {
                 active: 'explorer',
-                balance: balance,
-                received: received,
-                stats: stats,
-                dista: t_1_25,
-                distb: t_26_50,
-                distc: t_51_75,
-                distd: t_76_100,
-                diste: t_101plus,
-                show_dist: richlist.distribution,
-                show_received: richlist.received,
-                show_balance: richlist.balance,
+                coin
             });
         }).catch(err=>{
-            console.log('err',err);
-            res.redirect('/');
+            res.status(500).send(err.message);
         });
     }else{
         res.redirect('/');
@@ -158,6 +144,7 @@ exports.search = (req,res) =>{
     }
 };
 
+//address:hash
 exports.address = (req,res) =>{
     let hash = req.param('hash');
     let count = req.param('count') || txcount;
@@ -175,6 +162,7 @@ exports.address = (req,res) =>{
     });    
 };
 
+//qr:hash
 exports.getQRImage = (req,res) =>{
     let hash = req.param('hash');
     let address = qr.image(hash, {
