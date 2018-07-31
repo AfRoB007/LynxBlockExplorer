@@ -37,12 +37,16 @@ helpers.connect(function () {
         if(yield helper.isLocked()){
             console.log("Script already running ...");
         }else{
-            if(yield helper.createLock()){                
+            console.log('-----------------------------------');
+            console.log('mode:'+mode,'database:'+database);
+            if(yield helper.createLock()){
+                console.log('lock created');                
                 if(database==='index'){
                     let stats = yield common.updateDb(settings.coin);                    
                     if(stats){
                         if (settings.heavy) {
                             // update heavy stats for coin
+                            console.log('updating heavy');
                             let result = yield common.updateHeavy(stats.count, 20);
                         }
                         if (mode == 'reindex') {
@@ -60,9 +64,9 @@ helpers.connect(function () {
                             yield helpers.db.richlist.updateReceivedRichlist();
                             yield helpers.db.richlist.updateBalanceRichlist();
                             console.log('reindex complete (block: %s)', newStats.last);
-
                         }else if (mode == 'check'){
-                            let newStats = yield common.updateTxnsDb(1,  stats.count);
+                            console.log('check start ...',stats.count);                            
+                            let newStats = yield common.updateTxnsDb(1, 10);//  stats.count);
                             console.log('check complete (block: %s)', newStats.last);
                         }else if (mode == 'update'){                            
                             let newStats = yield common.updateTxnsDb(stats.last,  stats.count);
@@ -71,7 +75,7 @@ helpers.connect(function () {
                             console.log('check complete (block: %s)', newStats.last);
                         }
                     }else{
-                        console.log('Run \'npm start\' to create database structures before running this script.');
+                        throw new Error('Run \'npm start\' to create database structures before running this script.');
                     }                 
                 }else{
                     //update markets
@@ -93,7 +97,11 @@ helpers.connect(function () {
         helpers.disconnect();
         process.exit(0);
     }).catch(err => {
-        console.log('Aborting:', err);
-        process.exit(1);       
+        console.log('Aborting:', err.message);
+        helpers.disconnect();
+        helper.removeLock().then(()=>{
+            console.log('lock removed');
+        });
+        process.exit(1);
     });
 });

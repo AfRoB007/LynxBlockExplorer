@@ -2,9 +2,20 @@ var axios = require('axios');
 var settings = require('../lib/settings');
 var address = require('./db/address');
 
-//const BASE_URL = 'http://127.0.0.1:' + settings.port + '/api/';
-const BASE_URL = 'http://seed00.getlynx.io/api/';
+const BASE_URL = 'http://127.0.0.1:' + settings.port + '/api/';
+//const BASE_URL = 'http://173.255.205.35/api/';
 const CONSOLE_ERROR = 'There was an error. Check your console.';
+
+const handleError = (message,resolve,reject)=>{
+    return (err)=>{
+        console.log(message,err.message);
+        if(err.message === CONSOLE_ERROR){
+            resolve(CONSOLE_ERROR);
+        }else{
+            reject(err);
+        }
+    };
+};
 
 exports.getDifficulty = ()=>{
     return new Promise((resolve,reject)=>{
@@ -26,7 +37,7 @@ exports.getDifficulty = ()=>{
                 difficulty,
                 difficultyHybrid
             });
-        }).catch(error=>reject(error));
+        }).catch(reject);
     });
 };
 
@@ -53,7 +64,7 @@ const getHashRateFromMiningInfo =()=>{
                 }
             }
             resolve(hashRate);
-        }).catch(error=>reject(error));
+        }).catch(reject);
     });
 };
 
@@ -80,7 +91,7 @@ const getHashRateFromNetwork =()=>{
                 hashRate = (netmhashps).toFixed(4);
             }
             resolve(hashRate);
-        }).catch(error=>reject(error));
+        }).catch(reject);
     });
 };
 
@@ -94,50 +105,35 @@ exports.getHashRate = ()=>{
 exports.getConnections = ()=>{
     return new Promise((resolve,reject)=>{
         axios.get(BASE_URL + 'getconnectioncount').then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getConnections',resolve,reject));
     });    
 };
 
 exports.getBlockByHash = (hash)=>{
     return new Promise((resolve,reject)=>{
         axios.get(BASE_URL + 'getblock?hash='+hash).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getBlockByHash',resolve,reject));
     });
 };
 
 exports.getBlock = (height)=>{
     return new Promise((resolve,reject)=>{
         axios.get(BASE_URL + 'getblock?height='+height).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getBlock',resolve,reject));
     });    
 };
 
 exports.getBlockCount = ()=>{
     return new Promise((resolve,reject)=>{
         axios.get(BASE_URL + 'getblockcount').then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getBlockCount',resolve,reject));
     });    
 };
 
 exports.getBlockHash = (height)=>{
     return new Promise((resolve,reject)=>{
         axios.get(BASE_URL + 'getblockhash?height='+height).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getBlockHash',resolve,reject));
     });    
 };
 
@@ -145,10 +141,7 @@ exports.getRawTransaction = (hash)=>{
     let uri = BASE_URL + 'getrawtransaction?txid=' + hash + '&decrypt=1';
     return new Promise((resolve,reject)=>{
         axios.get(uri).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getRawTransaction',resolve,reject));
     });
 };
 
@@ -161,10 +154,7 @@ exports.getMaxMoney = ()=>{
     let uri = BASE_URL + 'getmaxmoney';
     return new Promise((resolve,reject)=>{
         axios.get(uri).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getMaxMoney',resolve,reject));
     });
 };
 
@@ -172,10 +162,7 @@ exports.getMaxVote = ()=>{
     let uri = BASE_URL + 'getmaxvote';
     return new Promise((resolve,reject)=>{
         axios.get(uri).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getMaxVote',resolve,reject));
     });
 };
 
@@ -183,10 +170,7 @@ exports.getVote = ()=>{
     let uri = BASE_URL + 'getvote';
     return new Promise((resolve,reject)=>{
         axios.get(uri).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getVote',resolve,reject));
     });
 };
 
@@ -194,10 +178,7 @@ exports.getPhase = ()=>{
     let uri = BASE_URL + 'getphase';
     return new Promise((resolve,reject)=>{
         axios.get(uri).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getPhase',resolve,reject));
     });
 };
 
@@ -205,10 +186,7 @@ exports.getReward = ()=>{
     let uri = BASE_URL + 'getreward';
     return new Promise((resolve,reject)=>{
         axios.get(uri).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getReward',resolve,reject));
     });
 };
 
@@ -216,10 +194,7 @@ exports.getEstNext = ()=>{
     let uri = BASE_URL + 'getnextrewardestimate';
     return new Promise((resolve,reject)=>{
         axios.get(uri).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getEstNext',resolve,reject));
     });
 };
 
@@ -227,10 +202,7 @@ exports.getNextIn = ()=>{
     let uri = BASE_URL + 'getnextrewardwhenstr';
     return new Promise((resolve,reject)=>{
         axios.get(uri).then(res=>resolve(res.data))
-        .catch(err=>{
-            console.log(err.message);
-            resolve(CONSOLE_ERROR);
-        });
+        .catch(handleError('bitcoin:getNextIn',resolve,reject));
     });
 };
 
@@ -252,3 +224,5 @@ exports.getSupply =()=>{
         address.coinBaseSupply().then(resolve).catch(reject);
     });
 };
+
+exports.CONSOLE_ERROR = CONSOLE_ERROR;

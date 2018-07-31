@@ -10,7 +10,7 @@ const updateDb = function(coin){
         co(function* () {
             let stats = yield db.coinStats.getCoinStats();
             if(stats){
-                let count = yield bitcoin.getBlockCount();
+                let count = yield bitcoin.getBlockCount();           
                 let supply = yield bitcoin.getSupply();
                 let connections = yield bitcoin.getConnections();
             
@@ -32,6 +32,7 @@ const updateTxnsDb =(start,end)=>{
         co(function* () {
             let length = (end - start) +1;
             for(let index=0; index < length; index++){
+                console.log('updateTxnsDb index',index);
                 if (index % 5000 === 0) {
                     let result = yield db.coinStats.update({
                         last: start + index - 1,
@@ -46,6 +47,7 @@ const updateTxnsDb =(start,end)=>{
                         for(let i=0; i < txLength; i++){
                             let txnId = block.tx[i];
                             let tx = yield db.tx.findOne(txnId);
+                            console.log('tx',txnId,tx);
                             if(tx===null){
                                 yield saveTx(txnId);                                
                             }
