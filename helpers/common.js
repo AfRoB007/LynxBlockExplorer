@@ -10,10 +10,12 @@ const updateDb = function(coin){
         co(function* () {
             let stats = yield db.coinStats.getCoinStats();
             if(stats){
-                let count = yield bitcoin.getBlockCount();           
+                let count = yield bitcoin.getBlockCount();      
+                console.log('count',count);     
                 let supply = yield bitcoin.getSupply();
+                console.log('supply',supply);   
                 let connections = yield bitcoin.getConnections();
-            
+                console.log('connections',connections); 
                 let result = yield db.coinStats.update({
                     coin,
                     count,
@@ -23,7 +25,9 @@ const updateDb = function(coin){
                 stats = yield db.coinStats.getCoinStats();
             }
             resolve(stats);
-        }).catch(reject);
+        }).catch(err=>{
+            console.log('updateDb err',err);
+        });
     });
 }
 
@@ -31,30 +35,31 @@ const updateTxnsDb =(start,end)=>{
     return new Promise(function (resolve,reject) {
         co(function* () {
             let length = (end - start) +1;
+            console.log('length',length);
             for(let index=0; index < length; index++){
-                console.log('updateTxnsDb index',index);
-                if (index % 5000 === 0) {
-                    let result = yield db.coinStats.update({
-                        last: start + index - 1,
-                        last_txs: '' //not used anymore left to clear out existing objects
-                    });
-                }                
-                let blockHash = yield bitcoin.getBlockHash(start + index);
+                // if (index % 5000 === 0) {
+                //     let result = yield db.coinStats.update({
+                //         last: start + index - 1,
+                //         last_txs: '' //not used anymore left to clear out existing objects
+                //     });
+                // }                
+                let blockHash = yield bitcoin.getBlockHash(start + index);                
                 if(blockHash!=='There was an error. Check your console.'){                    
                     let block = yield bitcoin.getBlockByHash(blockHash);
-                    if(block!=='There was an error. Check your console.'){                        
-                        let txLength = block.tx.length;
-                        for(let i=0; i < txLength; i++){
-                            let txnId = block.tx[i];
-                            let tx = yield db.tx.findOne(txnId);                            
-                            if(tx===null){
-                                console.log(`Creating tx for ${txnId}`);
-                                yield saveTx(txnId);                                
-                            }else{
-                                console.log(`Tx already exist for ${txnId}`);
-                            }
-                        }
-                    }
+                    console.log('block',start + index);
+                    // if(block!=='There was an error. Check your console.'){                        
+                    //     let txLength = block.tx.length;
+                    //     for(let i=0; i < txLength; i++){
+                    //         let txnId = block.tx[i];
+                    //         let tx = yield db.tx.findOne(txnId);                            
+                    //         if(tx===null){
+                    //             console.log(`Creating tx for ${txnId}`);
+                    //             //yield saveTx(txnId);                                
+                    //         }else{
+                    //             console.log(`Tx already exist for ${txnId}`);
+                    //         }
+                    //     }
+                    // }
                 }
             }
             let result = yield db.coinStats.update({
@@ -62,6 +67,7 @@ const updateTxnsDb =(start,end)=>{
                 last_txs: '' //not used anymore left to clear out existing objects
             });
             let stats = yield db.coinStats.getCoinStats();
+            console.log('updateTxnsDb end');
             resolve(stats);
         }).catch(reject);
     });
