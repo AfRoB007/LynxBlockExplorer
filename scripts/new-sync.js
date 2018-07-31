@@ -66,7 +66,7 @@ helpers.connect(function () {
                             console.log('reindex complete (block: %s)', newStats.last);
                         }else if (mode == 'check'){
                             console.log('check start ...',stats.count);                            
-                            let newStats = yield common.updateTxnsDb(1, 10);//  stats.count);
+                            let newStats = yield common.updateTxnsDb(1, stats.count);
                             console.log('check complete (block: %s)', newStats.last);
                         }else if (mode == 'update'){                            
                             let newStats = yield common.updateTxnsDb(stats.last,  stats.count);

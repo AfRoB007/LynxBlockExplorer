@@ -7,7 +7,7 @@ const BASE_URL = 'http://127.0.0.1:' + settings.port + '/api/';
 
 var axiosInstance = axios.create({
     baseURL : BASE_URL,
-    timeout : 1 * 60 * 1000
+    timeout : 10 * 60 * 1000
 });
 
 const CONSOLE_ERROR = 'There was an error. Check your console.';
