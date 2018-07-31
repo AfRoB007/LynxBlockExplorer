@@ -46,10 +46,12 @@ const updateTxnsDb =(start,end)=>{
                         let txLength = block.tx.length;
                         for(let i=0; i < txLength; i++){
                             let txnId = block.tx[i];
-                            let tx = yield db.tx.findOne(txnId);
-                            console.log('tx',txnId,tx);
+                            let tx = yield db.tx.findOne(txnId);                            
                             if(tx===null){
+                                console.log(`Creating tx for ${txnId}`);
                                 yield saveTx(txnId);                                
+                            }else{
+                                console.log(`Tx already exist for ${txnId}`);
                             }
                         }
                     }
@@ -154,7 +156,8 @@ const saveTx = (hash)=>{
                     });                
                     resolve(newTx);
                 }else{
-                    reject(new Error('Block not found: ' + tx.blockhash));
+                    //reject(new Error('Block not found: ' + tx.blockhash));
+                    resolve();
                 }
             }            
         });
