@@ -1,6 +1,6 @@
 var express = require('express')
   , path = require('path')
-  , bitcoinapi = require('./lib/middlewares/bitcoin-api')
+  , bitcoinapi = require('./lib/middlewares/bitcoin-core')  
   , favicon = require('serve-favicon')
   , logger = require('morgan')
   , cookieParser = require('cookie-parser')

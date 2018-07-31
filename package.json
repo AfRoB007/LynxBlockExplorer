@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bitcoin": "^3.0.1",
+    "bitcoin-core": "^2.0.0",
     "body-parser": "~1.0.0",
     "co": "^4.6.0",
     "cookie-parser": "~1.0.1",
