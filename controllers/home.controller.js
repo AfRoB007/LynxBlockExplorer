@@ -33,7 +33,7 @@ exports.index = (req,res) =>{
             ...data
         });
     }).catch(err=>{
-        console.log('err',err);
+        console.log('home err',err);
     });    
 };
 
@@ -114,7 +114,6 @@ const searchAddress = (req,res)=>{
             });
         }
     }).catch(err=>{
-        console.log('err',err);
         res.redirect('/');
     });
 };

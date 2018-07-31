@@ -11,11 +11,17 @@ exports.address = (req,res) =>{
             let addresses = address.txs.reverse().map(p=>p.addresses);
             let txs = yield db.tx.findByTxnIds(addresses);            
             res.send({
-                address,
-                txs
+                success : true,
+                data :{
+                    address,
+                    txs
+                }
             });
         }else{
-            throw new Error(hash+' not found');
+            res.send({
+                success : false,
+                error : hash+' not found'
+            });
         }
     }).catch(err=>{
         res.status(500).send(err);        

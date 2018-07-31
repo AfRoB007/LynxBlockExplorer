@@ -128,8 +128,12 @@
 					url:'/data/address/{{hash}}',
 					type:'GET'		
 				}).done(function(result){
-					_this.data = result;
-					_this.render();
+					if(result.success){
+						_this.data = result.data;
+						_this.render();
+					}else{
+						console.log('error',result);
+					}
 				});
 			}
 			this.render = function(){
