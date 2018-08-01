@@ -98,7 +98,7 @@ helpers.connect(function () {
         helper.removeLock();
         process.exit(0);
     }).catch(err => {
-        console.log('Aborting:', err.message);
+        console.log('Aborting:', err);
         helpers.disconnect();
         helper.removeLock();
         process.exit(1);

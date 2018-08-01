@@ -6,8 +6,6 @@ const https = require('https');
 
 const BASE_URL = 'http://'+settings.wallet.host+':' + settings.port + '/api/';
 
-console.log('setting.address', settings.address);
-
 let axiosInstance = axios.create({
     baseURL : BASE_URL,
     timeout : 10 * 60 * 1000,
