@@ -1,13 +1,19 @@
-var axios = require('axios');
-var settings = require('../lib/settings');
-var address = require('./db/address');
+const axios = require('axios');
+const settings = require('../lib/settings');
+const address = require('./db/address');
+const http = require('http');
+const https = require('https');
 
-const BASE_URL = 'http://127.0.0.1:' + settings.port + '/api/';
-//const BASE_URL = 'http://173.255.205.35/api';
+const BASE_URL = 'http://'+settings.wallet.host+':' + settings.port + '/api/';
 
-var axiosInstance = axios.create({
+console.log('setting.address', settings.address);
+
+let axiosInstance = axios.create({
     baseURL : BASE_URL,
-    timeout : 10 * 60 * 1000
+    timeout : 10 * 60 * 1000,
+    proxy : false,
+    httpAgent: new http.Agent({ keepAlive: true }),
+    httpsAgent: new https.Agent({ keepAlive: true })
 });
 
 const CONSOLE_ERROR = 'There was an error. Check your console.';
@@ -15,10 +21,11 @@ const CONSOLE_ERROR = 'There was an error. Check your console.';
 const handleError = (uri, message, resolve, reject)=>{
     return (err)=>{
         console.log(`${message} : ${uri} ==> ${err.message}`);
-        if(err.message === CONSOLE_ERROR){
+        if(err.message === CONSOLE_ERROR || err.code === 'ETIMEDOUT'){
             resolve(CONSOLE_ERROR);
         }else{
-            reject(err);
+            console.log('handle err:',err);
+            reject(err);            
         }
     };
 };
