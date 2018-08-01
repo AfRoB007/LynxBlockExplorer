@@ -218,8 +218,7 @@ exports.tx = (req,res) =>{
         return res.redirect('/block/'+hash);
     }
     txRepository.getTx(hash).then(data=>{
-        console.timeEnd(req.originalUrl);
-        console.log('tx',data); 
+        console.timeEnd(req.originalUrl);         
         res.render('tx', { 
             active: 'tx', 
             ...data

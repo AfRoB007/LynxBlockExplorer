@@ -91,8 +91,7 @@ exports.getLatestTransactions = (req,res) =>{
 exports.block = (req,res) =>{
     let { hash } = req.params;
     co(function* (){
-        let block = yield bitcoin.getBlockByHash(hash);
-        console.log('block',block);
+        let block = yield bitcoin.getBlockByHash(hash);        
         res.send(block);
         // if(block==='There was an error. Check your console.'){
         //     reject(new Error('Block not found: ' + hash));

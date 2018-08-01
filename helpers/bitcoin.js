@@ -22,7 +22,6 @@ const handleError = (uri, message, resolve, reject)=>{
         if(err.message === CONSOLE_ERROR || err.code === 'ETIMEDOUT'){
             resolve(CONSOLE_ERROR);
         }else{
-            console.log('handle err:',err);
             reject(err);            
         }
     };
