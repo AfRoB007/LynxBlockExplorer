@@ -41,7 +41,8 @@ const updateTxnsDb =(start,end)=>{
                 let blockHash = yield bitcoin.getBlockHash(height);                             
                 if(blockHash!=='There was an error. Check your console.'){                    
                     let block = yield bitcoin.getBlockByHash(blockHash);                    
-                    if(block!=='There was an error. Check your console.'){                        
+                    if(block!=='There was an error. Check your console.'){
+                        console.log('block', block);                        
                         let txLength = block.tx.length;
                         for(let i=0; i < txLength; i++){
                             let txnId = block.tx[i];
