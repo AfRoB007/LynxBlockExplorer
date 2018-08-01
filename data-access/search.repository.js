@@ -3,7 +3,7 @@ var { db, bitcoin, lib } = require('../helpers');
 exports.getAddress = (hash)=>{
     return new Promise((resolve,reject)=>{
         co(function* findAddress(){
-            let address = db.address.findAddress(hash);
+            let address = db.address.findOne(hash);
             resolve(yield address);
         }).catch(err=>{
             reject(err);

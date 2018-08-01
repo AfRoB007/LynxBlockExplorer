@@ -3,6 +3,7 @@ const settings = require('../lib/settings');
 const address = require('./db/address');
 const http = require('http');
 const https = require('https');
+const Decimal = require('decimal.js');
 
 const BASE_URL = 'http://'+settings.wallet.host+':' + settings.port + '/api/';
 
@@ -54,9 +55,11 @@ exports.getDifficulty = ()=>{
                     difficulty = difficulty['proof-of-stake'];
                 }
             }
+            let difficultyToFixed = new Decimal(difficulty).toFixed(6);
             resolve({
                 difficulty,
-                difficultyHybrid
+                difficultyHybrid,
+                difficultyToFixed
             });
         }).catch(reject);
     });

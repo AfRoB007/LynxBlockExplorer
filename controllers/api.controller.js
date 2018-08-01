@@ -1,6 +1,40 @@
 var { txcount } = require('../lib/settings');
 var co = require('co');
-var { db } = require('../helpers');
+var { bitcoin, cryptoCompare, db } = require('../helpers');
+
+exports.latestBlocks = (req,res) =>{    
+    let pageIndex = 1;
+    let pageSize = 10;
+    let min = 0.00000001;
+    if(req.query.pageIndex){
+        pageIndex = parseInt(req.query.pageIndex);
+    }
+    if(req.query.pageSize){
+        pageSize = parseInt(req.query.pageSize);
+    }
+    co(function* (){
+        let grid = {
+            items : yield db.tx.getLastTransactions(min, pageIndex, pageSize),
+            count : yield db.tx.getLastTransactionsCount(min),
+            ... yield bitcoin.getDifficulty(),
+            pageIndex,
+            pageSize
+        };
+        let length = grid.items.length;
+        for(let index=0; index < length; index++){
+            if(grid.items[index].vout.length>0){
+                let hash = grid.items[index].vout[0].addresses;
+                let address = yield db.address.findOne(hash);
+                if(address){
+                    grid.items[index].txsCount = address.txs.length;
+                }
+            }
+        }
+        res.send(grid);
+    }).catch(err=>{
+        res.status(500).send(err.message);
+    });
+};
 
 exports.address = (req,res) =>{
     let hash = req.param('hash');

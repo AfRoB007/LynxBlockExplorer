@@ -163,69 +163,64 @@ const saveTx = (hash)=>{
 const updateAddress = (hash, txid, amount,type)=>{
     return new Promise((resolve,reject)=>{
         co(function* (){
-            try{
-                let address = yield db.address.findAddress(hash);
-                if(address){
-                    if (hash == 'coinbase') {
-                        address = yield db.address.update(hash,{
-                            sent: address.sent + amount,
-                            balance: 0
-                        });                    
-                    }else{
-                        let tx_array = address.txs;
-                        var received = address.received;
-                        var sent = address.sent;
-                        if (type == 'vin') {
-                            sent = sent + amount;
-                        } else {
-                            received = received + amount;
-                        }          
-                        let index = address.txs.findIndex(p=> p.address === txid);
-                        //push to array
-                        if(index===-1){                    
-                            tx_array.push({addresses: txid, type: type});
-                            if ( tx_array.length > txcount ) {
-                                tx_array.shift();
-                            }
-                            address = yield db.address.update(hash,{
-                                txs: tx_array,
-                                received: received,
-                                sent: sent,
-                                balance: received - sent
-                            });
-                        }else if(index>-1 && type !== tx_array[index].type){
-                            address = yield db.address.update(hash,{
-                                txs: tx_array,
-                                received: received,
-                                sent: sent,
-                                balance: received - sent
-                            });
-                        }
-                    }
-                    resolve(address);
+            let address = yield db.address.findOne(hash);
+            if(address){
+                if (hash == 'coinbase') {
+                    address = yield db.address.update(hash,{
+                        sent: address.sent + amount,
+                        balance: 0
+                    });                    
                 }else{
-                    if(type==='vin'){
-                        address = yield db.address.save({
-                            a_id: hash,
-                            txs: [ { addresses: txid, type } ],
-                            sent: amount,
-                            balance: amount,
+                    let tx_array = address.txs;
+                    var received = address.received;
+                    var sent = address.sent;
+                    if (type == 'vin') {
+                        sent = sent + amount;
+                    } else {
+                        received = received + amount;
+                    }          
+                    let index = address.txs.findIndex(p=> p.address === txid);
+                    //push to array
+                    if(index===-1){                    
+                        tx_array.push({addresses: txid, type: type});
+                        if ( tx_array.length > settings.txcount ) {
+                            tx_array.shift();
+                        }
+                        address = yield db.address.update(hash,{
+                            txs: tx_array,
+                            received: received,
+                            sent: sent,
+                            balance: received - sent
                         });
-                    }else{
-                        address = yield db.address.save({
-                            a_id: hash,
-                            txs: [ {addresses: txid, type: 'vout'} ],
-                            received: amount,
-                            balance: amount,
+                    }else if(index>-1 && type !== tx_array[index].type){
+                        address = yield db.address.update(hash,{
+                            txs: tx_array,
+                            received: received,
+                            sent: sent,
+                            balance: received - sent
                         });
                     }
-                    resolve(address);
                 }
-            }catch(err){
-                //resolve null
-                resolve(null);
+                resolve(address);
+            }else{
+                if(type==='vin'){
+                    address = yield db.address.save({
+                        a_id: hash,
+                        txs: [ { addresses: txid, type } ],
+                        sent: amount,
+                        balance: amount,
+                    });
+                }else{
+                    address = yield db.address.save({
+                        a_id: hash,
+                        txs: [ {addresses: txid, type: 'vout'} ],
+                        received: amount,
+                        balance: amount,
+                    });
+                }
+                resolve(address);
             }
-        });
+        }).catch(reject);
     });
 };
 

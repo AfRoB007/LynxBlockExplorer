@@ -15,6 +15,4 @@ router.get('/ext/getdistribution', controller.getDistribution);
 router.get('/ext/getaddress/:hash', controller.getAddress);
 router.get('/ext/getbalance/:hash', controller.getBalance);
 
-router.get('/explorer/latest-transactions', controller.getLatestTransactions);
-
 module.exports = router;

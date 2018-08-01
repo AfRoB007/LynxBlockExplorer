@@ -14,6 +14,6 @@ router.get('/reward', controller.reward);
 router.get('/block/:hash', controller.block);
 router.get('/tx/:txid', controller.tx);
 router.get('/qr/:hash', controller.getQRImage);
-router.post('/search', controller.search);
+router.get('/search', controller.search);
 
 module.exports = router;

@@ -20,10 +20,10 @@
 							<tr>
 								<td>Block Height</td>
 								<td>Age</td>
-								<td>Transactions</td>
-								<td>Value Out</td>
+								<td>Block Time</td>
+								<td>Transactions</td>								
 								<td>Difficulty</td>
-								<td>Extracted by</td>
+								<td>Miner reward address</td>
 							</tr>
 						</thead>
 						<tbody>							
@@ -31,6 +31,7 @@
 								<td class="text-center" colspan="6">Loading ...</td>
 							</tr>
 						</tbody>
+						<tfoot></tfoot>
 					</table>
 				</div>
 			</div>
@@ -53,19 +54,61 @@
 <!-- ***** Contact & Footer End ***** -->
 <script type="text/javascript">
 	$(function(){
-		function LatestTransactionsTable(){
-			this.data = [];
+		function Grid(){
+			this.data = null;
+			this.url = '/data/latest-blocks';
+			this.params = {
+				pageIndex : 1,
+				pageSize : 25
+			};
+			this.selector = {
+				tbody : $('.table-latests tbody'),
+				tfoot : $('.table-latests tfoot'),       
+				pageSize : $('.table-latests .form-control'),
+				pageInfo :  null,
+				pagination : null,
+			};
+			this.getStartIndex = function(){
+        		return ((this.data.pageIndex - 1) * this.data.pageSize) + 1;
+    		}
+			this.getEndIndex = function(){
+				var index = (this.data.pageIndex * this.data.pageSize);
+				return (index < this.data.count) ? index : this.data.count;
+			}
+			this.init = function(){
+				var _this = this;
+				this.selector.pageSize.on('change',function(e){
+					var value = +e.target.value;
+					_this.params = {
+						pageIndex : 1,
+						pageSize : value
+					};
+					_this.load();
+				});
+				_this.load();
+			}
 			this.load = function(){
 				let _this = this;
 				$.ajax({
-					url:'/explorer/latest-transactions',
+					url: this.url,
+					data : this.params,
+					contentType: 'application/json',
+            		dataType: 'json',					
 					type:'GET'		
 				}).done(function(result){
 					_this.data = result;
 					_this.render();
+					_this.paginate();
+					_this.tooltip();
 				});
-
 			}
+			this.reload = function(){
+				this.params = {
+					pageIndex : 1,
+					pageSize : 25
+				};
+        		this.load();
+    		}
 			this.render = function(){
 				let _this = this;
 				let table = $('.table-latests tbody');
@@ -73,16 +116,48 @@
 				this.data.items.forEach(function(p){
 					let blockUrl = '/address/'+_this._getExtractedBy(p);
 					let row = '<tr>';
-					row += '<td><a href="'+blockUrl+'">'+p.blockindex+'</a></td>';
+					row += '<td><a href="/block/'+p.blockhash+'">'+p.blockindex+'</a></td>';
 					row += '<td>'+_this._getTime(p)+'</td>';
 					row += '<td></td>';
-					row += '<td>'+_this._getValueOut(p)+' LYNX</td>';
-					row += '<td>'+_this.data.difficulty+'</td>';
-					row += '<td><a href="dark-block-explorer-address-detail.html">'+_this._getExtractedBy(p)+'</a></td>';
+					row += '<td>'+p.txsCount||0+'</td>';
+					row += '<td data-toggle="tooltip" title="'+_this.data.difficulty+'">'+_this.data.difficultyToFixed+'</td>';
+					row += '<td><a href="'+blockUrl+'">'+_this._getExtractedBy(p)+'</a></td>';
 					row +='</tr>';
 					rows += row;						
 				});
 				table.html(rows);				
+			}
+			this.paginate = function(){
+				var _this = this;
+				if(this.data.count>0){
+					if($('.table-latests tfoot .page-info').length===0){
+						this.selector.tfoot.html('<tr><td colspan="6"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>');
+						this.selector.pageInfo = $('.table-latests tfoot .page-info');
+						this.selector.pagination = $('.table-latests tfoot .pagination');
+					}
+					setTimeout(function(){
+						_this.selector.pagination.twbsPagination({
+							totalPages: Math.ceil(_this.data.count / _this.data.pageSize),
+							onPageClick: function (event, page) {
+								_this.params = {
+									pageIndex : page,
+									pageSize : _this.data.pageSize
+								};
+								_this.load();
+							}
+						});
+						_this.updatePageInfo();
+					},1000);
+				}else{
+					this.selector.tfoot.html('<tr><td class="text-center" colspan="6">No items found.</td></tr>');
+				}
+    		}
+			this.updatePageInfo = function(){
+				var info = 'Showing ' + this.getStartIndex() + ' to ' + this.getEndIndex() + ' of ' + this.data.count + ' entries';
+				this.selector.pageInfo.html(info);
+			}
+			this.tooltip = function(){
+				$('[data-toggle="tooltip"]').tooltip(); 
 			}
 			this._getTime = function(p){
 				var date = new Date((p.timestamp) * 1000);
@@ -109,9 +184,6 @@
 				}
 				return Math.floor(seconds) + " seconds";
 			}
-			this._getValueOut = function(p){				
-				return total = (p.total / 100000000).toFixed(8);
-			}
 			this._getExtractedBy = function(p){
 				let extractedBy = '';
 				if(p.vout.length>0){
@@ -120,10 +192,10 @@
 				return extractedBy;
 			}
 		}
-		var latestTxns = new LatestTransactionsTable();
-		latestTxns.load();
+		var grid = new Grid();
+		grid.init();
 		setInterval(function () {     
-			latestTxns.load();         
+			grid.reload();     
         },60000);
 	});
 </script>

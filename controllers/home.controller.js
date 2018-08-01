@@ -1,11 +1,12 @@
 var { display, movement, address, api, richlist, markets,
-    genesis_tx, genesis_block, txcount, symbol } = require('../lib/settings');
+    genesis_tx, genesis_block, txcount, confirmations, txcount } = require('../lib/settings');
 var repository = require('../data-access/richlist.repository');
 var marketsRepository = require('../data-access/markets.repository');
 var searchRepository = require('../data-access/search.repository');
 var rewardRepository = require('../data-access/reward.repository');
 var blockRepository = require('../data-access/block.repository');
 var txRepository = require('../data-access/tx.repository');
+var Decimal = require('decimal.js');
 
 var co = require('co');
 var qr = require('qr-image');
@@ -99,26 +100,59 @@ exports.market = (req,res) =>{
     }
 };
 
-const searchAddress = (req,res)=>{
-    let { search } = req.body;
-    searchRepository.getAddress(search).then(address=>{
-        if (address) {
-            res.redirect('/address/' + address.a_id);
-        } else {
-            searchRepository.getBlockHash(search).then(hash=>{
-                if (hash != 'There was an error. Check your console.') {
-                    res.redirect('/block/' + hash);
-                } else {
-                    handleError(res,null);
-                }
-            });
+// const searchAddress = (req,res)=>{
+//     let { search } = req.body;
+//     searchRepository.getAddress(search).then(address=>{
+//         if (address) {
+//             res.redirect('/address/' + address.a_id);
+//         } else {
+//             searchRepository.getBlockHash(search).then(hash=>{
+//                 if (hash != 'There was an error. Check your console.') {
+//                     res.redirect('/block/' + hash);
+//                 } else {
+//                     handleError(res,null);
+//                 }
+//             });
+//         }
+//     }).catch(err=>{
+//         res.redirect('/');
+//     });
+// };
+
+//search
+exports.search = (req,res)=>{
+    let { q: search } = req.query;    
+    co(function* (){
+        if(search.length===64){
+            if(search === genesis_tx) {
+                return res.redirect('/block/' + genesis_block);
+            }            
+            let block = yield bitcoin.getBlockByHash(search);
+            if(block !== bitcoin.CONSOLE_ERROR){
+                return res.redirect('/block/'+search);
+            }
         }
+        let txn = yield db.tx.findOne(search);
+        if(txn){
+            return res.redirect('/tx/'+search);
+        }
+        let blockHash = yield bitcoin.getBlockHash(search);
+        console.log('hash',search,blockHash);
+        if(blockHash !== bitcoin.CONSOLE_ERROR){            
+            return res.redirect('/block/'+blockHash);
+        }
+        let address = yield db.address.findOne(search);        
+        if(address){
+            return res.redirect('/address/' + address.a_id);
+        }
+        resolve(yield txn);
     }).catch(err=>{
-        res.redirect('/');
+        console.log('err',err);
     });
 };
 
-exports.search = (req,res) =>{
+//search
+exports.search1 = (req,res) =>{
     let { search } = req.body;
     if(search.length === 64){
         if(search === genesis_tx) {
@@ -190,24 +224,44 @@ exports.reward = (req,res) =>{
 exports.block = (req,res) =>{
     console.time(req.originalUrl);
     let hash = req.param('hash');
-    blockRepository.getBlock(hash).then(data=>{
-        console.timeEnd(req.originalUrl);            
-        if(data.txs.length>0){
-            res.render('block', { 
-                active: 'block', 
-                ...data
-            });
+    co(function* (){
+        let block = yield bitcoin.getBlockByHash(hash);
+        let txs = null;
+        if(block !== bitcoin.CONSOLE_ERROR && hash === genesis_block){
+            txs = 'GENESIS';
         }else{
-            blockRepository.createTxs(data.block).then(data=>{                
-                res.render('block', { 
-                    active: 'block', 
-                    ...data
-                });
-            });
+            txs = yield db.tx.findByTxnIds(block.tx);            
         }
+        block.difficultyToFixed = new Decimal(block.difficulty).toFixed(6);
+        console.log('confirm',block.confirmations,confirmations);
+        res.render('block', { 
+            active: 'explorer', 
+            block, 
+            confirmations, 
+            txs
+        });
     }).catch(err=>{
-        handleError(res,err.message);
+        console.log(err);
     });
+
+    // blockRepository.getBlock(hash).then(data=>{
+    //     console.timeEnd(req.originalUrl);            
+    //     if(data.txs.length>0){
+    //         res.render('block', { 
+    //             active: 'block', 
+    //             ...data
+    //         });
+    //     }else{
+    //         blockRepository.createTxs(data.block).then(data=>{                
+    //             res.render('block', { 
+    //                 active: 'block', 
+    //                 ...data
+    //             });
+    //         });
+    //     }
+    // }).catch(err=>{
+    //     handleError(res,err.message);
+    // });
 };
 
 

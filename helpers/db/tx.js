@@ -13,6 +13,7 @@ exports.getLastTransactions = (min, pageIndex, pageSize)=>{
         .sort({_id: 'desc'})
         .skip((pageSize * pageIndex) - pageSize)
         .limit(pageSize)
+        .lean(true)
         .exec(function(err, items) {
             if(err) reject(err);
             else resolve(items);

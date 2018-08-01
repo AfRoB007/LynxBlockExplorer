@@ -44,30 +44,6 @@ exports.latestBlocks = (req,res) =>{
 };
 
 //explorer/latest-transactions
-exports.getLatestTransactions = (req,res) =>{    
-    let pageIndex = 1;
-    let pageSize = 10;
-    let min = 0.00000001;
-    if(req.query.pageIndex){
-        pageIndex = parseInt(req.query.pageIndex);
-    }
-    if(req.query.pageSize){
-        pageSize = parseInt(req.query.pageSize);
-    }
-    co(function* (){
-        let grid = {
-            items : yield db.tx.getLastTransactions(min, pageIndex, pageSize),
-            count : yield db.tx.getLastTransactionsCount(min),
-            ... yield bitcoin.getDifficulty(),
-            pageIndex,
-            pageSize
-        };
-        res.send(grid);
-    }).catch(err=>{
-        res.status(500).send(err.message);
-    });
-};
-
 
 exports.block = (req,res) =>{
     let { hash } = req.params;
