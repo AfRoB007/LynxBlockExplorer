@@ -30,9 +30,9 @@ const handleError = (uri, message, resolve, reject)=>{
 
 const handleSuccess = (uri, message, resolve, reject)=>{
     return (res)=>{
-        console.log(`${message} : ${uri}`);
-        console.log(uri,data);
-        let data = res.data;        
+        console.log(`${message} : ${uri}`);        
+        let data = res.data;
+        console.log(uri,':',data);
         if(data.name==='RpcError'){
             resolve(CONSOLE_ERROR);
         }else{
