@@ -17,6 +17,7 @@
     "co": "^4.6.0",
     "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",
+    "decimal.js": "^10.0.1",
     "express": "~4.2.0",
     "express-handlebars": "^3.0.0",
     "jsonminify": "0.2.3",

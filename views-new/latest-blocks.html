@@ -70,7 +70,7 @@
 				let _this = this;
 				let table = $('.table-latests tbody');
 				let rows = '';
-				this.data.latestTxns.forEach(function(p){
+				this.data.items.forEach(function(p){
 					let blockUrl = '/address/'+_this._getExtractedBy(p);
 					let row = '<tr>';
 					row += '<td><a href="'+blockUrl+'">'+p.blockindex+'</a></td>';
