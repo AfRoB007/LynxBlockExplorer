@@ -24,6 +24,7 @@
 								<td colspan="4" class="text-center">Loading ...</td>
 							</tr>
 						</tbody>
+						<tfoot></tfoot>
 					</table>
 				</div>
 			</div>
@@ -40,7 +41,11 @@
 								<th class="text-center">%</th>
 							</tr>
 						</thead>
-						<tbody></tbody>
+						<tbody>
+							<tr>
+								<td class="text-center" colspan="3">Loading ...</td>
+							</tr>
+						</tbody>
 					</table>
 				</div>
 				<canvas id="chart" width="400" height="400"></canvas>				
@@ -53,7 +58,25 @@
 <script type="text/javascript">
 	$(function(){
 		function RichList(){
-			this.data = null;			
+			this.data = null;
+			this.pagination = {
+				pageIndex : 1,
+				pageSize : 25,
+				count : 0
+			};
+			this.selector = {
+				tbody : $('.table-latests tbody'),
+				tfoot : $('.table-latests tfoot'),
+				pageInfo :  null,
+				pagination : null,
+			};
+			this.getStartIndex = function(){
+        		return ((this.pagination.pageIndex - 1) * this.pagination.pageSize) + 1;
+    		}
+			this.getEndIndex = function(){
+				var index = (this.pagination.pageIndex * this.pagination.pageSize);
+				return (index < this.pagination.count) ? index : this.pagination.count;
+			}		
 			this.load = function(){
 				let _this = this;
 				$.ajax({
@@ -61,27 +84,31 @@
 					type:'GET'		
 				}).done(function(result){
 					_this.data = result;
+					_this.pagination.count = _this.data.richlist.balance.length;
 					_this.render();
 					_this.makeProgress();
 					_this.renderDistribution();
-					_this.renderChart();
+					_this.renderChart();					
+					_this.paginate();
 				});
 			}
 			this.render = function(){
 				let _this = this;
-				let items = _this.data.richlist.balance;				
-				let table = $('.table-latests tbody');
+				let items = _this.data.richlist.balance;			
 				let rows = '';
-				items.forEach(function(p,index){
+				var index = (_this.pagination.pageSize * _this.pagination.pageIndex) - _this.pagination.pageSize;			
+				var length = _this.pagination.pageSize * _this.pagination.pageIndex;				
+				for(index; index < length; index++){
+					var p = items[index];
 					let row = '<tr>';
 					row += '<td>'+(index+1)+'</td>';
 					row += '<td><a href="/address/'+p.a_id+'">'+p.a_id+'</a></td>';
 					row += '<td>'+(p.balance/100000000).toFixed(8)+'</td>';				
 					row += '<td>'+_this._getPercentOfCoins(p)+'</td>';							
 					row +='</tr>';
-					rows += row;						
-				});
-				table.html(rows);				
+					rows += row;
+				}
+				this.selector.tbody.html(rows);				
 			}
 			this.renderDistribution = function(){				
 				var tableBody = $('.table-distribution tbody');
@@ -144,6 +171,32 @@
 						}
 					}
 				});
+			}
+			this.paginate = function(){
+				var _this = this;
+				if(this.pagination.count>0){
+					if($('.table-latests tfoot .page-info').length===0){
+						this.selector.tfoot.html('<tr><td colspan="4"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>');
+						this.selector.pageInfo = $('.table-latests tfoot .page-info');
+						this.selector.pagination = $('.table-latests tfoot .pagination');
+					}
+					setTimeout(function(){
+						_this.selector.pagination.twbsPagination({
+							totalPages: Math.ceil(_this.pagination.count / _this.pagination.pageSize),							
+							onPageClick: function (event, page) {
+								_this.pagination.pageIndex = page;
+								_this.render();
+							}
+						});
+						_this.updatePageInfo();
+					},1000);
+				}else{
+					this.selector.tfoot.html('<tr><td class="text-center" colspan="3">No items found.</td></tr>');
+				}
+    		}
+			this.updatePageInfo = function(){
+				var info = 'Showing ' + this.getStartIndex() + ' to ' + this.getEndIndex() + ' of ' + this.pagination.count + ' entries';
+				this.selector.pageInfo.html(info);
 			}
 			this.makeProgress = function(){
 				$(".table-latests").find(".table-progress").each(function(i){

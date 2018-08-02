@@ -2872,6 +2872,10 @@ block explorer
 .block-explorer-section .table tbody span.green {
   color: #23A236;
 }
+.block-explorer-section .table tfoot .page-info{
+  float: left;
+  line-height: 38px;
+}
 
 .block-explorer-section .qr {
   border: 1px solid #CEE1F8;
