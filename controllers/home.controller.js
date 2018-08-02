@@ -221,8 +221,7 @@ exports.reward = (req,res) =>{
     });
 };
 
-exports.block = (req,res) =>{
-    console.time(req.originalUrl);
+exports.block = (req,res) =>{    
     let hash = req.param('hash');
     co(function* (){
         let block = yield bitcoin.getBlockByHash(hash);
@@ -232,8 +231,7 @@ exports.block = (req,res) =>{
         }else{
             txs = yield db.tx.findByTxnIds(block.tx);            
         }
-        block.difficultyToFixed = new Decimal(block.difficulty).toFixed(6);
-        console.log('confirm',block.confirmations,confirmations);
+        block.difficultyToFixed = new Decimal(block.difficulty).toFixed(6);        
         res.render('block', { 
             active: 'explorer', 
             block, 
@@ -266,18 +264,70 @@ exports.block = (req,res) =>{
 
 
 exports.tx = (req,res) =>{
-    console.time(req.originalUrl);
     let hash = req.param('txid');
-    if(hash === genesis_tx){
-        return res.redirect('/block/'+hash);
-    }
-    txRepository.getTx(hash).then(data=>{
-        console.timeEnd(req.originalUrl);         
-        res.render('tx', { 
-            active: 'tx', 
-            ...data
-        });
+    co(function* (){
+        let tx = yield db.tx.findOne(hash);
+        if(tx){
+            let blockcount = yield bitcoin.getBlockCount();
+            res.render('tx', { 
+                active: 'explorer', 
+                tx, 
+                confirmations, 
+                blockcount
+            }); 
+        }else{
+            let rtx = yield bitcoin.getRawTransaction(hash);
+            if (rtx.txid) {
+                let vin = yield lib.prepare_vin(rtx);  
+                let { rvout, rvin } = yield lib.prepare_vout(rtx.vout, rtx.txid, vin);
+                let total = rvout.reduce((acc, p) => acc + p.amount, 0);
+                
+                let utx = {
+                    txid: rtx.txid,
+                    vin: rvin,
+                    vout: rvout,
+                    total: total.toFixed(8),
+                    timestamp: rtx.time                        
+                };
+                if (!rtx.confirmations > 0) {
+                    utx.blockhash = '-';
+                    utx.blockindex = -1;
+                    res.render('tx', { 
+                        active: 'explorer', 
+                        tx: utx, 
+                        confirmations, 
+                        blockcount:-1
+                    });
+                }else{
+                    utx.blockhash = rtx.blockhash;
+                    utx.blockindex =  rtx.blockheight;
+                    
+                    let blockcount = yield bitcoin.getBlockCount();
+                    res.render('tx', { 
+                        active: 'explorer', 
+                        tx: utx, 
+                        confirmations, 
+                        blockcount
+                    });
+                }
+            }else{
+                res.status(500).send(new Error('Txn not found '+hash));
+            }
+        }
     }).catch(err=>{
-        handleError(res,err.message);
+        reject(err);
     });
+
+    // if(hash === genesis_tx){
+    //     return res.redirect('/block/'+hash);
+    // }
+    // txRepository.getTx(hash).then(data=>{
+    //     console.timeEnd(req.originalUrl);         
+    //     res.render('tx', { 
+    //         active: 'tx', 
+    //         ...data
+    //     });
+    // }).catch(err=>{
+    //     handleError(res,err.message);
+    // });
 };

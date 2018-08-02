@@ -46,11 +46,19 @@ exports.findOne = (txnId)=>{
 
 exports.findByTxnIds = (txnIds)=>{
     return new Promise((resolve,reject)=>{
-        Tx.find({ txid: {
-            $in : txnIds
-        }}, (err,data)=>{
+        Tx
+        .find({
+            txid: {
+                $in : txnIds
+            }
+        })
+        .sort({
+            blockindex: 'desc'
+        })        
+        .lean(true)
+        .exec(function(err, items) {
             if(err) reject(err);
-            else resolve(data);
+            else resolve(items);
         });
     });
 }

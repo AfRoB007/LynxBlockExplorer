@@ -80,37 +80,15 @@
 				<div class="table-responsive">
 					<table class="table table-striped table-txs">
 						<thead>
-							<tr>
-								<th>Hash</th>
+							<tr>								
 								<th>Block</th>
+								<th>Hash</th>
 								<th>Date/Time</th>
 								<th>Amount</th>
 								<th>Balance</th>
 							</tr>
 						</thead>
 						<tbody>
-							<!-- <tr>
-								<td>d3e4f72db22777a3</td>
-								<td>1863796</td>
-								<td>2018-04-13 10:14:27</td>
-								<td>
-									<span class="red">- 99,999
-										<small>.99</small> LYNX</span>
-								</td>
-								<td>8,355,004
-									<small>.71</small> LYNX</td>
-							</tr>
-							<tr>
-								<td>2f04876ba83f63d6</td>
-								<td>1837529</td>
-								<td>2018-03-23 22:12:16</td>
-								<td>
-									<span class="dark">+ 99,999
-										<small>.99</small> LYNX</span>
-								</td>
-								<td>8,555,004
-									<small>.69</small> LYNX</td>
-							</tr> -->
 						</tbody>
 					</table>
 				</div>
@@ -131,8 +109,7 @@
 					if(result.success){
 						_this.data = result.data;
 						_this.render();
-					}else{
-						console.log('error',result);
+						_this.tooltip();
 					}
 				});
 			}
@@ -148,18 +125,26 @@
 				let table = $('.table-txs tbody');
 				let rows = '';
 				txs.forEach(function(p){
+					let amount = _this._getAmount(p);
 					let row = '<tr>';
-					row += '<td><a href="/tx/'+p.txid+'">'+p.txid.substring(48,p.txid.length)+'</a></td>';
 					row += '<td>'+p.blockindex+'</td>';
+					row += '<td><a data-toggle="tooltip" title="'+p.txid+'" href="/tx/'+p.txid+'">'+p.txid.substring(0,5)+'</a></td>';					
 					row += '<td>'+_this._formatUnixTime(p.timestamp)+'</td>';
-					row += '<td>'+_this._getAmount(p)+'</td>';
-					row += '<td></td>';					
+					row += '<td data-toggle="tooltip" title="'+amount.actual+'">'+amount.fixed+'</td>';
+					row += '<td></td>';
 					row +='</tr>';
-					rows += row;						
+					rows += row;
 				});
-				table.append(rows);				
+				table.html(rows);				
+			}
+			this.tooltip = function(){
+				$('[data-toggle="tooltip"]').tooltip(); 
 			}
 			this._getAmount = function(tx){
+				let data = {
+					actual : null,
+					fixed : null
+				};
 				let amount;
 				let out = 0;
 				tx.vout.forEach(p=>{
@@ -168,8 +153,9 @@
 					}
 				});
 				if(out > 0){
-					amount = out / 100000000;
-					amount = '<span class="dark">+ '+amount.toFixed(8)+' LYNX</span>';
+					amount = out/100000000;
+					data.actual = amount.toFixed(8);
+					data.fixed = '<span class="dark">+ '+amount.toFixed(4)+'</span>';
 				}else{
 					let vin = 0;
 					tx.vin.forEach(p=>{
@@ -177,10 +163,11 @@
 							vin = p.amount;
 						}
 					});
-					amount = vin / 100000000;
-					amount = '<span class="red">- '+amount.toFixed(8)+'LYNX</span>';
+					amount = vin/100000000;
+					data.actual = amount.toFixed(8);
+					data.fixed = '<span class="red">- '+amount.toFixed(4)+'</span>';
 				}
-				return amount;
+				return data;
 			}
 			this._formatUnixTime = function (unixtime) {
 				var a = new Date(unixtime * 1000);
