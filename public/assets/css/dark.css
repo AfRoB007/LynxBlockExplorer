@@ -2796,47 +2796,47 @@ block explorer
   padding-top: 130px;
 }
 
-.block-explorer-section .table-latests {
+.block-explorer-section .table{
   background: #fff;
   border: 1px solid #CEE1F8;
 }
 
-.block-explorer-section .table-latests.table-detail td {
+.block-explorer-section .table.table-detail td {
   padding: 10px 30px;
 }
 
-.block-explorer-section .table-latests.table-detail strong {
+.block-explorer-section .table.table-detail strong {
   font-weight: 600;
   font-size: 14px;
   color: #3B566E;
   letter-spacing: 1px;
 }
 
-.block-explorer-section .table-latests td {
+.block-explorer-section .table td {
   padding: 15px 15px;
   border-top: 1px solid #CEE1F8;
 }
 
-.block-explorer-section .table-latests thead {
+.block-explorer-section .table thead {
   font-weight: 600;
   font-size: 14px;
   color: #3B566E;
   letter-spacing: 1px;
 }
 
-.block-explorer-section .table-latests tbody {
+.block-explorer-section .table tbody {
   font-weight: 400;
   font-size: 14px;
   color: #3B566E;
   letter-spacing: 0.78px;
 }
 
-.block-explorer-section .table-latests tbody a {
+.block-explorer-section .table tbody a {
   color: #256592;
 }
 
-.block-explorer-section .table-latests tbody .table-progress {
-  width: 200px;
+.block-explorer-section .table tbody .table-progress {
+  width: 100px;
   height: 15px;
   position: relative;
   background: #D7DEE4;
@@ -2846,7 +2846,7 @@ block explorer
   margin-top: 5px;
 }
 
-.block-explorer-section .table-latests tbody .table-progress .progress-line {
+.block-explorer-section .table tbody .table-progress .progress-line {
   position: absolute;
   width: 0%;
   height: 15px;
@@ -2856,7 +2856,7 @@ block explorer
   border-radius: 100px;
 }
 
-.block-explorer-section .table-latests tbody .table-progress span {
+.block-explorer-section .table tbody .table-progress span {
   position: absolute;
   font-weight: 700;
   font-size: 10px;
@@ -2865,11 +2865,11 @@ block explorer
   top: -1px;
 }
 
-.block-explorer-section .table-latests tbody span.red {
+.block-explorer-section .table tbody span.red {
   color: #c7254e;
 }
 
-.block-explorer-section .table-latests tbody span.green {
+.block-explorer-section .table tbody span.green {
   color: #23A236;
 }
 

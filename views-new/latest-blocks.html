@@ -5,12 +5,7 @@
 				<div class="center-heading">
 					<h2 class="section-title">Latest Blocks</h2>
 				</div>
-			</div>
-			<div class="offset-lg-3 col-lg-6">
-				<div class="center-text">
-					<p>Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.</p>
-				</div>					
-			</div>
+			</div>			
 		</div>			
 		<div class="row">
 			<div class="col-lg-12">
@@ -39,19 +34,6 @@
 	</div>
 </section>
 
-<!-- ***** Contact & Footer Start ***** -->
-<footer id="contact">
-	<div class="footer-bottom slim">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<p class="copyright">2018 © Lynx - Core Development</p>
-				</div>
-			</div>
-		</div>
-	</div>
-</footer>
-<!-- ***** Contact & Footer End ***** -->
 <script type="text/javascript">
 	$(function(){
 		function Grid(){
@@ -110,7 +92,7 @@
         		this.load();
     		}
 			this.render = function(){
-				let _this = this;
+				let _this = this;				
 				let table = $('.table-latests tbody');
 				let rows = '';
 				this.data.items.forEach(function(p){

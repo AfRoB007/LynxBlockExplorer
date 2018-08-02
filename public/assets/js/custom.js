@@ -1,10 +1,12 @@
 (function ($) {
 	"use strict";
-
-
+	
 	$(document).ready(function(){
-
 		welcome();
+
+		setInterval(function(){
+			getCoinDetails();
+		},15000);
 
 		// Menu Dropdown Toggle
 		if($('.menu-trigger').length){
@@ -141,7 +143,6 @@
 
 	});
 
-
 	// Page loading animation
 	$(window).load(function(){
 		$(".loading-wrapper").animate({
@@ -161,8 +162,6 @@
 		});
 	});
 
-
-
 	// Header Scrolling Set White Background
 	$(window).scroll(function() {
 		var width = $(window).width();
@@ -180,12 +179,10 @@
 		}
 	});
 
-
 	// Window resize setting
 	$(window).resize(function(){
 		welcome();
 	});
-
 
 	// Welcome area height settings
 	function welcome() {
@@ -204,4 +201,14 @@
 		}
 	}
 
+	function getCoinDetails(){
+		$.ajax({
+			url: '/data/coin-details',			
+			contentType: 'application/json',
+			dataType: 'json',					
+			type:'GET'		
+		}).done(function(coin){
+			$('#block_number').html(coin.General.BlockNumber);
+		});
+	}
 })(jQuery);

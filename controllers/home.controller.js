@@ -1,4 +1,4 @@
-var { display, movement, address, api, show_sent_received, markets,
+var { movement, address, api, show_sent_received, markets,
     genesis_tx, genesis_block, txcount, confirmations, txcount } = require('../lib/settings');
 var marketsRepository = require('../data-access/markets.repository');
 var rewardRepository = require('../data-access/reward.repository');
@@ -51,17 +51,19 @@ exports.latestBlocks = (req,res) =>{
 exports.block = (req,res) =>{    
     let hash = req.param('hash');
     co(function* (){
-        let block = yield bitcoin.getBlockByHash(hash);
+        let data = {
+            coin : yield cryptoCompare.getCoin(),
+            block : yield bitcoin.getBlockByHash(hash)
+        };
         let txs = null;
-        if(block !== bitcoin.CONSOLE_ERROR && hash === genesis_block){
+        if(data.block !== bitcoin.CONSOLE_ERROR && hash === genesis_block){
             txs = 'GENESIS';
         }else{
-            txs = yield db.tx.findByTxnIds(block.tx);            
+            txs = yield db.tx.findByTxnIds(data.block.tx);            
         }
-        block.difficultyToFixed = new Decimal(block.difficulty).toFixed(6);        
-        res.render('block', { 
-            active: 'explorer', 
-            block, 
+        data.block.difficultyToFixed = new Decimal(data.block.difficulty).toFixed(6);        
+        res.render('block', {             
+            ...data, 
             confirmations, 
             txs
         });
@@ -108,10 +110,12 @@ exports.address = (req,res) =>{
 exports.tx = (req,res) =>{
     let hash = req.param('txid');
     co(function* (){
+        let coin = yield cryptoCompare.getCoin();
         let tx = yield db.tx.findOne(hash);
-        if(tx){
+        if(tx){            
             let blockcount = yield bitcoin.getBlockCount();
             res.render('tx', {
+                coin,
                 tx, 
                 confirmations, 
                 blockcount
@@ -134,6 +138,7 @@ exports.tx = (req,res) =>{
                     utx.blockhash = '-';
                     utx.blockindex = -1;
                     res.render('tx', {
+                        coin,
                         tx: utx, 
                         confirmations, 
                         blockcount:-1
@@ -143,7 +148,8 @@ exports.tx = (req,res) =>{
                     utx.blockindex =  rtx.blockheight;
                     
                     let blockcount = yield bitcoin.getBlockCount();
-                    res.render('tx', {                         
+                    res.render('tx', {   
+                        coin,                      
                         tx: utx, 
                         confirmations, 
                         blockcount
@@ -204,18 +210,14 @@ exports.search = (req,res)=>{
 
 //richlist
 exports.richList = (req,res) =>{
-    if (display.richlist){
-        co(function* (){
-            let coin = yield cryptoCompare.getCoin();
-            res.render('rich-list', {                
-                coin
-            });
-        }).catch(err=>{
-            res.status(500).send(err.message);
+    co(function* (){
+        let coin = yield cryptoCompare.getCoin();
+        res.render('rich-list', {                
+            coin
         });
-    }else{
-        res.redirect('/');
-    }
+    }).catch(err=>{
+        res.status(500).send(err.message);
+    });
 };
 
 exports.market = (req,res) =>{

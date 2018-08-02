@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Lynx</title>
+	<title>Lynx Blockchain Explorer</title>
 	<meta name="description" content="Lynx (LYNX) is a secure cryptocurrency with fast transaction speeds and low-transaction fees." />
 	<meta name="keywords" content="lynx, bitcoin, ethereum, monero, ico, token, free token, btc, eth" />
 	<meta name="author" content="tempload"/>
@@ -76,7 +76,10 @@
 						<ul class="nav">
 							<li><a href="/">EXPLORER</a></li>
 							<li><a href="/latest-blocks">LATEST BLOCKS</a></li>
-							<li><a href="/rich-list">RICH LIST</a></li>
+							<li><a href="/rich-list">TOP 100</a></li>
+							<li><a href="/network">NETWORK</a></li>
+							<li><a href="/markets">MARKETS</a></li>
+							<li><a href="/info">API</a></li>
 							<!--<li><a href="#" class="btn-nav-box">SIGN UP</a></li>-->
 						</ul>
 						<a class='menu-trigger'>
@@ -98,10 +101,10 @@
 			<div class="container text-center">
 				<div class="row">
 					<div class="col-lg-12 align-self-center">
-						<h1>Blockchain Explorer</h1>
+						<h1>Lynx Blockchain Explorer</h1>
 					</div>
 					<div class="offset-lg-3 col-lg-6">
-						<p>Up To Block {{coin.General.BlockNumber}}</p>
+						<p>Up To Block <span id="block_number">{{coin.General.BlockNumber}}</span></p>
 					</div>
 				</div>
 			</div>
@@ -125,6 +128,19 @@
 	</section>
 	<!-- ***** Wellcome Area End ***** -->
 	{{{body}}}
+
+	<!-- ***** Contact & Footer Start ***** -->
+	<footer id="contact">
+		<div class="footer-bottom slim">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<p class="copyright">2018 © Lynx - Core Development</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 
 	<!-- Bootstrap -->
 	<script src="/assets/js/popper.js"></script>

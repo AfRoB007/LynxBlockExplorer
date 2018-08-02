@@ -6,14 +6,9 @@
 					<h2 class="section-title">Rich List</h2>
 				</div>
 			</div>
-			<div class="offset-lg-3 col-lg-6">
-				<div class="center-text">
-					<p>Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.</p>
-				</div>					
-			</div>
 		</div>			
 		<div class="row">
-			<div class="col-lg-12">
+			<div class="col-lg-8">
 				<div class="table-responsive">
 					<table class="table table-striped table-latests">
 						<thead>
@@ -21,39 +16,44 @@
 								<td>Rank</td>
 								<td>Address</td>
 								<td>Amount</td>
-								<td>Percent of coins</td>
-								<td>Last Change</td>
+								<td>Percent</td>								
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td colspan="5" class="text-center">Loading ...</td>
+								<td colspan="4" class="text-center">Loading ...</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
+			<div class="col-lg-4">
+				<div class="table-responsive">
+					<table class="table table-bordered table-distribution">
+						<thead>
+							<tr>
+								<th colspan="3">Wealth Distribution</th>
+							</tr>
+							<tr>
+								<th></th>
+								<th>Amount (LYNX)</th>
+								<th class="text-center">%</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+				<canvas id="chart" width="400" height="400"></canvas>				
+			</div>
 		</div>
 	</div>
 </section>
 
-<!-- ***** Contact & Footer Start ***** -->
-<footer id="contact">
-	<div class="footer-bottom slim">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<p class="copyright">2018 © Lynx - Core Development</p>
-				</div>
-			</div>
-		</div>
-	</div>
-</footer>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 <script type="text/javascript">
 	$(function(){
 		function RichList(){
-			this.data = [];
+			this.data = null;			
 			this.load = function(){
 				let _this = this;
 				$.ajax({
@@ -62,8 +62,9 @@
 				}).done(function(result){
 					_this.data = result;
 					_this.render();
-					console.log(_this.data);
 					_this.makeProgress();
+					_this.renderDistribution();
+					_this.renderChart();
 				});
 			}
 			this.render = function(){
@@ -76,12 +77,73 @@
 					row += '<td>'+(index+1)+'</td>';
 					row += '<td><a href="/address/'+p.a_id+'">'+p.a_id+'</a></td>';
 					row += '<td>'+(p.balance/100000000).toFixed(8)+'</td>';				
-					row += '<td>'+_this._getPercentOfCoins(p)+'</td>';
-					row += '<td></td>';			
+					row += '<td>'+_this._getPercentOfCoins(p)+'</td>';							
 					row +='</tr>';
 					rows += row;						
 				});
 				table.html(rows);				
+			}
+			this.renderDistribution = function(){				
+				var tableBody = $('.table-distribution tbody');
+				var dist = this.data.distribution;
+				var items = [ dist.top_1_25, dist.top_26_50, dist.top_51_75, dist.top_76_100 ];
+				var rows = '';
+				var total = 0;
+				items.forEach(function(p,index){
+					total += parseFloat(p.percent);
+					rows += '<tr>';
+					rows += '<td><i style="color:'+p.bgColor+'" class="fa fa-square mr-1"></i>'+p.label+'</td>';
+					rows += '<td>'+parseFloat(p.total).toFixed(4)+'</td>';
+					rows += '<td class="text-right">'+parseFloat(p.percent).toFixed(2)+'</td>';
+					rows += '</tr>';
+				});
+				rows += '<tr>';
+				rows += '<td>Total</td>';
+				rows += '<td></td>';
+				rows += '<td class="text-right">'+total.toFixed(2)+'</td>';
+				rows += '</tr>';
+
+				var p = dist.top_100_plus;
+				rows += '<tr>';
+				rows += '<td><i style="color:'+p.bgColor+'" class="fa fa-square mr-1"></i>'+p.label+'</td>';
+				rows += '<td>'+parseFloat(p.total).toFixed(4)+'</td>';
+				rows += '<td class="text-right">'+parseFloat(p.percent).toFixed(2)+'</td>';
+				rows += '</tr>';
+
+				tableBody.html(rows);
+			}
+			this.renderChart = function(){
+				var dist = this.data.distribution;
+				var items = [ dist.top_1_25, dist.top_26_50, dist.top_51_75, dist.top_76_100, dist.top_100_plus ];
+				var data = [];
+				var labels = [];
+				var backgroundColor = [];
+				var borderColor = [];
+				items.forEach(function(p){
+					data.push(parseFloat(p.percent).toFixed(2));
+					backgroundColor.push(p.bgColor);
+					borderColor.push(p.bgColor);
+					labels.push(p.label);
+				});
+
+				var ctx = document.getElementById("chart").getContext('2d');
+				var myDoughnutChart = new Chart(ctx, {
+    				type: 'doughnut',
+    				data: {
+						datasets: [{
+							data: data,
+							backgroundColor: backgroundColor,
+							borderColor: borderColor,
+            				borderWidth: 1
+						}],
+						labels: labels
+					},
+					options:{
+						legend:{
+							display : false
+						}
+					}
+				});
 			}
 			this.makeProgress = function(){
 				$(".table-latests").find(".table-progress").each(function(i){
