@@ -8,15 +8,12 @@ var express = require('express')
   , settings = require('./lib/settings')  
   , apiRoutes = require('./routes/api.routes')
   , homeRoutes = require('./routes/home.routes')
-  , explorerRoutes = require('./routes/explorer.routes')
-  , lib = require('./lib/explorer')
-  , db = require('./lib/database')  
+  , lib = require('./lib/explorer')  
   , locale = require('./lib/locale')
   , pug = require('pug')
   , exphbs  = require('express-handlebars')
   , viewHelpers = require('./helpers/view-helpers')
-  , markdown = require('marked')
-  , request = require('request');
+  , markdown = require('marked');
 
 var app = express();
 
@@ -77,7 +74,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', bitcoinapi.app);
 app.use('/data', apiRoutes);
 app.use('/', homeRoutes);
-app.use('/',explorerRoutes);
 app.use('/ext/getmoneysupply', function(req,res){
   lib.get_supply(function(supply){
     res.send(' '+supply);

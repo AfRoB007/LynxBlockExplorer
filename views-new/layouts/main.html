@@ -72,27 +72,13 @@
 						</div>
 						<!-- ***** Lang End ***** -->
 
-						<!-- ***** Menu Start ***** -->
-						{{#ifEquals active 'index'}}
+						<!-- ***** Menu Start ***** -->												
 						<ul class="nav">
-							<li><a href="#what-is-ico">ABOUT</a></li>
-							<li><a href="#roadmap">ROADMAP</a></li>
-							<li><a href="#apps">WALLET</a></li>
-							<li><a href="explorer">EXPLORER</a></li>
-							<li><a href="#team">TEAM</a></li>
-							<li><a href="#faq">FAQ</a></li>
-							<li><a href="#contact">CONTACT</a></li>
-							<!--<li><a href="#" class="btn-nav-box">SIGN UP</a></li>-->
-						</ul>
-						{{/ifEquals}}
-						{{#ifEquals active 'explorer'}}
-						<ul class="nav">
-							<li><a href="/explorer">BLOCKCHAIN HOME</a></li>
+							<li><a href="/">EXPLORER</a></li>
 							<li><a href="/latest-blocks">LATEST BLOCKS</a></li>
 							<li><a href="/rich-list">RICH LIST</a></li>
 							<!--<li><a href="#" class="btn-nav-box">SIGN UP</a></li>-->
 						</ul>
-						{{/ifEquals}}
 						<a class='menu-trigger'>
 							<span>Menu</span>
 						</a>
@@ -106,7 +92,6 @@
 	<!-- jQuery -->
 	<script src="/assets/js/jquery-2.1.0.min.js"></script>
 	
-	{{#ifEquals active 'explorer'}}
 	<!-- ***** Wellcome Area Start ***** -->
 	<section class="block-explorer-wrapper bg-bottom-center" id="welcome-1">
 		<div class="block-explorer text">
@@ -139,7 +124,6 @@
 		</div>	
 	</section>
 	<!-- ***** Wellcome Area End ***** -->
-	{{/ifEquals}}
 	{{{body}}}
 
 	<!-- Bootstrap -->

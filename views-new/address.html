@@ -40,18 +40,18 @@
 									<strong>Balance</strong>
 								</td>
 								<td id="address_balance"></td>
-							</tr>
+							</tr>							
 							<tr>
 								<td>
 									<strong>Total Received</strong>
 								</td>
-								<td>$3,209.53</td>
+								<td id="address_received"></td>
 							</tr>
 							<tr>
 								<td>
 									<strong>Final Balance</strong>
 								</td>
-								<td>$2,357.27</td>
+								<td></td>
 							</tr>
 						</tbody>
 					</table>
@@ -114,13 +114,15 @@
 				});
 			}
 			this.render = function(){
-				let _this = this;
+				let _this = this;				
 				let { address, txs } = _this.data;
 				let sent = address.sent /100000000;
-				let balance = (address.received - address.sent) / 100000000;
+				let received = address.received / 100000000;
+				let balance =(address.balance / 100000000).toString().replace(/(^-+)/mg, '');
 				$('#address_a_id').html(address.a_id);
 				$('#address_balance').html(balance+' LYNX');
 				$('#address_txs_count').html(txs.length);
+				$('#address_received').html('$ '+received.toFixed(4));
 
 				let table = $('.table-txs tbody');
 				let rows = '';
