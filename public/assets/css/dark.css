@@ -3085,3 +3085,34 @@ footer .footer-bottom .copyright {
     text-align: center;
   }
 }
+
+/*** document page start ***/
+.doc-section{
+  padding: 30px;
+  background: #fff;
+  border: solid 1px #f9f9f9;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.doc-section .doc-header .title{
+  font-weight: 400;
+  font-size: 30px;
+  color: #3B566E;
+  letter-spacing: 1.30px;
+  line-height: 40px;  
+}
+.doc-section .doc-header .sub-title{
+  font-style:italic;
+  margin-bottom: 10px;
+}
+.doc-section .doc-body .name{
+  font-weight:bold;
+}
+.doc-section .doc-body .description{  
+}
+.doc-section .doc-body .link{
+  color:#3399f3;
+}
+
+/*** document page end ***/

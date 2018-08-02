@@ -8,14 +8,6 @@ var co = require('co');
 var qr = require('qr-image');
 var { bitcoin, cryptoCompare, db } = require('../helpers');
 
-const handleError = (res,error)=>{
-    res.render('index', { 
-        active: 'home', 
-        error: error, 
-        warning: null
-    });
-};
-
 //index
 exports.index = (req,res) =>{
     co(function* (){
@@ -264,19 +256,19 @@ exports.network = (req,res) =>{
     });
 };
 
+//api
+exports.info = (req,res) =>{
+    res.render('info', {       
+        address: address, 
+        hashes: api
+    });
+};
+
 exports.movement = (req,res) =>{
     res.render('movement', {
         active: 'movement', 
         flaga: movement.low_flag, 
         flagb: movement.high_flag, 
         min_amount: movement.min_amount
-    });
-};
-
-exports.info = (req,res) =>{
-    res.render('info', { 
-        active: 'info', 
-        address: address, 
-        hashes: api
     });
 };
