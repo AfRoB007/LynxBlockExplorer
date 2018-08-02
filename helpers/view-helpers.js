@@ -19,6 +19,10 @@ exports.toFixed = function(value, fractionDigits=2) {
     return value.toFixed(fractionDigits);
 };
 
+exports.toAmount = function(value, fractionDigits=2) {        
+    return (value/100000000).toFixed(fractionDigits);
+};
+
 exports.toKB = function(value, fractionDigits=2) {    
     if(typeof value === 'string'){
         return new Decimal(value).dividedBy(1024).toFixed(fractionDigits);

@@ -13,13 +13,15 @@
                         <table class="table table-striped table-latests table-detail">
                             <thead>
                                 <tr>
-                                    <td colspan="7">
+                                    <td>
                                         {{#ifNotEquals block.previousblockhash null}}
                                         <a href="/block/{{block.previousblockhash}}"><i class="fa fa-arrow-left"></i></a>
                                         {{/ifNotEquals}}
-                                        LYNX block: {{block.hash}}
+                                    </td>
+                                    <td colspan="5">LYNX block: {{block.hash}}</td>
+                                    <td>
                                         {{#ifNotEquals block.nextblockhash null}}
-                                        <a href="/block/{{block.nextblockhash}}"><i class="fa fa-arrow-right"></i></a>
+                                        <a class="pull-right" href="/block/{{block.nextblockhash}}"><i class="fa fa-arrow-right"></i></a>
                                         {{/ifNotEquals}}
                                     </td>
                                 </tr>

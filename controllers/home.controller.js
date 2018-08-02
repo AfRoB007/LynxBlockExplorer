@@ -223,9 +223,7 @@ exports.richList = (req,res) =>{
 exports.market = (req,res) =>{
     let { market } = req.params;   
     if (markets.enabled.indexOf(market) != -1) {
-        console.time(req.originalUrl);
-        marketsRepository.getMarkets(market).then(data=>{
-            console.timeEnd(req.originalUrl);
+        marketsRepository.getMarkets(market).then(data=>{            
             res.render('./markets/' + market, {
                 active: 'markets',
                 marketdata: {
@@ -243,10 +241,8 @@ exports.market = (req,res) =>{
     }
 };
 
-exports.reward = (req,res) =>{
-    console.time(req.originalUrl);
-    rewardRepository.getReward().then(data=>{
-        console.timeEnd(req.originalUrl);
+exports.reward = (req,res) =>{    
+    rewardRepository.getReward().then(data=>{        
         res.render('reward', { 
             active: 'reward', 
             ...data

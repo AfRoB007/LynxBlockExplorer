@@ -35,7 +35,7 @@
                                     <td>{{blockcount}}</td>
                                     <td><a href="/block/{{tx.blockhash}}">{{tx.blockhash}}</a></td>
                                     <td>{{toUnixTime tx.timestamp}}</td>
-                                    <td><a href="/tx/{{tx.txid}}"><i class="fa fa-eye"></i></a></td>                                    
+                                    <td><a href="/block/{{tx.blockhash}}"><i class="fa fa-eye"></i></a></td>                                    
                                 </tr>
                             </tbody>
                         </table>
@@ -47,18 +47,35 @@
                     <table class="table table-striped table-latests table-detail">
                         <thead>
                             <tr>
-                                <th>Input Addresses
+                                <th>
+                                    Input Addresses
                                     <i class="pull-right fa fa-arrow-right"></i>
                                 </th>
                             </tr>
                             <tr>
-                                <th>Address</th>
+                                {{#ifEquals tx.vin.0.addresses 'coinbase'}}
+                                    <th colspan="2" class="text-center">Address</th>
+                                {{/ifEquals}}
+                                {{#ifNotEquals tx.vin.0.addresses 'coinbase'}}
+                                    <th>Address</th>
+                                    <th>Amount</th>
+                                {{/ifNotEquals}}                                                                
                             </tr>
                         </thead>
                         <tbody>
+                            {{#each tx.vin}}
                             <tr>
-                                <td class="text-center">New Coins</td>
+                                {{#ifEquals this.addresses 'coinbase'}}
+                                    <td colspan="2" class="text-center">New Coins</td>
+                                {{/ifEquals}}
+                                {{#ifNotEquals this.addresses 'coinbase'}}
+                                    <td>
+                                        <a href="/address/{{this.addresses}}">{{this.addresses}}</a>
+                                    </td>
+                                    <td>{{toAmount this.amount 8}}</td>
+                                {{/ifNotEquals}}                                                                
                             </tr>
+                            {{/each}}                            
                         </tbody>
                     </table>
                 </div>
@@ -74,10 +91,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {{#each tx.vout}}
                             <tr>
-                                <td>New Coins</td>
-                                <td>New Coins</td>
+                                <td><a href="/address/{{this.addresses}}">{{this.addresses}}</a></td>
+                                <td class="text-success">{{toAmount this.amount 8}}</td>
                             </tr>
+                            {{/each}}
                         </tbody>
                     </table>
                 </div>
