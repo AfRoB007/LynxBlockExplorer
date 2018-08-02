@@ -88,6 +88,28 @@ exports.richList = (req,res) =>{
     });
 };
 
+exports.connections = (req,res) =>{       
+    co(function* (){
+        let pageIndex = 1;
+        let pageSize = 10;
+        if(req.query.pageIndex){
+            pageIndex = parseInt(req.query.pageIndex);
+        }
+        if(req.query.pageSize){
+            pageSize = parseInt(req.query.pageSize);
+        }
+        let grid = {
+            items : yield db.peers.getPeers(pageIndex, pageSize),
+            count : yield db.peers.getPeersCount(),
+            pageIndex,
+            pageSize
+        };        
+        res.send(grid);
+    }).catch(err=>{
+        res.status(500).send(err.message);
+    });
+};
+
 const getDistribution = ({richlist, stats}) => {
     
     let supply = stats.supply;

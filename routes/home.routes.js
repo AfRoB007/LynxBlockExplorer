@@ -11,8 +11,8 @@ router.get('/tx/:txid', controller.tx);
 router.get('/qr/:hash', controller.getQRImage);
 router.get('/search', controller.search);
 router.get('/rich-list', controller.richList);
+router.get('/network', controller.network);
 
-// router.get('/network', controller.network);
 // router.get('/movement', controller.movement);
 // router.get('/info', controller.info);
 // router.get('/markets/:market', controller.market);

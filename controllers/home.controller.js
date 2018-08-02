@@ -252,9 +252,15 @@ exports.reward = (req,res) =>{
     });
 };
 
+//network
 exports.network = (req,res) =>{
-    res.render('network', {
-        active: 'network'
+    co(function* (){
+        let data = {           
+            coin : yield cryptoCompare.getCoin()
+        };
+        res.render('network', data);
+    }).catch(err=>{
+        res.status(500).send(err.message);
     });
 };
 
