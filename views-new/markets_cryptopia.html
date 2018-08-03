@@ -195,7 +195,7 @@
                 }                
                 for (index; index < length; index++) {
                     var p = items[index];                    
-                    var className = p.ordertype==='Buy'?'success':'danger';
+                    var className = p.ordertype==='Buy'?'text-success':'text-danger';
                     let row = '<tr class="'+className+'">';
                     row += '<td>' +p.ordertype+ '</td>';
                     row += '<td>' +p.amount+ '</td>';
