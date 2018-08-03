@@ -1,4 +1,4 @@
-var { txcount } = require('../lib/settings');
+var { txcount, markets } = require('../lib/settings');
 var co = require('co');
 var { bitcoin, cryptoCompare, db } = require('../helpers');
 
@@ -105,6 +105,16 @@ exports.connections = (req,res) =>{
             pageSize
         };        
         res.send(grid);
+    }).catch(err=>{
+        res.status(500).send(err.message);
+    });
+};
+
+exports.market = (req,res) =>{
+    let { market } = req.params;   
+    co(function* (){        
+        let data = yield db.markets.getMarkets(market);
+        res.send(data);
     }).catch(err=>{
         res.status(500).send(err.message);
     });

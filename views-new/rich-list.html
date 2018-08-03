@@ -98,6 +98,9 @@
 				let rows = '';
 				var index = (_this.pagination.pageSize * _this.pagination.pageIndex) - _this.pagination.pageSize;			
 				var length = _this.pagination.pageSize * _this.pagination.pageIndex;				
+				if(_this.pagination.count < length){
+                    length = _this.pagination.count;
+                }
 				for(index; index < length; index++){
 					var p = items[index];
 					let row = '<tr>';

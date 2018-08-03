@@ -2876,6 +2876,12 @@ block explorer
   float: left;
   line-height: 38px;
 }
+.block-explorer-section .table tbody tr.success td{
+  background-color:#8bc34a4a;
+}
+.block-explorer-section .table tbody tr.danger{
+  background-color: #f4433624;
+}
 
 .block-explorer-section .qr {
   border: 1px solid #CEE1F8;

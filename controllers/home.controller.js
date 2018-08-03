@@ -18,7 +18,8 @@ exports.index = (req,res) =>{
             liteCoin : yield cryptoCompare.getLitecoin(),
             liteCoinPrice : yield cryptoCompare.getCoinPrice('LTC','USD'),
             coin : yield cryptoCompare.getCoin(),
-            coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC')
+            coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC'),
+            markets
         };
         data.usdPrice = data.liteCoinPrice * data.coinPrice;
         data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.usdPrice;
@@ -32,7 +33,8 @@ exports.index = (req,res) =>{
 exports.latestBlocks = (req,res) =>{
     co(function* (){
         let data = {           
-            coin : yield cryptoCompare.getCoin()
+            coin : yield cryptoCompare.getCoin(),
+            markets
         };
         res.render('latest-blocks', data);
     }).catch(err=>{
@@ -45,7 +47,8 @@ exports.block = (req,res) =>{
     co(function* (){
         let data = {
             coin : yield cryptoCompare.getCoin(),
-            block : yield bitcoin.getBlockByHash(hash)
+            block : yield bitcoin.getBlockByHash(hash),
+            markets
         };
         let txs = null;
         if(data.block !== bitcoin.CONSOLE_ERROR && hash === genesis_block){
@@ -90,7 +93,8 @@ exports.address = (req,res) =>{
     co(function* (){
         let data = {           
             coin : yield cryptoCompare.getCoin(),
-            hash
+            hash,
+            markets
         };
         res.render('address', data);
     }).catch(err=>{
@@ -110,7 +114,8 @@ exports.tx = (req,res) =>{
                 coin,
                 tx, 
                 confirmations, 
-                blockcount
+                blockcount,
+                markets
             }); 
         }else{
             let rtx = yield bitcoin.getRawTransaction(hash);
@@ -133,7 +138,8 @@ exports.tx = (req,res) =>{
                         coin,
                         tx: utx, 
                         confirmations, 
-                        blockcount:-1
+                        blockcount:-1,
+                        markets
                     });
                 }else{
                     utx.blockhash = rtx.blockhash;
@@ -144,7 +150,8 @@ exports.tx = (req,res) =>{
                         coin,                      
                         tx: utx, 
                         confirmations, 
-                        blockcount
+                        blockcount,
+                        markets
                     });
                 }
             }else{
@@ -205,7 +212,8 @@ exports.richList = (req,res) =>{
     co(function* (){
         let coin = yield cryptoCompare.getCoin();
         res.render('rich-list', {                
-            coin
+            coin,
+            markets
         });
     }).catch(err=>{
         res.status(500).send(err.message);
@@ -215,18 +223,15 @@ exports.richList = (req,res) =>{
 exports.market = (req,res) =>{
     let { market } = req.params;   
     if (markets.enabled.indexOf(market) != -1) {
-        marketsRepository.getMarkets(market).then(data=>{            
-            res.render('./markets/' + market, {
-                active: 'markets',
-                marketdata: {
-                  coin: markets.coin,
-                  exchange: markets.exchange,
-                  data: data,
-                },
-                market: market
+        co(function* (){
+            let coin = yield cryptoCompare.getCoin();            
+            res.render('markets_' + market, {                
+                coin,
+                markets,
+                market
             });
         }).catch(err=>{
-            res.redirect('/');
+            res.status(500).send(err.message);
         });
     }else{
         res.redirect('/');
@@ -248,7 +253,8 @@ exports.reward = (req,res) =>{
 exports.network = (req,res) =>{
     co(function* (){
         let data = {           
-            coin : yield cryptoCompare.getCoin()
+            coin : yield cryptoCompare.getCoin(),
+            markets
         };
         res.render('network', data);
     }).catch(err=>{
@@ -260,7 +266,8 @@ exports.network = (req,res) =>{
 exports.info = (req,res) =>{
     res.render('info', {       
         address: address, 
-        hashes: api
+        hashes: api,
+        markets
     });
 };
 

@@ -30,6 +30,10 @@ exports.toKB = function(value, fractionDigits=2) {
     return (value/1024).toFixed(fractionDigits);
 };
 
+exports.capitalize = function(value){
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 exports.toUnixTime = function(unixtime){
     var a = new Date(unixtime * 1000);
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
