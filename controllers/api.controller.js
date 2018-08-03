@@ -2,10 +2,12 @@ var { txcount, markets } = require('../lib/settings');
 var co = require('co');
 var { bitcoin, cryptoCompare, db } = require('../helpers');
 
-exports.getCoinDetails = (req,res)=>{
+exports.getRecentBlock = (req,res)=>{
     co(function *(){
-        let coin = yield cryptoCompare.getCoin();
-        res.send(coin);
+        let blockIndex = yield db.tx.getRecentBlock();
+        res.send({
+            blockIndex
+        });
     }).catch(err=>{
         res.status(500).send(err);
     });

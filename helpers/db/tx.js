@@ -81,3 +81,23 @@ exports.removeAll = ()=>{
         });
     });   
 };
+
+exports.getRecentBlock = ()=>{        
+    return new Promise((resolve,reject)=>{
+        Tx
+        .find({})
+        .sort({ blockindex: 'desc' })        
+        .limit(1)
+        .lean(true)
+        .exec(function(err, items) {
+            if(err) reject(err);
+            else {
+                if(items.length>0){
+                    resolve(items[0].blockindex);
+                }else{
+                    resolve(0);
+                }
+            }
+        });
+    });    
+};

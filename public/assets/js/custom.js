@@ -5,7 +5,7 @@
 		welcome();
 
 		setInterval(function(){
-			getCoinDetails();
+			getRecentBlock();
 		},15000);
 
 		// Menu Dropdown Toggle
@@ -201,14 +201,16 @@
 		}
 	}
 
-	function getCoinDetails(){
-		$.ajax({
-			url: '/data/coin-details',			
-			contentType: 'application/json',
-			dataType: 'json',					
-			type:'GET'		
-		}).done(function(coin){
-			$('#block_number').html(coin.General.BlockNumber);
-		});
+	function getRecentBlock(){
+		if(window.location.pathname.indexOf('markets')===-1){		
+			$.ajax({
+				url: '/data/recent-block',			
+				contentType: 'application/json',
+				dataType: 'json',					
+				type:'GET'
+			}).done(function(data){
+				$('#block_number').html(data.blockIndex);
+			});
+		}
 	}
 })(jQuery);

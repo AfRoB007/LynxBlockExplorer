@@ -95,7 +95,7 @@
 				let _this = this;				
 				let table = $('.table-latests tbody');
 				let rows = '';
-				this.data.items.forEach(function(p){
+				this.data.items.forEach(function(p,index){
 					let blockUrl = '/address/'+_this._getExtractedBy(p);
 					let row = '<tr>';
 					row += '<td><a href="/block/'+p.blockhash+'">'+p.blockindex+'</a></td>';
@@ -165,7 +165,7 @@
 					return interval + " minutes";
 				}
 				return Math.floor(seconds) + " seconds";
-			}
+			}			
 			this._getExtractedBy = function(p){
 				let extractedBy = '';
 				if(p.vout.length>0){
