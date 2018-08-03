@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "bitcoin": "^3.0.1",
     "bitcoin-core": "^2.0.0",
     "body-parser": "~1.0.0",
     "co": "^4.6.0",
@@ -20,8 +19,8 @@
     "decimal.js": "^10.0.1",
     "express": "~4.2.0",
     "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.6",
     "jsonminify": "0.2.3",
-    "marked": "^0.4.0",
     "mongoose": "^5.1.5",
     "morgan": "~1.0.0",
     "pug": "^2.0.3",

@@ -9,8 +9,8 @@ var qr = require('qr-image');
 var { bitcoin, cryptoCompare, db } = require('../helpers');
 
 //index
-exports.index = (req,res) =>{
-    co(function* (){
+exports.index = (req, res, next) =>{
+    co(function* (){        
         let data = {
             ... yield bitcoin.getDifficulty(),
             hashrate : yield bitcoin.getHashRate(),
@@ -25,25 +25,21 @@ exports.index = (req,res) =>{
         data.usdPrice = data.liteCoinPrice * data.coinPrice;
         data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.usdPrice;
         res.render('explorer', data);
-    }).catch(err=>{
-        res.status(500).send(err.message);
-    });    
+    }).catch(next);    
 };
 
 //latest-blocks
-exports.latestBlocks = (req,res) =>{
+exports.latestBlocks = (req, res, next) =>{
     co(function* (){
         let data = {           
             blockIndex : yield db.tx.getRecentBlock(),
             markets
         };
         res.render('latest-blocks', data);
-    }).catch(err=>{
-        res.status(500).send(err.message);
-    });
+    }).catch(next);
 };
 
-exports.block = (req,res) =>{    
+exports.block = (req, res, next) =>{    
     let hash = req.param('hash');
     co(function* (){
         let data = {
@@ -63,9 +59,7 @@ exports.block = (req,res) =>{
             confirmations, 
             txs
         });
-    }).catch(err=>{
-        console.log(err);
-    });
+    }).catch(next);
 
     // blockRepository.getBlock(hash).then(data=>{
     //     console.timeEnd(req.originalUrl);            
@@ -88,7 +82,7 @@ exports.block = (req,res) =>{
 };
 
 //address:hash
-exports.address = (req,res) =>{
+exports.address = (req, res, next) =>{
     let hash = req.param('hash');
     let count = req.param('count') || txcount;
     co(function* (){
@@ -98,13 +92,11 @@ exports.address = (req,res) =>{
             markets
         };
         res.render('address', data);
-    }).catch(err=>{
-        res.status(500).send(err.message);
-    });    
+    }).catch(next);    
 };
 
 //tx
-exports.tx = (req,res) =>{
+exports.tx = (req, res, next) =>{
     let hash = req.param('txid');
     co(function* (){
         let blockIndex = yield db.tx.getRecentBlock();
@@ -159,9 +151,7 @@ exports.tx = (req,res) =>{
                 res.status(500).send(new Error('Txn not found '+hash));
             }
         }
-    }).catch(err=>{
-        reject(err);
-    });
+    }).catch(next);
 };
 
 //qr:hash
@@ -179,7 +169,9 @@ exports.getQRImage = (req,res) =>{
 
 //search
 exports.search = (req,res)=>{
-    let { q: search } = req.query;    
+    let { query : { q: search } } = req;  
+    let referer = req.header('Referer') || '/';
+
     co(function* (){
         if(search.length===64){
             if(search === genesis_tx) {
@@ -201,27 +193,27 @@ exports.search = (req,res)=>{
         let address = yield db.address.findOne(search);        
         if(address){
             return res.redirect('/address/' + address.a_id);
-        }
-        resolve(yield txn);
+        }        
+        req.session['error'] = `No results found for : ${search}`;
+        res.redirect(referer);
     }).catch(err=>{
-        console.log('err',err);
+        req.session['error'] = err.message;
+        res.redirect(referer);        
     });
 };
 
 //richlist
-exports.richList = (req,res) =>{
+exports.richList = (req, res, next) =>{
     co(function* (){
         let blockIndex = yield db.tx.getRecentBlock();        
         res.render('rich-list', {                
             blockIndex,
             markets
         });
-    }).catch(err=>{
-        res.status(500).send(err.message);
-    });
+    }).catch(next);
 };
 
-exports.market = (req,res) =>{
+exports.market = (req, res, next) =>{
     let { market } = req.params;   
     if (markets.enabled.indexOf(market) != -1) {
         co(function* (){
@@ -232,36 +224,30 @@ exports.market = (req,res) =>{
                 markets,
                 market
             });
-        }).catch(err=>{
-            res.status(500).send(err.message);
-        });
+        }).catch(next);
     }else{
         res.redirect('/');
     }
 };
 
-exports.reward = (req,res) =>{    
+exports.reward = (req, res, next) =>{    
     rewardRepository.getReward().then(data=>{        
         res.render('reward', { 
             active: 'reward', 
             ...data
         });
-    }).catch(err=>{
-        res.redirect('/');
-    });
+    }).catch(next);
 };
 
 //network
-exports.network = (req,res) =>{
+exports.network = (req, res, next) =>{
     co(function* (){
         let data = {  
             blockIndex : yield db.tx.getRecentBlock(),
             markets
         };
         res.render('network', data);
-    }).catch(err=>{
-        res.status(500).send(err.message);
-    });
+    }).catch(next);
 };
 
 //api

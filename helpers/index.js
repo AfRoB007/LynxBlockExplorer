@@ -3,6 +3,7 @@ var bitcoin = require('./bitcoin');
 var { db } = require('./db/index');
 var cryptoCompare = require('./cryptoCompare');
 var lib = require('./lib');
+var common = require('./common');
 
 var settings = require('../lib/settings');
 
@@ -10,6 +11,7 @@ exports.lib = lib;
 exports.bitcoin = bitcoin;
 exports.cryptoCompare = cryptoCompare;
 exports.db = db;
+exports.common = common;
 
 exports.connect = (cb) => {
   var dbString = 'mongodb://';

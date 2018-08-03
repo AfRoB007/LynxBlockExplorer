@@ -1,29 +1,27 @@
 var { txcount, markets } = require('../lib/settings');
 var co = require('co');
-var { bitcoin, cryptoCompare, db } = require('../helpers');
+var { bitcoin, db, common } = require('../helpers');
 
-exports.getRecentBlock = (req,res)=>{
-    co(function *(){
+exports.getRecentBlock = (req, res, next)=>{
+    co(function *(){        
         let blockIndex = yield db.tx.getRecentBlock();
         res.send({
             blockIndex
         });
-    }).catch(err=>{
-        res.status(500).send(err);
-    });
+    }).catch(next);
 };
 
-exports.latestBlocks = (req,res) =>{    
-    let pageIndex = 1;
-    let pageSize = 10;
-    let min = 0.00000001;
-    if(req.query.pageIndex){
-        pageIndex = parseInt(req.query.pageIndex);
-    }
-    if(req.query.pageSize){
-        pageSize = parseInt(req.query.pageSize);
-    }
+exports.latestBlocks = (req, res, next) =>{        
     co(function* (){
+        let pageIndex = 1;
+        let pageSize = 10;
+        let min = 0.00000001;
+        if(req.query.pageIndex){
+            pageIndex = parseInt(req.query.pageIndex);
+        }
+        if(req.query.pageSize){
+            pageSize = parseInt(req.query.pageSize);
+        }
         let grid = {            
             items : yield db.tx.getLastTransactions(min, pageIndex, pageSize),
             count : yield db.tx.getLastTransactionsCount(min),
@@ -42,15 +40,13 @@ exports.latestBlocks = (req,res) =>{
             }
         }
         res.send(grid);
-    }).catch(err=>{
-        res.status(500).send(err.message);
-    });
+    }).catch(next);
 };
 
-exports.address = (req,res) =>{
-    let hash = req.param('hash');
-    let count = req.param('count') || txcount;
+exports.address = (req, res, next) =>{    
     co(function* (){
+        let hash = req.param('hash');
+        let count = req.param('count') || txcount;
         let address = yield db.address.findOne(hash);
         if(address){            
             let addresses = address.txs.reverse().map(p=>p.addresses);
@@ -68,12 +64,10 @@ exports.address = (req,res) =>{
                 error : hash+' not found'
             });
         }
-    }).catch(err=>{
-        res.status(500).send(err);        
-    });
+    }).catch(next);
 };
 
-exports.richList = (req,res) =>{
+exports.richList = (req, res, next) =>{
     co(function* (){            
         let stats = db.coinStats.getCoinStats();
         let richlist = db.richlist.getRichList();        
@@ -81,16 +75,13 @@ exports.richList = (req,res) =>{
         let data = yield { richlist, stats };
         if(richlist){                
             data.distribution = getDistribution(data);
-            res.send(data);
-        }else{
-            res.status(500).send(new Error('Richlist not found'));
+            return res.send(data);
         }
-    }).catch(err=>{
-        res.status(500).send(err);
-    });
+        throw new Error('Richlist not found');
+    }).catch(next);
 };
 
-exports.connections = (req,res) =>{       
+exports.connections = (req, res, next) =>{       
     co(function* (){
         let pageIndex = 1;
         let pageSize = 10;
@@ -107,19 +98,23 @@ exports.connections = (req,res) =>{
             pageSize
         };        
         res.send(grid);
-    }).catch(err=>{
-        res.status(500).send(err.message);
-    });
+    }).catch(next);
 };
 
-exports.market = (req,res) =>{
-    let { market } = req.params;   
-    co(function* (){        
+exports.market = (req, res, next) =>{      
+    co(function* () {
+        let { market } = req.params; 
+        market = market.toLowerCase();
+        if(markets.enabled.indexOf(market)>-1){
+            let isAlreadyExist = yield db.markets.isAlreadyExist(market);
+            if (isAlreadyExist) {
+                yield common.updateMarketsDb(market);
+                console.log('markets updated for %s',market);        
+            }
+        }
         let data = yield db.markets.getMarkets(market);
         res.send(data);
-    }).catch(err=>{
-        res.status(500).send(err.message);
-    });
+    }).catch(next);
 };
 
 const getDistribution = ({richlist, stats}) => {

@@ -7,18 +7,19 @@ var express = require('express')
   , bodyParser = require('body-parser')
   , settings = require('./lib/settings')  
   , apiRoutes = require('./routes/api.routes')
-  , homeRoutes = require('./routes/home.routes')
-  , lib = require('./lib/explorer')  
+  , homeRoutes = require('./routes/home.routes')  
   , locale = require('./lib/locale')
-  , pug = require('pug')
   , exphbs  = require('express-handlebars')
   , viewHelpers = require('./helpers/view-helpers')
-  , markdown = require('marked');
+  , session = require('express-session');
 
 var app = express();
 
-//registering filters
-pug.filters.markdown = markdown;
+app.use(session({
+    secret: 'QYhEDsGupC',
+    resave: false,
+    saveUninitialized: true
+}));
 
 // bitcoinapi
 bitcoinapi.setWalletDetails(settings.wallet);
@@ -44,10 +45,6 @@ if (settings.heavy != true) {
     'getnextrewardwhensec', 'getsupply', 'gettxoutsetinfo']);
 }
 // view engine setup
-//app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'pug');
-//app.use(require('express-blocks'));
-
 var handlebars = exphbs.create({
     defaultLayout: 'main',
     helpers      : viewHelpers,
@@ -70,15 +67,16 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req,res,next){
+    res.locals.error = req.session['error'];    
+    req.session['error'] = null;
+    next();
+});
+
 // routes
 app.use('/api', bitcoinapi.app);
 app.use('/data', apiRoutes);
 app.use('/', homeRoutes);
-app.use('/ext/getmoneysupply', function(req,res){
-  lib.get_supply(function(supply){
-    res.send(' '+supply);
-  });
-});
 
 // locals
 app.set('title', settings.title);
@@ -106,29 +104,23 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);        
-        console.log('unhandled err: '+req.url+' | '+err.message);
-        res.render('error', {
-            message : err.message,
-            error : err
-        });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+//error handler
+const env = app.get('env');
+app.use(function(err, req, res, next) {      
     res.status(err.status || 500);
-    console.log('unhandled err: '+req.url+' | '+err.message);
-    console.log('unhandled err: ',err);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+    // development error handler
+    // will print stacktrace    
+    let error = {
+        message : err.message,
+        error : err
+    };
+    if (env === 'production') {
+        error.error = {};
+    }
+    if(req.header('Content-Type')==='application/json'){
+        return res.send(error);    
+    }
+    res.render('error',error);
 });
 
 module.exports = app;

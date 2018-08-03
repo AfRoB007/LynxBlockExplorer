@@ -119,7 +119,15 @@
 									<input name="q" type="text" placeholder="block, hash, transaction, etc..." />
 									<button type="submit" class="fa fa-search"></i></button>
 								</div>
-							</div>
+								<div id="error-place-holder">
+									{{#ifNotEquals error null}}
+									<div role="alert" class="mt-4 mb-0 alert alert-danger alert-dismissable">
+										<button type="button" data-dismiss="alert" class="close">×</button>
+										<strong>{{error}}</strong>
+									</div>
+									{{/ifNotEquals}}
+								</div>								
+							</div>							
 						</form>
 					</div>
 				</div>
