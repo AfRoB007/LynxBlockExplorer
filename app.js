@@ -11,13 +11,14 @@ var express = require('express')
   , locale = require('./lib/locale')
   , exphbs  = require('express-handlebars')
   , viewHelpers = require('./helpers/view-helpers')
-  , session = require('express-session');
+  , session = require('express-session')
+  , i18n = require("i18n-express");
 
 var app = express();
 
 app.use(session({
     secret: 'QYhEDsGupC',
-    resave: false,
+    resave: true,
     saveUninitialized: true
 }));
 
@@ -67,8 +68,15 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(i18n({
+    translationsPath: path.join(__dirname, 'i18n'),
+    siteLangs: ["en", "ru", "br"],
+    textsVarName: 'translation'
+}));
+
 app.use(function(req,res,next){
-    res.locals.error = req.session['error'];    
+    res.locals.error = req.session['error'];
+    res.locals.ulang = req.session['ulang'] || 'en';
     req.session['error'] = null;
     next();
 });

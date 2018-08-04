@@ -1,0 +1,85 @@
+{
+    "title": "Lynx Blockchain Explorer",
+
+    "menus": {
+        "explorer" : "EXPLORER",
+        "latest_blocks" : "LATEST BLOCKS",
+        "top_100" : "TOP 100",
+        "network" : "NETWORK",
+        "markets" : "MARKETS",
+        "api": "API"
+    },
+
+    "pages":{
+        "layouts_main" :{
+            "heading": "Lynx Blockchain Explorer",
+            "sub_heading" : "Up To Block "
+        },
+        "explorer" :{
+            "heading": "General Information",
+            "sub_heading" : "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat."
+        },
+        "latest_blocks" :{
+            "heading": "Latest Blocks"        
+        },
+        "top_100" :{
+            "richlist": {
+                "heading": "Rich List"
+            },
+            "distribution":{
+                "heading": "Distribution"
+            }
+        },
+        "network" :{
+            "heading": "Network",
+            "sub_heading" : "This is sub sample of the network based on wallets that have connected to this node in the last 24 hours."
+        },
+        "markets" :{
+            "summary":{               
+            },
+            "buy_orders": {
+                "heading": "Buy Orders"
+            },
+            "sell_orders":{
+                "heading": "Sell Orders"
+            },
+            "trade_history":{
+                "heading": "Trade History"
+            }
+        },
+        "address" :{
+            "summary": {
+                "heading": "Details for Address",
+                "sub_heading": "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat."
+            },
+            "transactions":{
+                "heading": "Transactions",
+                "sub_heading": "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat."
+            }
+        },
+        "block" :{
+            "summary": {
+                "heading": "Details for Block"                
+            },
+            "transactions":{
+                "heading": "Last Transactions",
+                "sub_heading": "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat."
+            }
+        },
+        "tx" :{
+            "summary": {
+                "heading": "Details for Trasnaction"                
+            },
+            "input":{
+                "heading": "Input Addresses"                
+            },
+            "output":{
+                "heading": "Recipients"
+            }
+        }
+    },
+    
+    "footer":{
+        "copyright": "2018 © Lynx - Core Development"
+    }
+}

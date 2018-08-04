@@ -3,12 +3,12 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="center-heading">
-					<h2 class="section-title">Details for Address</h2>
+					<h2 class="section-title">{{translation.pages.address.summary.heading}}</h2>
 				</div>
 			</div>
 			<div class="offset-lg-3 col-lg-6">
 				<div class="center-text">
-					<p>Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.</p>
+					<p>{{translation.pages.address.summary.sub_heading}}</p>
 				</div>
 			</div>
 		</div>
@@ -66,12 +66,12 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="center-heading">
-					<h2 class="section-title">Transactions</h2>
+					<h2 class="section-title">{{translation.pages.address.transactions.heading}}</h2>
 				</div>
 			</div>
 			<div class="offset-lg-3 col-lg-6">
 				<div class="center-text">
-					<p>Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.</p>
+					<p>{{translation.pages.address.transactions.sub_heading}}</p>
 				</div>
 			</div>
 		</div>
@@ -122,7 +122,7 @@
 				$('#address_a_id').html(address.a_id);
 				$('#address_balance').html(balance+' LYNX');
 				$('#address_txs_count').html(txs.length);
-				$('#address_received').html('$ '+received.toFixed(4));
+				$('#address_received').html(received.toFixed(4));
 
 				let table = $('.table-txs tbody');
 				let rows = '';

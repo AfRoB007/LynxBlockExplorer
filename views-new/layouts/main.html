@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Lynx Blockchain Explorer</title>
+	<title>{{translation.title}}</title>
 	<meta name="description" content="Lynx (LYNX) is a secure cryptocurrency with fast transaction speeds and low-transaction fees." />
 	<meta name="keywords" content="lynx, bitcoin, ethereum, monero, ico, token, free token, btc, eth" />
 	<meta name="author" content="tempload"/>
@@ -48,39 +48,38 @@
 
 						<!-- ***** Lang Start ***** -->
 						<div class="lang">
-							<div class="selected">
-								<img src="/assets/images/flags/en.png" alt="">
+							<div class="selected">								
+								<img src="/assets/images/flags/{{ulang}}.png" alt="">
 								<i class="fa fa-angle-down"></i>
 							</div>
-							<!-- <ul class="flag-list">
+							<ul class="flag-list">
 								<li>
-									<a href="#">
+									<a href="?clang=en">
 										<img src="/assets/images/flags/en.png" alt=""><span>EN</span>
 									</a>
 								</li>	
 								<li>
-									<a href="#">
+									<a href="?clang=ru">
 										<img src="/assets/images/flags/ru.png" alt=""><span>RU</span>
 									</a>
 								</li>	
 								<li>
-									<a href="#">
+									<a href="?clang=br">
 										<img src="/assets/images/flags/br.png" alt=""><span>BR</span>
 									</a>
 								</li>	
-							</ul> -->
+							</ul>
 						</div>
 						<!-- ***** Lang End ***** -->
 
 						<!-- ***** Menu Start ***** -->												
 						<ul class="nav">
-							<li><a href="/">EXPLORER</a></li>
-							<li><a href="/latest-blocks">LATEST BLOCKS</a></li>
-							<li><a href="/rich-list">TOP 100</a></li>
-							<li><a href="/network">NETWORK</a></li>
-							<li><a href="/markets/{{markets.default}}">MARKETS</a></li>
-							<li><a href="/info">API</a></li>
-							<!--<li><a href="#" class="btn-nav-box">SIGN UP</a></li>-->
+							<li><a href="/">{{translation.menus.explorer}}</a></li>
+							<li><a href="/latest-blocks">{{translation.menus.latest_blocks}}</a></li>
+							<li><a href="/rich-list">{{translation.menus.top_100}}</a></li>
+							<li><a href="/network">{{translation.menus.network}}</a></li>
+							<li><a href="/markets/{{markets.default}}">{{translation.menus.markets}}</a></li>
+							<li><a href="/info">{{translation.menus.api}}</a></li>
 						</ul>
 						<a class='menu-trigger'>
 							<span>Menu</span>
@@ -101,10 +100,10 @@
 			<div class="container text-center">
 				<div class="row">
 					<div class="col-lg-12 align-self-center">
-						<h1>Lynx Blockchain Explorer</h1>
+						<h1>{{translation.pages.layouts_main.heading}}</h1>
 					</div>
 					<div class="offset-lg-3 col-lg-6">
-						<p>Up To Block <span id="block_number">{{blockIndex}}</span></p>
+						<p>{{translation.pages.layouts_main.sub_heading}}<span id="block_number">{{blockIndex}}</span></p>
 					</div>
 				</div>
 			</div>
@@ -143,7 +142,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
-						<p class="copyright">2018 © Lynx - Core Development</p>
+						<p class="copyright">{{translation.footer.copyright}}</p>
 					</div>
 				</div>
 			</div>

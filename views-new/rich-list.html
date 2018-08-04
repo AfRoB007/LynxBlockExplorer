@@ -3,12 +3,12 @@
 		<div class="row">
 			<div class="col-lg-8">
 				<div class="center-heading">
-					<h2 class="section-title">Rich List</h2>
+					<h2 class="section-title">{{translation.pages.top_100.richlist.heading}}</h2>
 				</div>
 			</div>
 			<div class="col-lg-4">
 				<div class="center-heading">
-					<h2 class="section-title">Distribution</h2>
+					<h2 class="section-title">{{translation.pages.top_100.distribution.heading}}</h2>
 				</div>
 			</div>
 		</div>			
@@ -116,7 +116,7 @@
 					let row = '<tr>';
 					row += '<td>'+(index+1)+'</td>';
 					row += '<td><a href="/address/'+p.a_id+'">'+p.a_id+'</a></td>';
-					row += '<td>'+(p.balance/100000000).toFixed(8)+'</td>';				
+					row += '<td>'+_this._formatAmount(p.balance/100000000)+'</td>';				
 					row += '<td>'+_this._getPercentOfCoins(p)+'</td>';							
 					row +='</tr>';
 					rows += row;
@@ -233,6 +233,9 @@
 					html += '</div>';
 
 				return html;
+			}
+			this._formatAmount = function(amount){
+				return amount.toLocaleString();
 			}
 		}
 		var details = new RichList();
