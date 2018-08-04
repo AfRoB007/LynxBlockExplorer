@@ -20,7 +20,15 @@
             "sub_heading" : "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat."
         },
         "latest_blocks" :{
-            "heading": "Latest Blocks"        
+            "heading": "Latest Blocks",
+            "columns":{
+                "block_height": "Block Height",
+                "age": "Age",
+                "block_time": "Block Time",
+                "transactions": "Transactions",
+                "difficulty": "Difficulty",
+                "miner_reward_address":"Miner reward address"
+            }
         },
         "top_100" :{
             "richlist": {
@@ -77,9 +85,22 @@
                 "heading": "Recipients"
             }
         }
-    },
+    },    
     
     "footer":{
         "copyright": "2018 © Lynx - Core Development"
+    },
+
+    "common":{
+        "table": {
+            "loading" : "Loading ...",
+            "no_item_found" : "No item found",
+            "pagination":{
+                "showing": "Showing",
+                "to": "to",
+                "of": "of",
+                "entries": "entries"
+            }
+        }
     }
 }
