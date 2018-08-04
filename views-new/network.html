@@ -6,7 +6,7 @@
                         <h2 class="section-title">Network</h2>
                     </div>
                 </div>
-                <div class="offset-lg-3 col-lg-6">
+                <div class="offset-lg-2 col-lg-8">
                     <div class="center-text">
                         <p>This is sub sample of the network based on wallets that have connected to this node in the last 24 hours.</p>
                     </div>					
@@ -40,7 +40,12 @@
     <script type="text/javascript">
         $(function(){
             function Grid(){
-                this.data = null;
+                this.data = {
+                    pageIndex : 1,
+                    pageSize : 10,
+                    count : 0,
+                    items : []
+                };
                 this.url = '/data/connections';
                 this.params = {
                     pageIndex : 1,
@@ -82,8 +87,9 @@
                         type:'GET'		
                     }).done(function(result){
                         _this.data = result;
-                        _this.render();
-                        _this.paginate();                        
+                        _this.render();                                                
+                    }).always(function(){
+                        _this.paginate();
                     });
                 }
                 this.reload = function(){
@@ -94,8 +100,7 @@
                     this.load();
                 }
                 this.render = function(){
-                    let _this = this;				
-                    let table = $('.table-latests tbody');
+                    let _this = this;
                     let rows = '';
                     this.data.items.forEach(function(p){
                         rows += '<tr>';
@@ -105,7 +110,7 @@
                         rows += '<td>' + (p.country?p.country:'') + '</td>';
                         rows += '</tr>';						
                     });
-                    table.html(rows);				
+                    this.selector.tbody.html(rows);				
                 }
                 this.paginate = function(){
                     var _this = this;
@@ -129,7 +134,7 @@
                             _this.updatePageInfo();
                         },1000);
                     }else{
-                        this.selector.tfoot.html('<tr><td class="text-center" colspan="4">No items found.</td></tr>');
+                        this.selector.tbody.html('<tr><td class="text-center" colspan="4">No items found</td></tr>');
                     }
                 }
                 this.updatePageInfo = function(){

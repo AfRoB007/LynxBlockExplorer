@@ -1,9 +1,14 @@
 <section class="block-explorer-section section bg-bottom">
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-12">
+			<div class="col-lg-8">
 				<div class="center-heading">
 					<h2 class="section-title">Rich List</h2>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="center-heading">
+					<h2 class="section-title">Distribution</h2>
 				</div>
 			</div>
 		</div>			
@@ -31,10 +36,12 @@
 			<div class="col-lg-4">
 				<div class="table-responsive">
 					<table class="table table-bordered table-distribution">
+						<colgroup>
+							<col width="35%" />
+							<col width="50%" />
+							<col width="15%" />
+						</colgroup>
 						<thead>
-							<tr>
-								<th colspan="3">Wealth Distribution</th>
-							</tr>
 							<tr>
 								<th></th>
 								<th>Amount (LYNX)</th>
@@ -81,14 +88,17 @@
 				let _this = this;
 				$.ajax({
 					url:'/data/richlist',
-					type:'GET'		
+					type:'GET',
+					contentType: 'application/json',
+            		dataType: 'json'		
 				}).done(function(result){
 					_this.data = result;
 					_this.pagination.count = _this.data.richlist.balance.length;
 					_this.render();
-					_this.makeProgress();
+					_this.makeProgress();									
+				}).always(function(){
 					_this.renderDistribution();
-					_this.renderChart();					
+					_this.renderChart();	
 					_this.paginate();
 				});
 			}
@@ -115,65 +125,71 @@
 			}
 			this.renderDistribution = function(){				
 				var tableBody = $('.table-distribution tbody');
-				var dist = this.data.distribution;
-				var items = [ dist.top_1_25, dist.top_26_50, dist.top_51_75, dist.top_76_100 ];
-				var rows = '';
-				var total = 0;
-				items.forEach(function(p,index){
-					total += parseFloat(p.percent);
+				if(this.data && this.data.distribution){
+					var dist = this.data.distribution;
+					var items = [ dist.top_1_25, dist.top_26_50, dist.top_51_75, dist.top_76_100 ];
+					var rows = '';
+					var total = 0;
+					items.forEach(function(p,index){
+						total += parseFloat(p.percent);
+						rows += '<tr>';
+						rows += '<td><i style="color:'+p.bgColor+'" class="fa fa-square mr-1"></i>'+p.label+'</td>';
+						rows += '<td>'+parseFloat(p.total).toFixed(4)+'</td>';
+						rows += '<td class="text-right">'+parseFloat(p.percent).toFixed(2)+'</td>';
+						rows += '</tr>';
+					});
+					rows += '<tr>';
+					rows += '<td>Total</td>';
+					rows += '<td></td>';
+					rows += '<td class="text-right">'+total.toFixed(2)+'</td>';
+					rows += '</tr>';
+
+					var p = dist.top_100_plus;
 					rows += '<tr>';
 					rows += '<td><i style="color:'+p.bgColor+'" class="fa fa-square mr-1"></i>'+p.label+'</td>';
 					rows += '<td>'+parseFloat(p.total).toFixed(4)+'</td>';
 					rows += '<td class="text-right">'+parseFloat(p.percent).toFixed(2)+'</td>';
 					rows += '</tr>';
-				});
-				rows += '<tr>';
-				rows += '<td>Total</td>';
-				rows += '<td></td>';
-				rows += '<td class="text-right">'+total.toFixed(2)+'</td>';
-				rows += '</tr>';
 
-				var p = dist.top_100_plus;
-				rows += '<tr>';
-				rows += '<td><i style="color:'+p.bgColor+'" class="fa fa-square mr-1"></i>'+p.label+'</td>';
-				rows += '<td>'+parseFloat(p.total).toFixed(4)+'</td>';
-				rows += '<td class="text-right">'+parseFloat(p.percent).toFixed(2)+'</td>';
-				rows += '</tr>';
-
-				tableBody.html(rows);
+					tableBody.html(rows);
+				}else{
+					tableBody.html('<tr><td class="text-center" colspan="3">No items found</td></tr>');
+				}
 			}
 			this.renderChart = function(){
-				var dist = this.data.distribution;
-				var items = [ dist.top_1_25, dist.top_26_50, dist.top_51_75, dist.top_76_100, dist.top_100_plus ];
-				var data = [];
-				var labels = [];
-				var backgroundColor = [];
-				var borderColor = [];
-				items.forEach(function(p){
-					data.push(parseFloat(p.percent).toFixed(2));
-					backgroundColor.push(p.bgColor);
-					borderColor.push(p.bgColor);
-					labels.push(p.label);
-				});
+				if(this.data){
+					var dist = this.data.distribution;
+					var items = [ dist.top_1_25, dist.top_26_50, dist.top_51_75, dist.top_76_100, dist.top_100_plus ];
+					var data = [];
+					var labels = [];
+					var backgroundColor = [];
+					var borderColor = [];
+					items.forEach(function(p){
+						data.push(parseFloat(p.percent).toFixed(2));
+						backgroundColor.push(p.bgColor);
+						borderColor.push(p.bgColor);
+						labels.push(p.label);
+					});
 
-				var ctx = document.getElementById("chart").getContext('2d');
-				var myDoughnutChart = new Chart(ctx, {
-    				type: 'doughnut',
-    				data: {
-						datasets: [{
-							data: data,
-							backgroundColor: backgroundColor,
-							borderColor: borderColor,
-            				borderWidth: 1
-						}],
-						labels: labels
-					},
-					options:{
-						legend:{
-							display : false
+					var ctx = document.getElementById("chart").getContext('2d');
+					var myDoughnutChart = new Chart(ctx, {
+						type: 'doughnut',
+						data: {
+							datasets: [{
+								data: data,
+								backgroundColor: backgroundColor,
+								borderColor: borderColor,
+								borderWidth: 1
+							}],
+							labels: labels
+						},
+						options:{
+							legend:{
+								display : false
+							}
 						}
-					}
-				});
+					});
+				}
 			}
 			this.paginate = function(){
 				var _this = this;
@@ -194,7 +210,7 @@
 						_this.updatePageInfo();
 					},1000);
 				}else{
-					this.selector.tfoot.html('<tr><td class="text-center" colspan="3">No items found.</td></tr>');
+					this.selector.tbody.html('<tr><td class="text-center" colspan="4">No items found</td></tr>');
 				}
     		}
 			this.updatePageInfo = function(){

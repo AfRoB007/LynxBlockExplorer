@@ -3,7 +3,7 @@
 	
 	$(document).ready(function(){
 		$(document).ajaxError(function(event, jqxhr, settings, thrownError){
-			var err = jqxhr.responseJSON;			
+			var err = jqxhr.responseJSON;
 			var html = '<div role="alert" class="mt-4 alert alert-danger alert-dismissable">';
 				html += '<button type="button" data-dismiss="alert" class="close">×</button>';
 				html += '<strong>'+err.message+'</strong>';

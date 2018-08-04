@@ -37,7 +37,12 @@
 <script type="text/javascript">
 	$(function(){
 		function Grid(){
-			this.data = null;
+			this.data = {
+				count :0,
+				items : [],
+				pageIndex : 1,
+				pageSize : 25
+			};
 			this.url = '/data/latest-blocks';
 			this.params = {
 				pageIndex : 1,
@@ -79,9 +84,10 @@
 					type:'GET'		
 				}).done(function(result){
 					_this.data = result;
-					_this.render();
-					_this.paginate();
+					_this.render();					
 					_this.tooltip();
+				}).always(function(){
+					_this.paginate();
 				});
 			}
 			this.reload = function(){
@@ -92,8 +98,7 @@
         		this.load();
     		}
 			this.render = function(){
-				let _this = this;				
-				let table = $('.table-latests tbody');
+				let _this = this;
 				let rows = '';
 				this.data.items.forEach(function(p,index){
 					let blockUrl = '/address/'+_this._getExtractedBy(p);
@@ -107,7 +112,7 @@
 					row +='</tr>';
 					rows += row;						
 				});
-				table.html(rows);				
+				this.selector.tbody.html(rows);				
 			}
 			this.paginate = function(){
 				var _this = this;
@@ -131,7 +136,7 @@
 						_this.updatePageInfo();
 					},1000);
 				}else{
-					this.selector.tfoot.html('<tr><td class="text-center" colspan="6">No items found.</td></tr>');
+					this.selector.tbody.html('<tr><td class="text-center" colspan="6">No items found</td></tr>');
 				}
     		}
 			this.updatePageInfo = function(){

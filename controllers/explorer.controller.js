@@ -13,7 +13,6 @@ exports.getSummary = (req,res) =>{
             data:[summary]
         });
     }).catch(err=>{
-        console.log(err.message);
         res.status(500).send(err.message);
     });
 };
