@@ -1,0 +1,247 @@
+<section class="block-explorer-section section bg-bottom">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="center-heading">
+					<h2 class="section-title">{{translation.pages.top_100.richlist.heading}}</h2>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="center-heading">
+					<h2 class="section-title">{{translation.pages.top_100.distribution.heading}}</h2>
+				</div>
+			</div>
+		</div>			
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="table-responsive">
+					<table class="table table-striped table-latests">
+						<thead>
+							<tr>
+								<td>{{translation.pages.top_100.richlist.columns.rank}}</td>
+								<td>{{translation.pages.top_100.richlist.columns.address}}</td>
+								<td>{{translation.pages.top_100.richlist.columns.amount}}</td>
+								<td>{{translation.pages.top_100.richlist.columns.percent}}</td>								
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td colspan="4" class="text-center">{{translation.common.table.loading}}</td>
+							</tr>
+						</tbody>
+						<tfoot></tfoot>
+					</table>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="table-responsive">
+					<table class="table table-bordered table-distribution">
+						<colgroup>
+							<col width="35%" />
+							<col width="50%" />
+							<col width="15%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th></th>
+								<th>{{translation.pages.top_100.distribution.columns.amount}} (LYNX)</th>
+								<th class="text-center">%</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="text-center" colspan="3">{{translation.common.table.loading}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<canvas id="chart" width="400" height="400"></canvas>				
+			</div>
+		</div>
+	</div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		function RichList(){
+			this.data = null;
+			this.pagination = {
+				pageIndex : 1,
+				pageSize : 25,
+				count : 0
+			};
+			this.selector = {
+				tbody : $('.table-latests tbody'),
+				tfoot : $('.table-latests tfoot'),
+				pageInfo :  null,
+				pagination : null,
+			};
+			this.getStartIndex = function(){
+        		return ((this.pagination.pageIndex - 1) * this.pagination.pageSize) + 1;
+    		}
+			this.getEndIndex = function(){
+				var index = (this.pagination.pageIndex * this.pagination.pageSize);
+				return (index < this.pagination.count) ? index : this.pagination.count;
+			}		
+			this.load = function(){
+				let _this = this;
+				$.ajax({
+					url:'/data/richlist',
+					type:'GET',
+					contentType: 'application/json',
+            		dataType: 'json'		
+				}).done(function(result){
+					_this.data = result;
+					_this.pagination.count = _this.data.richlist.balance.length;
+					_this.render();
+					_this.makeProgress();									
+				}).always(function(){
+					_this.renderDistribution();
+					_this.renderChart();	
+					_this.paginate();
+				});
+			}
+			this.render = function(){
+				let _this = this;
+				let items = _this.data.richlist.balance;			
+				let rows = '';
+				var index = (_this.pagination.pageSize * _this.pagination.pageIndex) - _this.pagination.pageSize;			
+				var length = _this.pagination.pageSize * _this.pagination.pageIndex;				
+				if(_this.pagination.count < length){
+                    length = _this.pagination.count;
+                }
+				for(index; index < length; index++){
+					var p = items[index];
+					let row = '<tr>';
+					row += '<td>'+(index+1)+'</td>';
+					row += '<td><a href="/address/'+p.a_id+'">'+p.a_id+'</a></td>';
+					row += '<td>'+_this._formatAmount(p.balance/100000000)+'</td>';				
+					row += '<td>'+_this._getPercentOfCoins(p)+'</td>';							
+					row +='</tr>';
+					rows += row;
+				}
+				this.selector.tbody.html(rows);				
+			}
+			this.renderDistribution = function(){				
+				var tableBody = $('.table-distribution tbody');
+				if(this.data && this.data.distribution){
+					var dist = this.data.distribution;
+					var items = [ dist.top_1_25, dist.top_26_50, dist.top_51_75, dist.top_76_100 ];
+					var rows = '';
+					var total = 0;
+					items.forEach(function(p,index){
+						total += parseFloat(p.percent);
+						rows += '<tr>';
+						rows += '<td><i style="color:'+p.bgColor+'" class="fa fa-square mr-1"></i>'+p.label+'</td>';
+						rows += '<td>'+parseFloat(p.total).toFixed(4)+'</td>';
+						rows += '<td class="text-right">'+parseFloat(p.percent).toFixed(2)+'</td>';
+						rows += '</tr>';
+					});
+					rows += '<tr>';
+					rows += '<td>Total</td>';
+					rows += '<td></td>';
+					rows += '<td class="text-right">'+total.toFixed(2)+'</td>';
+					rows += '</tr>';
+
+					var p = dist.top_100_plus;
+					rows += '<tr>';
+					rows += '<td><i style="color:'+p.bgColor+'" class="fa fa-square mr-1"></i>'+p.label+'</td>';
+					rows += '<td>'+parseFloat(p.total).toFixed(4)+'</td>';
+					rows += '<td class="text-right">'+parseFloat(p.percent).toFixed(2)+'</td>';
+					rows += '</tr>';
+
+					tableBody.html(rows);
+				}else{
+					tableBody.html('<tr><td class="text-center" colspan="3">{{translation.common.table.no_item_found}}</td></tr>');
+				}
+			}
+			this.renderChart = function(){
+				if(this.data){
+					var dist = this.data.distribution;
+					var items = [ dist.top_1_25, dist.top_26_50, dist.top_51_75, dist.top_76_100, dist.top_100_plus ];
+					var data = [];
+					var labels = [];
+					var backgroundColor = [];
+					var borderColor = [];
+					items.forEach(function(p){
+						data.push(parseFloat(p.percent).toFixed(2));
+						backgroundColor.push(p.bgColor);
+						borderColor.push(p.bgColor);
+						labels.push(p.label);
+					});
+
+					var ctx = document.getElementById("chart").getContext('2d');
+					var myDoughnutChart = new Chart(ctx, {
+						type: 'doughnut',
+						data: {
+							datasets: [{
+								data: data,
+								backgroundColor: backgroundColor,
+								borderColor: borderColor,
+								borderWidth: 1
+							}],
+							labels: labels
+						},
+						options:{
+							legend:{
+								display : false
+							}
+						}
+					});
+				}
+			}
+			this.paginate = function(){
+				var _this = this;
+				if(this.pagination.count>0){
+					if($('.table-latests tfoot .page-info').length===0){
+						this.selector.tfoot.html('<tr><td colspan="4"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>');
+						this.selector.pageInfo = $('.table-latests tfoot .page-info');
+						this.selector.pagination = $('.table-latests tfoot .pagination');
+					}
+					setTimeout(function(){
+						_this.selector.pagination.twbsPagination({
+							totalPages: Math.ceil(_this.pagination.count / _this.pagination.pageSize),							
+							onPageClick: function (event, page) {
+								_this.pagination.pageIndex = page;
+								_this.render();
+							}
+						});
+						_this.updatePageInfo();
+					},1000);
+				}else{
+					this.selector.tbody.html('<tr><td class="text-center" colspan="4">{{translation.common.table.no_item_found}}</td></tr>');
+				}
+    		}
+			this.updatePageInfo = function(){
+				var info = '{{translation.common.table.pagination.showing}} ' + this.getStartIndex() + ' {{translation.common.table.pagination.to}} ' + this.getEndIndex() + ' {{translation.common.table.pagination.of}} ' + this.pagination.count + ' {{translation.common.table.pagination.entries}}';
+				this.selector.pageInfo.html(info);
+			}
+			this.makeProgress = function(){
+				$(".table-latests").find(".table-progress").each(function(i){
+					let value = $('.table-progress:eq(' +[i]+ ') .progress-line').data('value');
+					$('.table-progress:eq(' +[i]+ ') .progress-line')
+					.css("width", parseInt(value, 10) + parseInt(value, 10)  + '%');
+				});
+			}
+			this._getPercentOfCoins = function(p){
+				let stats = this.data.stats;
+				let percentage = (((p.balance/100000000)/stats.supply) * 100).toFixed(2);
+				let html  = '<div class="table-progress">';
+					html += '<div class="progress-line" data-value="'+percentage+'"></div>';
+					html += '<span>'+percentage+' %</span>';
+					html += '</div>';
+
+				return html;
+			}
+			this._formatAmount = function(amount){
+				return amount.toLocaleString();
+			}
+		}
+		var details = new RichList();
+		details.load();
+		setInterval(function () {     
+			details.load();         
+        },60000);
+	});
+</script>

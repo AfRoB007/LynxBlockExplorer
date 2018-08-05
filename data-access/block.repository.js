@@ -65,7 +65,7 @@ const updateAddress = (hash, txid, amount,type)=>{
     return new Promise((resolve,reject)=>{
         co(function* (){
             try{
-                let address = yield db.address.findAddress(hash);
+                let address = yield db.address.findOne(hash);
                 if(address){
                     if (hash == 'coinbase') {
                         address = yield db.address.update(hash,{

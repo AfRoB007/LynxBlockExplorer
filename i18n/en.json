@@ -1,0 +1,157 @@
+{
+    "title": "Lynx Blockchain Explorer",
+
+    "menus": {
+        "explorer" : "EXPLORER",
+        "latest_blocks" : "LATEST BLOCKS",
+        "top_100" : "TOP 100",
+        "network" : "NETWORK",
+        "markets" : "MARKETS",
+        "api": "API"
+    },
+
+    "pages":{
+        "layouts_main" :{
+            "heading": "Lynx Blockchain Explorer",
+            "sub_heading" : "Up To Block "
+        },
+        "explorer" :{
+            "heading": "General Information",
+            "sub_heading" : "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.",
+            "columns":{
+                "btc_price": "BTC Price",
+                "usd_price": "USD Price",
+                "market_cap": "Market Cap",
+                "hashrate": "Hashrate",
+                "difficulty": "Difficulty",
+                "outstanding": "Outstanding",
+                "transactions_per_day": "Transactions Per Day",
+                "trade_volume": "Trade Volume"
+            }
+        },
+        "latest_blocks" :{
+            "heading": "Latest Blocks",
+            "columns":{
+                "block_height": "Block Height",
+                "age": "Age",
+                "block_time": "Block Time",
+                "transactions": "Transactions",
+                "difficulty": "Difficulty",
+                "miner_reward_address":"Miner reward address"
+            }
+        },
+        "top_100" :{
+            "richlist": {
+                "heading": "Rich List",
+                "columns":{
+                    "rank": "Rank",
+                    "address": "Address",
+                    "amount": "Amount",
+                    "percent": "Percent"
+                }
+            },
+            "distribution":{
+                "heading": "Distribution",
+                "columns":{
+                    "amount": "Amount"                    
+                }
+            }
+        },
+        "network" :{
+            "heading": "Network",
+            "sub_heading" : "This is sub sample of the network based on wallets that have connected to this node in the last 24 hours.",
+            "columns":{                
+                "address": "Address",
+                "protocol": "Protocol",
+                "sub_version": "Sub-version",
+                "country": "Country"
+            }
+        },
+        "markets" :{
+            "summary":{
+                "columns": {
+                    "high" : "High",
+                    "low" : "Low",
+                    "volume" : "Volume",
+                    "top_bid" : "Top Bid",
+                    "top_ask" : "Top Ask",
+                    "last_price" : "Last Price",
+                    "change" : "Change"
+                }             
+            },
+            "buy_orders": {
+                "heading": "Buy Orders",
+                "columns": {
+                    "price" : "Price",
+                    "amount" : "Amount",
+                    "total" : "Total"
+                }
+            },
+            "sell_orders":{
+                "heading": "Sell Orders",
+                "columns": {
+                    "price" : "Price",
+                    "amount" : "Amount",
+                    "total" : "Total"
+                }
+            },
+            "trade_history":{
+                "heading": "Trade History",
+                "columns": {
+                    "type" : "Type",
+                    "amount" : "Amount",
+                    "total" : "Total",
+                    "time_stamp": "Time Stamp"
+                }
+            }
+        },
+        "address" :{
+            "summary": {
+                "heading": "Details for Address",
+                "sub_heading": "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat."
+            },
+            "transactions":{
+                "heading": "Transactions",
+                "sub_heading": "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat."
+            }
+        },
+        "block" :{
+            "summary": {
+                "heading": "Details for Block"                
+            },
+            "transactions":{
+                "heading": "Last Transactions",
+                "sub_heading": "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat."
+            }
+        },
+        "tx" :{
+            "summary": {
+                "heading": "Details for Trasnaction"                
+            },
+            "input":{
+                "heading": "Input Addresses"                
+            },
+            "output":{
+                "heading": "Recipients"
+            }
+        }
+    },    
+    
+    "footer":{
+        "copyright": "2018 © Lynx - Core Development"
+    },
+
+    "common":{
+        "table": {
+            "loading" : "Loading ...",
+            "no_item_found" : "No item found",
+            "pagination":{
+                "showing": "Showing",
+                "to": "to",
+                "of": "of",
+                "entries": "entries"
+            }
+        },
+        "search_placeholder": "block, hash, transaction, etc..."
+    }
+}

@@ -1,24 +1,26 @@
 var express = require('express')
   , path = require('path')
-  , bitcoinapi = require('./lib/middlewares/bitcoin-api')
+  , bitcoinapi = require('./lib/middlewares/bitcoin-core')  
   , favicon = require('serve-favicon')
   , logger = require('morgan')
   , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
   , settings = require('./lib/settings')  
-  , homeRoutes = require('./routes/home.routes')
-  , explorerRoutes = require('./routes/explorer.routes')
-  , lib = require('./lib/explorer')
-  , db = require('./lib/database')  
+  , apiRoutes = require('./routes/api.routes')
+  , homeRoutes = require('./routes/home.routes')  
   , locale = require('./lib/locale')
-  , pug = require('pug')
-  , markdown = require('marked')
-  , request = require('request');
+  , exphbs  = require('express-handlebars')
+  , viewHelpers = require('./helpers/view-helpers')
+  , session = require('express-session')
+  , i18n = require("i18n-express");
 
 var app = express();
 
-//registering filters
-pug.filters.markdown = markdown;
+app.use(session({
+    secret: 'QYhEDsGupC',
+    resave: true,
+    saveUninitialized: true
+}));
 
 // bitcoinapi
 bitcoinapi.setWalletDetails(settings.wallet);
@@ -44,8 +46,20 @@ if (settings.heavy != true) {
     'getnextrewardwhensec', 'getsupply', 'gettxoutsetinfo']);
 }
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+var handlebars = exphbs.create({
+    defaultLayout: 'main',
+    helpers      : viewHelpers,
+    extname      : '.html',
+    layoutsDir: path.join(__dirname, 'views-new','layouts'),
+    partialsDir: [
+        'views-new/shared/',
+        'views-new/partials/'
+    ]
+});
+
+app.set('views', path.join(__dirname, 'views-new'));
+app.engine('html', handlebars.engine);
+app.set('view engine', 'html');
 
 app.use(favicon(path.join(__dirname, settings.favicon)));
 app.use(logger('dev'));
@@ -54,15 +68,23 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(i18n({
+    translationsPath: path.join(__dirname, 'i18n'),
+    siteLangs: ["en", "ru", "br"],
+    textsVarName: 'translation'
+}));
+
+app.use(function(req,res,next){
+    res.locals.error = req.session['error'];
+    res.locals.ulang = req.session['ulang'] || 'en';
+    req.session['error'] = null;
+    next();
+});
+
 // routes
 app.use('/api', bitcoinapi.app);
+app.use('/data', apiRoutes);
 app.use('/', homeRoutes);
-app.use('/ext',explorerRoutes);
-app.use('/ext/getmoneysupply', function(req,res){
-  lib.get_supply(function(supply){
-    res.send(' '+supply);
-  });
-});
 
 // locals
 app.set('title', settings.title);
@@ -90,27 +112,23 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+//error handler
+const env = app.get('env');
+app.use(function(err, req, res, next) {      
     res.status(err.status || 500);
-    console.log('err in production:',err);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+    // development error handler
+    // will print stacktrace    
+    let error = {
+        message : err.message,
+        error : err
+    };
+    if (env === 'production') {
+        error.error = {};
+    }
+    if(req.header('Content-Type')==='application/json'){
+        return res.send(error);    
+    }
+    res.render('error',error);
 });
 
 module.exports = app;

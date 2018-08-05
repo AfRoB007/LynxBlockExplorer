@@ -3,6 +3,9 @@ var richListRepository = require('../data-access/richlist.repository');
 var searchRepository = require('../data-access/search.repository');
 var logger = require('winston');
 
+var co = require('co');
+var { bitcoin, cryptoCompare, db } = require('../helpers');
+
 exports.getSummary = (req,res) =>{
     repository.getSummary().then(summary=>{        
         logger.info(summary);
@@ -10,8 +13,7 @@ exports.getSummary = (req,res) =>{
             data:[summary]
         });
     }).catch(err=>{
-        logger.error(err);        
-        res.status(500).send(err);
+        res.status(500).send(err.message);
     });
 };
 

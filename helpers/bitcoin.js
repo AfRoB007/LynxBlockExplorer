@@ -1,12 +1,52 @@
-var axios = require('axios');
-var settings = require('../lib/settings');
+const axios = require('axios');
+const settings = require('../lib/settings');
+const address = require('./db/address');
+const http = require('http');
+const https = require('https');
+const Decimal = require('decimal.js');
 
-const BASE_URL = 'http://127.0.0.1:' + settings.port + '/api/';
-//const BASE_URL = 'http://seed06.getlynx.io/api/';
+const BASE_URL = 'http://'+settings.wallet.host+':' + settings.port + '/api/';
+
+let axiosInstance = axios.create({
+    baseURL : BASE_URL,
+    timeout : 10 * 60 * 1000,
+    proxy : false,
+    httpAgent: new http.Agent({ keepAlive: true }),
+    httpsAgent: new https.Agent({ keepAlive: true })
+});
+
+const CONSOLE_ERROR = 'There was an error. Check your console.';
+
+const handleError = (uri, resolve, reject)=>{
+    return (err)=>{
+        console.log(`${uri} : ${err.message}`);  
+        let  { status } = err.response;
+        if(status === 404){
+            return reject(new Error(`${BASE_URL}${uri} not found`));
+        }              
+        if(err.message === CONSOLE_ERROR || err.code === 'ETIMEDOUT'){
+            resolve(CONSOLE_ERROR);
+        }else{
+            reject(err);            
+        }
+    };
+};
+
+const handleSuccess = (uri, resolve, reject)=>{
+    return (res)=>{        
+        let data = res.data;        
+        if(data.name==='RpcError'){
+            resolve(CONSOLE_ERROR);
+        }else{
+            resolve(data);          
+        }
+    };
+};
 
 exports.getDifficulty = ()=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getdifficulty').then(res=>{
+        let uri = 'getdifficulty';
+        axiosInstance.get(uri).then(res=>{
             let difficulty = res.data;
             let difficultyHybrid = ''
             let { index } = settings;
@@ -20,17 +60,20 @@ exports.getDifficulty = ()=>{
                     difficulty = difficulty['proof-of-stake'];
                 }
             }
+            let difficultyToFixed = new Decimal(difficulty).toFixed(6);
             resolve({
                 difficulty,
-                difficultyHybrid
+                difficultyHybrid,
+                difficultyToFixed
             });
-        }).catch(error=>reject(error));
+        }).catch(handleError(uri,resolve,reject));
     });
 };
 
 const getHashRateFromMiningInfo =()=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getmininginfo').then(res=>{            
+        let uri = 'getmininginfo';
+        axiosInstance.get(uri).then(res=>{            
             let { netmhashps } = res.data;
             let { nethash_units } = settings;
             let hashRate = '-';
@@ -51,13 +94,14 @@ const getHashRateFromMiningInfo =()=>{
                 }
             }
             resolve(hashRate);
-        }).catch(error=>reject(error));
+        }).catch(handleError(uri,resolve,reject));
     });
 };
 
 const getHashRateFromNetwork =()=>{
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getnetworkhashps').then(res=>{            
+        let uri = 'getnetworkhashps';
+        axiosInstance.get(uri).then(res=>{            
             let netmhashps = res.data;
             let { nethash_units } = settings;
             let hashRate;
@@ -78,7 +122,7 @@ const getHashRateFromNetwork =()=>{
                 hashRate = (netmhashps).toFixed(4);
             }
             resolve(hashRate);
-        }).catch(error=>reject(error));
+        }).catch(handleError(uri,resolve,reject));
     });
 };
 
@@ -90,39 +134,56 @@ exports.getHashRate = ()=>{
 };
 
 exports.getConnections = ()=>{
+    let uri = 'getconnectioncount';
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getconnectioncount').then(res=>resolve(res.data)).catch(error=>reject(error));
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
     });    
 };
 
 exports.getBlockByHash = (hash)=>{
+    let uri = 'getblock?hash='+hash;
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblock?hash='+hash).then(res=>resolve(res.data)).catch(error=>reject(error));
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
     });
 };
 
 exports.getBlock = (height)=>{
+    let uri = 'getblock?height='+height;
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblock?height='+height).then(res=>resolve(res.data)).catch(error=>reject(error));
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
     });    
 };
 
 exports.getBlockCount = ()=>{
+    let uri = 'getblockcount';
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblockcount').then(res=>resolve(res.data)).catch(error=>reject(error));
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
     });    
 };
 
 exports.getBlockHash = (height)=>{
+    let uri = 'getblockhash?height='+height;
     return new Promise((resolve,reject)=>{
-        axios.get(BASE_URL + 'getblockhash?height='+height).then(res=>resolve(res.data)).catch(error=>reject(error));
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
     });    
 };
 
 exports.getRawTransaction = (hash)=>{
-    let uri = BASE_URL + 'getrawtransaction?txid=' + hash + '&decrypt=1';
+    let uri = 'getrawtransaction?txid=' + hash + '&decrypt=1';
     return new Promise((resolve,reject)=>{
-        axios.get(uri).then(res=>resolve(res.data)).catch(error=>reject(error));
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
     });
 };
 
@@ -130,3 +191,87 @@ exports.convertToSatoshi = (amount)=> {
     let fixed = amount.toFixed(8).toString(); 
     return parseInt(fixed.replace('.', ''));
 };
+
+exports.getMaxMoney = ()=>{
+    let uri = 'getmaxmoney';
+    return new Promise((resolve,reject)=>{
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
+    });
+};
+
+exports.getMaxVote = ()=>{
+    let uri = 'getmaxvote';
+    return new Promise((resolve,reject)=>{
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))     
+        .catch(handleError(uri,resolve,reject));
+    });
+};
+
+exports.getVote = ()=>{
+    let uri = 'getvote';
+    return new Promise((resolve,reject)=>{
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
+    });
+};
+
+exports.getPhase = ()=>{
+    let uri = 'getphase';
+    return new Promise((resolve,reject)=>{
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
+    });
+};
+
+exports.getReward = ()=>{
+    let uri = 'getreward';
+    return new Promise((resolve,reject)=>{
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))      
+        .catch(handleError(uri,resolve,reject));
+    });
+};
+
+exports.getEstNext = ()=>{
+    let uri = 'getnextrewardestimate';
+    return new Promise((resolve,reject)=>{
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
+    });
+};
+
+exports.getNextIn = ()=>{
+    let uri = 'getnextrewardwhenstr';
+    return new Promise((resolve,reject)=>{
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
+    });
+};
+
+exports.getSupply =()=>{
+    return new Promise((resolve,reject)=>{
+        let uri = 'getsupply';
+        if(settings.supply == 'HEAVY'){
+            uri = 'getsupply';
+            axiosInstance.get(uri).then(res=>resolve(res.data)).catch(reject);
+        }else if (settings.supply == 'GETINFO') {
+            uri = 'getinfo';
+            axiosInstance.get(uri).then(res=>resolve(res.data.moneysupply)).catch(reject);
+        }else if (settings.supply == 'TXOUTSET') {
+            uri = 'gettxoutsetinfo';
+            axiosInstance.get(uri).then(res=>resolve(res.data.total_amount)).catch(reject);           
+        }else if (settings.supply == 'BALANCES') {
+            address.balanceSupply().then(resolve).catch(reject);   
+        }
+        address.coinBaseSupply().then(resolve).catch(reject);
+    });
+};
+
+exports.CONSOLE_ERROR = CONSOLE_ERROR;

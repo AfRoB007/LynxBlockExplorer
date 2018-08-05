@@ -1,0 +1,305 @@
+<section class="block-explorer-section section bg-bottom">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="center-heading">
+                    <h2 class="section-title">{{capitalize market}}</h2>
+                </div>
+            </div>
+            <div class="offset-lg-3 col-lg-6">
+				<div class="center-text">
+					<p>{{capitalize market}} - {{markets.coin}}/{{markets.exchange}} - 24 hours</p>
+				</div>
+			</div>
+        </div>
+        <div class="row">
+            <div class="offset-lg-3 col-lg-6">
+                <div class="table-responsive">
+					<table class="table table-striped table-latests table-detail">
+						<tbody>
+							<tr>
+								<td>
+									<strong>{{translation.pages.markets.summary.columns.high}}</strong>
+								</td>
+								<td id="market_high"></td>
+							</tr>
+							<tr>
+								<td>
+									<strong>{{translation.pages.markets.summary.columns.low}}</strong>
+								</td>
+								<td id="market_low"></td>
+							</tr>
+							<tr>
+								<td>
+									<strong>{{translation.pages.markets.summary.columns.volume}}</strong>
+								</td>
+								<td id="market_volume"></td>
+							</tr>
+							<tr>
+								<td>
+									<strong>{{translation.pages.markets.summary.columns.top_bid}}</strong>
+                                </td>
+                                <td id="market_top_bid"></td>
+							</tr>							
+							<tr>
+								<td>
+									<strong>{{translation.pages.markets.summary.columns.top_ask}}</strong>
+                                </td>
+                                <td id="market_top_ask"></td>
+							</tr>
+							<tr>
+								<td>
+									<strong>{{translation.pages.markets.summary.columns.last_price}}</strong>
+                                </td>
+                                <td id="market_last_price"></td>
+                            </tr>
+                            <tr>
+								<td>
+									<strong>{{translation.pages.markets.summary.columns.change}}</strong>
+								</td>
+								<td id="market_change"></td>
+                            </tr>                            
+						</tbody>
+					</table>
+				</div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-lg-6">
+                <div class="center-heading">
+                    <h2 class="section-title">{{translation.pages.markets.buy_orders.heading}}</h2>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="center-heading">
+                    <h2 class="section-title">{{translation.pages.markets.sell_orders.heading}}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="table-responsive">
+                    <table id="buy_orders" class="table table-striped table-latests">
+                        <thead>
+                            <tr>
+                                <th>{{translation.pages.markets.buy_orders.columns.price}} (LTC)</th>
+                                <th>{{translation.pages.markets.buy_orders.columns.amount}} (LYNX)</th>
+                                <th>{{translation.pages.markets.buy_orders.columns.total}} (LTC)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center" colspan="3">{{translation.common.table.loading}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="table-responsive">
+                    <table id="sell_orders" class="table table-striped table-latests">
+                        <thead>
+                            <tr>
+                                <th>{{translation.pages.markets.sell_orders.columns.price}} (LTC)</th>
+                                <th>{{translation.pages.markets.sell_orders.columns.amount}} (LYNX)</th>
+                                <th>{{translation.pages.markets.sell_orders.columns.total}} (LTC)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center" colspan="3">{{translation.common.table.loading}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <div class="center-heading">
+                    <h2 class="section-title">{{translation.pages.markets.trade_history.heading}}</h2>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <table id="history_table" class="table table-striped table-latests">
+                        <thead>
+                            <tr>
+                                <td>{{translation.pages.markets.trade_history.columns.type}}</td>
+                                <td>{{translation.pages.markets.trade_history.columns.amount}} (LYNX)</td>
+                                <td>{{translation.pages.markets.trade_history.columns.price}} (LTC)</td>
+                                <td>{{translation.pages.markets.trade_history.columns.total}} (LTC)</td>
+                                <td>{{translation.pages.markets.trade_history.columns.time_stamp}}</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center" colspan="5">{{translation.common.table.loading}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(function () {
+        function History() {
+            this.data = null;
+            this.pagination = {
+                pageIndex: 1,
+                pageSize: 10,
+                count: 0
+            };
+            this.selector = {
+                tbody: $('#history_table tbody'),
+                tfoot: $('#history_table tfoot'),
+                pageInfo: null,
+                pagination: null,
+            };
+            this.getStartIndex = function () {
+                return ((this.pagination.pageIndex - 1) * this.pagination.pageSize) + 1;
+            }
+            this.getEndIndex = function () {
+                var index = (this.pagination.pageIndex * this.pagination.pageSize);
+                return (index < this.pagination.count) ? index : this.pagination.count;
+            }
+            this.load = function () {
+                let _this = this;
+                $.ajax({
+                    url: '/data/market/{{market}}',
+                    type: 'GET',
+                    contentType: 'application/json',
+            		dataType: 'json'
+                }).done(function (result) {
+                    _this.data = result;
+                    _this.pagination.count = _this.data.history.length;
+                    _this.render();                    
+                }).always(function(){
+                    _this.paginate();
+                    _this.renderBuyOrders();
+                    _this.renderSellOrders();
+                    _this.renderSummary();
+                });
+            }
+            this.render = function () {
+                let _this = this;
+                let items = _this.data.history;
+                let rows = '';
+                var index = (_this.pagination.pageSize * _this.pagination.pageIndex) - _this.pagination.pageSize;
+                var length = _this.pagination.pageSize * _this.pagination.pageIndex;
+                if(_this.pagination.count < length){
+                    length = _this.pagination.count;
+                }                
+                for (index; index < length; index++) {
+                    var p = items[index];                    
+                    var className = p.ordertype==='Buy'?'text-success':'text-danger';
+                    let row = '<tr class="'+className+'">';
+                    row += '<td>' +p.ordertype+ '</td>';
+                    row += '<td>' +p.amount+ '</td>';
+                    row += '<td>' +p.price+ '</td>';
+                    row += '<td>' +p.total+ '</td>';
+                    row += '<td>' +new Date(p.timestamp * 1000).toUTCString()+ '</td>'
+                    row += '</tr>';
+                    rows += row;
+                }
+                this.selector.tbody.html(rows);
+            }
+            this.paginate = function () {
+                var _this = this;
+                if (this.pagination.count > 0) {
+                    if ($('#history_table tfoot .page-info').length === 0) {
+                        this.selector.tfoot.html(
+                            '<tr><td colspan="5"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>'
+                        );
+                        this.selector.pageInfo = $('#history_table tfoot .page-info');
+                        this.selector.pagination = $('#history_table tfoot .pagination');
+                    }
+                    setTimeout(function () {
+                        _this.selector.pagination.twbsPagination({
+                            totalPages: Math.ceil(_this.pagination.count / _this.pagination
+                                .pageSize),
+                            onPageClick: function (event, page) {
+                                _this.pagination.pageIndex = page;
+                                _this.render();
+                            }
+                        });
+                        _this.updatePageInfo();
+                    }, 1000);
+                } else {
+                    this.selector.tbody.html('<tr><td class="text-center" colspan="5">{{translation.common.table.no_item_found}}</td></tr>');
+                }
+            }
+            this.updatePageInfo = function () {
+                var info = '{{translation.common.table.pagination.showing}} ' + this.getStartIndex() + ' {{translation.common.table.pagination.to}} ' + this.getEndIndex() + ' {{translation.common.table.pagination.of}} ' + this.pagination
+                    .count + ' {{translation.common.table.pagination.entries}}';
+                this.selector.pageInfo.html(info);
+            }
+            this.renderBuyOrders = function(){                
+                if(this.data){             
+                    let items = this.data.buys;
+                    let rows = '';                            
+                    for (var index=0; index < items.length; index++) {
+                        var p = items[index];                                        
+                        let row = '<tr>';
+                        row += '<td>' +p.price+ '</td>';
+                        row += '<td>' +p.amount+ '</td>';                    
+                        row += '<td>' +p.total+ '</td>';                    
+                        row += '</tr>';
+                        rows += row;
+                    }
+                    $('#buy_orders tbody').html(rows);
+                    $('#buy_orders').addClass('header-fixed');
+                }else{                    
+                    $('#buy_orders tbody').html('<tr><td class="text-center" colspan="3">{{translation.common.table.no_item_found}}</td></tr>');
+                }
+            }
+            this.renderSellOrders = function(){                
+                if(this.data){               
+                    let items = this.data.sells;
+                    let rows = '';                            
+                    for (var index=0; index < items.length; index++) {
+                        var p = items[index];                                        
+                        let row = '<tr>';
+                        row += '<td>' +p.price+ '</td>';
+                        row += '<td>' +p.amount+ '</td>';                    
+                        row += '<td>' +p.total+ '</td>';                    
+                        row += '</tr>';
+                        rows += row;
+                    }
+                    $('#sell_orders tbody').html(rows);
+                    $('#sell_orders').addClass('header-fixed');
+                }else{                    
+                    $('#sell_orders tbody').html('<tr><td class="text-center" colspan="3">{{translation.common.table.no_item_found}}</td></tr>');
+                }
+            }
+            this.renderSummary = function(){
+                if(this.data){                
+                    let summary = this.data.summary;
+                    $('#market_high').html(summary.high);
+                    $('#market_low').html(summary.low);
+                    $('#market_volume').html(summary.volume);
+                    $('#market_top_bid').html(summary.bid);
+                    $('#market_top_ask').html(summary.ask);                
+                    $('#market_last_price').html(summary.last);     
+                    var cryptopia_change =  (summary.change || 0).toFixed(4);
+                    if(cryptopia_change>0){
+                        $('#market_change').html('+ '+cryptopia_change+' %');
+                    }else{
+                        $('#market_change').html(cryptopia_change+' %');
+                    }
+                }
+            }
+        }
+        var history = new History();
+        history.load();
+        setInterval(function () {
+            history.load();
+        }, 60000);
+    });
+</script>

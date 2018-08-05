@@ -1,0 +1,188 @@
+<section class="block-explorer-section section bg-bottom">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="center-heading">
+					<h2 class="section-title">{{translation.pages.latest_blocks.heading}}</h2>
+				</div>
+			</div>			
+		</div>			
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="table-responsive">
+					<table class="table table-striped table-latests">
+						<thead>
+							<tr>
+								<td>{{translation.pages.latest_blocks.columns.block_height}}</td>
+								<td>{{translation.pages.latest_blocks.columns.age}}</td>
+								<td>{{translation.pages.latest_blocks.columns.block_time}}</td>
+								<td>{{translation.pages.latest_blocks.columns.transactions}}</td>
+								<td>{{translation.pages.latest_blocks.columns.difficulty}}</td>
+								<td>{{translation.pages.latest_blocks.columns.miner_reward_address}}</td>
+							</tr>
+						</thead>
+						<tbody>							
+							<tr>
+								<td class="text-center" colspan="6">{{translation.common.table.loading}}</td>
+							</tr>
+						</tbody>
+						<tfoot></tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	$(function(){
+		function Grid(){
+			this.data = {
+				count :0,
+				items : [],
+				pageIndex : 1,
+				pageSize : 25
+			};
+			this.url = '/data/latest-blocks';
+			this.params = {
+				pageIndex : 1,
+				pageSize : 25
+			};
+			this.selector = {
+				tbody : $('.table-latests tbody'),
+				tfoot : $('.table-latests tfoot'),       
+				pageSize : $('.table-latests .form-control'),
+				pageInfo :  null,
+				pagination : null,
+			};
+			this.getStartIndex = function(){
+        		return ((this.data.pageIndex - 1) * this.data.pageSize) + 1;
+    		}
+			this.getEndIndex = function(){
+				var index = (this.data.pageIndex * this.data.pageSize);
+				return (index < this.data.count) ? index : this.data.count;
+			}
+			this.init = function(){
+				var _this = this;
+				this.selector.pageSize.on('change',function(e){
+					var value = +e.target.value;
+					_this.params = {
+						pageIndex : 1,
+						pageSize : value
+					};
+					_this.load();
+				});
+				_this.load();
+			}
+			this.load = function(){
+				let _this = this;
+				$.ajax({
+					url: this.url,
+					data : this.params,
+					contentType: 'application/json',
+            		dataType: 'json',					
+					type:'GET'		
+				}).done(function(result){
+					_this.data = result;
+					_this.render();					
+					_this.tooltip();
+				}).always(function(){
+					_this.paginate();
+				});
+			}
+			this.reload = function(){
+				this.params = {
+					pageIndex : 1,
+					pageSize : 25
+				};
+        		this.load();
+    		}
+			this.render = function(){
+				let _this = this;
+				let rows = '';
+				this.data.items.forEach(function(p,index){
+					let blockUrl = '/address/'+_this._getExtractedBy(p);
+					let row = '<tr>';
+					row += '<td><a href="/block/'+p.blockhash+'">'+p.blockindex+'</a></td>';
+					row += '<td>'+_this._getTime(p)+'</td>';
+					row += '<td></td>';
+					row += '<td>'+p.txsCount||0+'</td>';
+					row += '<td data-toggle="tooltip" title="'+_this.data.difficulty+'">'+_this.data.difficultyToFixed+'</td>';
+					row += '<td><a href="'+blockUrl+'">'+_this._getExtractedBy(p)+'</a></td>';
+					row +='</tr>';
+					rows += row;						
+				});
+				this.selector.tbody.html(rows);				
+			}
+			this.paginate = function(){
+				var _this = this;
+				if(this.data.count>0){
+					if($('.table-latests tfoot .page-info').length===0){
+						this.selector.tfoot.html('<tr><td colspan="6"><p class="page-info"></p><ul class="pagination pull-right"></ul></td></tr>');
+						this.selector.pageInfo = $('.table-latests tfoot .page-info');
+						this.selector.pagination = $('.table-latests tfoot .pagination');
+					}
+					setTimeout(function(){
+						_this.selector.pagination.twbsPagination({
+							totalPages: Math.ceil(_this.data.count / _this.data.pageSize),
+							onPageClick: function (event, page) {
+								_this.params = {
+									pageIndex : page,
+									pageSize : _this.data.pageSize
+								};
+								_this.load();
+							}
+						});
+						_this.updatePageInfo();
+					},1000);
+				}else{
+					this.selector.tbody.html('<tr><td class="text-center" colspan="6">{{translation.common.table.no_item_found}}</td></tr>');
+				}
+    		}
+			this.updatePageInfo = function(){
+				var info = '{{translation.common.table.pagination.showing}} ' + this.getStartIndex() + ' {{translation.common.table.pagination.to}} ' + this.getEndIndex() + ' {{translation.common.table.pagination.of}} ' + this.data.count + ' {{translation.common.table.pagination.entries}}';
+				this.selector.pageInfo.html(info);
+			}
+			this.tooltip = function(){
+				$('[data-toggle="tooltip"]').tooltip(); 
+			}
+			this._getTime = function(p){
+				var date = new Date((p.timestamp) * 1000);
+				var seconds = Math.floor((new Date() - date) / 1000);
+				var interval = Math.floor(seconds / 31536000);
+				if (interval > 1) {
+					return interval + " years";
+				}
+				interval = Math.floor(seconds / 2592000);
+				if (interval > 1) {
+					return interval + " months";
+				}
+				interval = Math.floor(seconds / 86400);
+				if (interval > 1) {
+					return interval + " days";
+				}
+				interval = Math.floor(seconds / 3600);
+				if (interval > 1) {
+					return interval + " hours";
+				}
+				interval = Math.floor(seconds / 60);
+				if (interval > 1) {
+					return interval + " minutes";
+				}
+				return Math.floor(seconds) + " seconds";
+			}			
+			this._getExtractedBy = function(p){
+				let extractedBy = '';
+				if(p.vout.length>0){
+					extractedBy = p.vout[0].addresses;
+				}
+				return extractedBy;
+			}
+		}
+		var grid = new Grid();
+		grid.init();
+		setInterval(function () {     
+			grid.reload();     
+        },60000);
+	});
+</script>

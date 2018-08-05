@@ -1,0 +1,105 @@
+<section class="block-explorer-section section bg-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="center-heading">
+                        <h2 class="section-title">{{translation.pages.tx.summary.heading}}</h2>
+                    </div>
+                </div>                
+            </div>
+            <div class="row m-bottom-70">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-latests table-detail">
+                            <thead>
+                                <tr>
+                                    <td colspan="7">
+                                        {{#ifNotEquals block.previousblockhash null}}
+                                        <a href="/block/{{block.previousblockhash}}"><i class="fa fa-arrow-left"></i></a>
+                                        {{/ifNotEquals}}
+                                        LYNX txid: {{tx.txid}}
+                                        {{#ifNotEquals block.nextblockhash null}}
+                                        <a href="/block/{{block.nextblockhash}}"><i class="fa fa-arrow-right"></i></a>
+                                        {{/ifNotEquals}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Confirmations</th>
+                                    <th>Block Hash</th>
+                                    <th>Timestamp</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class={{blockConfirmationClass block.confirmations confirmations}}>
+                                    <td>{{blockcount}}</td>
+                                    <td><a href="/block/{{tx.blockhash}}">{{tx.blockhash}}</a></td>
+                                    <td>{{toUnixTime tx.timestamp}}</td>
+                                    <td><a href="/block/{{tx.blockhash}}"><i class="fa fa-eye"></i></a></td>                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <table class="table table-striped table-latests table-detail">
+                        <thead>
+                            <tr>
+                                <th>
+                                    {{translation.pages.tx.input.heading}}
+                                    <i class="pull-right fa fa-arrow-right"></i>
+                                </th>
+                            </tr>
+                            <tr>
+                                {{#ifEquals tx.vin.0.addresses 'coinbase'}}
+                                    <th colspan="2" class="text-center">Address</th>
+                                {{/ifEquals}}
+                                {{#ifNotEquals tx.vin.0.addresses 'coinbase'}}
+                                    <th>Address</th>
+                                    <th>Amount</th>
+                                {{/ifNotEquals}}                                                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each tx.vin}}
+                            <tr>
+                                {{#ifEquals this.addresses 'coinbase'}}
+                                    <td colspan="2" class="text-center">New Coins</td>
+                                {{/ifEquals}}
+                                {{#ifNotEquals this.addresses 'coinbase'}}
+                                    <td>
+                                        <a href="/address/{{this.addresses}}">{{this.addresses}}</a>
+                                    </td>
+                                    <td>{{toAmount this.amount 8}}</td>
+                                {{/ifNotEquals}}                                                                
+                            </tr>
+                            {{/each}}                            
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-6">
+                    <table class="table table-striped table-latests table-detail">
+                        <thead>
+                            <tr>
+                                <th colspan="2">{{translation.pages.tx.output.heading}}</th>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <th>Amount (LYNX)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each tx.vout}}
+                            <tr>
+                                <td><a href="/address/{{this.addresses}}">{{this.addresses}}</a></td>
+                                <td class="text-success">{{toAmount this.amount 8}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>

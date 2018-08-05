@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{translation.title}}</title>
+	<meta name="description" content="Lynx (LYNX) is a secure cryptocurrency with fast transaction speeds and low-transaction fees." />
+	<meta name="keywords" content="lynx, bitcoin, ethereum, monero, ico, token, free token, btc, eth" />
+	<meta name="author" content="tempload"/>
+
+	<!-- Favicon -->
+	<link rel="icon" type="image/png" href="/favicon.ico" />
+
+	<!-- Bootstrap & Plugins CSS -->
+	<link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	<!-- Custom CSS -->
+	<link href="/assets/css/dark.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	
+	<div class="loading-wrapper">
+		<div class="loading">
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+	</div>	
+
+	<!-- ***** Header Area Start ***** -->
+	<header class="header-area">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<nav class="main-nav">
+						<!-- ***** Logo Start ***** -->
+						<a href="/" class="logo">
+							<img src="/assets/images/logos/bitcoin64.png" class="light-logo" alt="Lynx "/>
+							<img src="/assets/images/logos/bitcoin64.png" class="dark-logo" alt="Lynx "/>
+							<!--
+							<img src="assets/images/logos/white-logo-lynx.png" class="light-logo" alt="Lynx "/>
+							<img src="assets/images/logos/black-logo-lynx.png" class="dark-logo" alt="Lynx "/>
+							-->
+						</a>
+						<!-- ***** Logo End ***** -->
+
+						<!-- ***** Lang Start ***** -->
+						<div class="lang">
+							<div class="selected">								
+								<img src="/assets/images/flags/{{ulang}}.png" alt="">
+								<i class="fa fa-angle-down"></i>
+							</div>
+							<ul class="flag-list">
+								<li>
+									<a href="?clang=en">
+										<img src="/assets/images/flags/en.png" alt=""><span>EN</span>
+									</a>
+								</li>	
+								<li>
+									<a href="?clang=ru">
+										<img src="/assets/images/flags/ru.png" alt=""><span>RU</span>
+									</a>
+								</li>	
+								<li>
+									<a href="?clang=br">
+										<img src="/assets/images/flags/br.png" alt=""><span>BR</span>
+									</a>
+								</li>	
+							</ul>
+						</div>
+						<!-- ***** Lang End ***** -->
+
+						<!-- ***** Menu Start ***** -->												
+						<ul class="nav">
+							<li><a href="/">{{translation.menus.explorer}}</a></li>
+							<li><a href="/latest-blocks">{{translation.menus.latest_blocks}}</a></li>
+							<li><a href="/rich-list">{{translation.menus.top_100}}</a></li>
+							<li><a href="/network">{{translation.menus.network}}</a></li>
+							<li><a href="/markets/{{markets.default}}">{{translation.menus.markets}}</a></li>
+							<li><a href="/info">{{translation.menus.api}}</a></li>
+						</ul>
+						<a class='menu-trigger'>
+							<span>Menu</span>
+						</a>
+						<!-- ***** Menu End ***** -->						
+					</nav>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- ***** Header Area End ***** -->
+	<!-- jQuery -->
+	<script src="/assets/js/jquery-2.1.0.min.js"></script>
+	
+	<!-- ***** Wellcome Area Start ***** -->
+	<section class="block-explorer-wrapper bg-bottom-center" id="welcome-1">
+		<div class="block-explorer text">
+			<div class="container text-center">
+				<div class="row">
+					<div class="col-lg-12 align-self-center">
+						<h1>{{translation.pages.layouts_main.heading}}</h1>
+					</div>
+					<div class="offset-lg-3 col-lg-6">
+						<p>{{translation.pages.layouts_main.sub_heading}}<span id="block_number">{{blockIndex}}</span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="search">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<form method="GET" action="/search">
+							<div class="input-wrapper">
+								<div class="input">
+									<input name="q" type="text" placeholder="{{translation.common.search_placeholder}}" />
+									<button type="submit" class="fa fa-search"></i></button>
+								</div>
+								<div id="error-place-holder">
+									{{#ifNotEquals error null}}
+									<div role="alert" class="mt-4 mb-0 alert alert-danger alert-dismissable">
+										<button type="button" data-dismiss="alert" class="close">×</button>
+										<strong>{{error}}</strong>
+									</div>
+									{{/ifNotEquals}}
+								</div>								
+							</div>							
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</section>
+	<!-- ***** Wellcome Area End ***** -->
+	{{{body}}}
+
+	<!-- ***** Contact & Footer Start ***** -->
+	<footer id="contact">
+		<div class="footer-bottom slim">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<p class="copyright">{{translation.footer.copyright}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<!-- Bootstrap -->
+	<script src="/assets/js/popper.js"></script>
+	<script src="/assets/js/bootstrap.min.js"></script>
+	<script src="/vendor/esimakin-twbs-pagination/jquery.twbsPagination.min.js"></script>
+	<!-- Plugins -->
+	<script src="/assets/js/particles.min.js"></script>
+	<script src="/assets/js/scrollreveal.min.js"></script>
+	<script src="/assets/js/jquery.downCount.js"></script>
+	<script src="/assets/js/parallax.min.js"></script>
+
+	<!-- Global Init -->
+	<script src="/assets/js/particle-dark.js"></script>
+	<script src="/assets/js/custom.js"></script>
+</body>
+</html>

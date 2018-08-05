@@ -13,6 +13,7 @@ exports.getLastTransactions = (min, pageIndex, pageSize)=>{
         .sort({_id: 'desc'})
         .skip((pageSize * pageIndex) - pageSize)
         .limit(pageSize)
+        .lean(true)
         .exec(function(err, items) {
             if(err) reject(err);
             else resolve(items);
@@ -45,11 +46,19 @@ exports.findOne = (txnId)=>{
 
 exports.findByTxnIds = (txnIds)=>{
     return new Promise((resolve,reject)=>{
-        Tx.find({ txid: {
-            $in : txnIds
-        }}, (err,data)=>{
+        Tx
+        .find({
+            txid: {
+                $in : txnIds
+            }
+        })
+        .sort({
+            blockindex: 'desc'
+        })        
+        .lean(true)
+        .exec(function(err, items) {
             if(err) reject(err);
-            else resolve(data);
+            else resolve(items);
         });
     });
 }
@@ -62,4 +71,33 @@ exports.save = (model)=>{
             else resolve(tx);
         });
     });  
+};
+
+exports.removeAll = ()=>{
+    return new Promise((resolve,reject)=>{
+        Tx.remove({}, function(err, result) {
+            if(err) reject(err);
+            else resolve(result);
+        });
+    });   
+};
+
+exports.getRecentBlock = ()=>{        
+    return new Promise((resolve,reject)=>{
+        Tx
+        .find({})
+        .sort({ blockindex: 'desc' })        
+        .limit(1)
+        .lean(true)
+        .exec(function(err, items) {
+            if(err) reject(err);
+            else {
+                if(items.length>0){
+                    resolve(items[0].blockindex);
+                }else{
+                    resolve(0);
+                }
+            }
+        });
+    });    
 };

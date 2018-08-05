@@ -1,27 +1,261 @@
-var { display, movement, address, api, richlist, markets,
-    genesis_tx, genesis_block, txcount } = require('../lib/settings');
-var repository = require('../data-access/richlist.repository');
+var { movement, address, api, show_sent_received, markets,
+    genesis_tx, genesis_block, txcount, confirmations, txcount } = require('../lib/settings');
 var marketsRepository = require('../data-access/markets.repository');
-var searchRepository = require('../data-access/search.repository');
 var rewardRepository = require('../data-access/reward.repository');
-var blockRepository = require('../data-access/block.repository');
-var txRepository = require('../data-access/tx.repository');
+var Decimal = require('decimal.js');
 
-const handleError = (res,error)=>{
-    res.render('index', { 
-        active: 'home', 
-        error: error, 
-        warning: null
+var co = require('co');
+var qr = require('qr-image');
+var { bitcoin, cryptoCompare, db } = require('../helpers');
+
+//index
+exports.index = (req, res, next) =>{
+    co(function* (){        
+        let data = {
+            ... yield bitcoin.getDifficulty(),
+            hashrate : yield bitcoin.getHashRate(),
+            connections : yield bitcoin.getConnections(),
+            liteCoin : yield cryptoCompare.getLitecoin(),
+            liteCoinPrice : yield cryptoCompare.getCoinPrice('LTC','USD'),
+            coin : yield cryptoCompare.getCoin(),
+            coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC'),
+            blockIndex : yield db.tx.getRecentBlock(),
+            markets
+        };
+        data.usdPrice = data.liteCoinPrice * data.coinPrice;
+        data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.usdPrice;
+        res.render('explorer', data);
+    }).catch(next);    
+};
+
+//latest-blocks
+exports.latestBlocks = (req, res, next) =>{
+    co(function* (){
+        let data = {           
+            blockIndex : yield db.tx.getRecentBlock(),
+            markets
+        };
+        res.render('latest-blocks', data);
+    }).catch(next);
+};
+
+exports.block = (req, res, next) =>{    
+    let hash = req.param('hash');
+    co(function* (){
+        let data = {
+            blockIndex : yield db.tx.getRecentBlock(),
+            block : yield bitcoin.getBlockByHash(hash),
+            markets
+        };
+        let txs = null;
+        if(data.block !== bitcoin.CONSOLE_ERROR && hash === genesis_block){
+            txs = 'GENESIS';
+        }else{
+            txs = yield db.tx.findByTxnIds(data.block.tx);            
+        }
+        data.block.difficultyToFixed = new Decimal(data.block.difficulty).toFixed(6);        
+        res.render('block', {             
+            ...data, 
+            confirmations, 
+            txs
+        });
+    }).catch(next);
+
+    // blockRepository.getBlock(hash).then(data=>{
+    //     console.timeEnd(req.originalUrl);            
+    //     if(data.txs.length>0){
+    //         res.render('block', { 
+    //             active: 'block', 
+    //             ...data
+    //         });
+    //     }else{
+    //         blockRepository.createTxs(data.block).then(data=>{                
+    //             res.render('block', { 
+    //                 active: 'block', 
+    //                 ...data
+    //             });
+    //         });
+    //     }
+    // }).catch(err=>{
+    //     handleError(res,err.message);
+    // });
+};
+
+//address:hash
+exports.address = (req, res, next) =>{
+    let hash = req.param('hash');
+    let count = req.param('count') || txcount;
+    co(function* (){
+        let data = {           
+            blockIndex : yield db.tx.getRecentBlock(),
+            hash,
+            markets
+        };
+        res.render('address', data);
+    }).catch(next);    
+};
+
+//tx
+exports.tx = (req, res, next) =>{
+    let hash = req.param('txid');
+    co(function* (){
+        let blockIndex = yield db.tx.getRecentBlock();
+        let tx = yield db.tx.findOne(hash);
+        if(tx){            
+            let blockcount = yield bitcoin.getBlockCount();
+            res.render('tx', {
+                blockIndex,
+                tx, 
+                confirmations, 
+                blockcount,
+                markets
+            }); 
+        }else{
+            let rtx = yield bitcoin.getRawTransaction(hash);
+            if (rtx.txid) {
+                let vin = yield lib.prepare_vin(rtx);  
+                let { rvout, rvin } = yield lib.prepare_vout(rtx.vout, rtx.txid, vin);
+                let total = rvout.reduce((acc, p) => acc + p.amount, 0);
+                
+                let utx = {
+                    txid: rtx.txid,
+                    vin: rvin,
+                    vout: rvout,
+                    total: total.toFixed(8),
+                    timestamp: rtx.time                        
+                };
+                if (!rtx.confirmations > 0) {
+                    utx.blockhash = '-';
+                    utx.blockindex = -1;
+                    res.render('tx', {
+                        blockIndex,
+                        tx: utx, 
+                        confirmations, 
+                        blockcount:-1,
+                        markets
+                    });
+                }else{
+                    utx.blockhash = rtx.blockhash;
+                    utx.blockindex =  rtx.blockheight;
+                    
+                    let blockcount = yield bitcoin.getBlockCount();
+                    res.render('tx', {   
+                        blockIndex,                      
+                        tx: utx, 
+                        confirmations, 
+                        blockcount,
+                        markets
+                    });
+                }
+            }else{
+                res.status(500).send(new Error('Txn not found '+hash));
+            }
+        }
+    }).catch(next);
+};
+
+//qr:hash
+exports.getQRImage = (req,res) =>{
+    let hash = req.param('hash');
+    let address = qr.image(hash, {
+        type: 'png',
+        size: 7,
+        margin: 1,
+        ec_level: 'M'
+    });
+    res.type('png');
+    address.pipe(res);
+};
+
+//search
+exports.search = (req,res)=>{
+    let { query : { q: search } } = req;  
+    let referer = req.header('Referer') || '/';
+
+    co(function* (){
+        if(search.length===64){
+            if(search === genesis_tx) {
+                return res.redirect('/block/' + genesis_block);
+            }            
+            let block = yield bitcoin.getBlockByHash(search);
+            if(block !== bitcoin.CONSOLE_ERROR){
+                return res.redirect('/block/'+search);
+            }
+        }
+        let txn = yield db.tx.findOne(search);
+        if(txn){
+            return res.redirect('/tx/'+search);
+        }
+        let blockHash = yield bitcoin.getBlockHash(search);        
+        if(blockHash !== bitcoin.CONSOLE_ERROR){            
+            return res.redirect('/block/'+blockHash);
+        }
+        let address = yield db.address.findOne(search);        
+        if(address){
+            return res.redirect('/address/' + address.a_id);
+        }        
+        req.session['error'] = `No results found for : ${search}`;
+        res.redirect(referer);
+    }).catch(err=>{
+        req.session['error'] = err.message;
+        res.redirect(referer);        
     });
 };
 
-exports.index = (req,res) =>{
-    handleError(res,null);
+//richlist
+exports.richList = (req, res, next) =>{
+    co(function* (){
+        let blockIndex = yield db.tx.getRecentBlock();        
+        res.render('rich-list', {                
+            blockIndex,
+            markets
+        });
+    }).catch(next);
 };
 
-exports.network = (req,res) =>{
-    res.render('network', {
-        active: 'network'
+exports.market = (req, res, next) =>{
+    let { market } = req.params;   
+    if (markets.enabled.indexOf(market) != -1) {
+        co(function* (){
+            let coin = yield cryptoCompare.getCoin();      
+            let blockIndex = coin.General.BlockNumber;      
+            res.render('markets_' + market, {                
+                blockIndex,
+                markets,
+                market
+            });
+        }).catch(next);
+    }else{
+        res.redirect('/');
+    }
+};
+
+exports.reward = (req, res, next) =>{    
+    rewardRepository.getReward().then(data=>{        
+        res.render('reward', { 
+            active: 'reward', 
+            ...data
+        });
+    }).catch(next);
+};
+
+//network
+exports.network = (req, res, next) =>{
+    co(function* (){
+        let data = {  
+            blockIndex : yield db.tx.getRecentBlock(),
+            markets
+        };
+        res.render('network', data);
+    }).catch(next);
+};
+
+//api
+exports.info = (req,res) =>{
+    res.render('info', {       
+        address: address, 
+        hashes: api,
+        markets
     });
 };
 
@@ -31,165 +265,5 @@ exports.movement = (req,res) =>{
         flaga: movement.low_flag, 
         flagb: movement.high_flag, 
         min_amount: movement.min_amount
-    });
-};
-
-exports.info = (req,res) =>{
-    res.render('info', { 
-        active: 'info', 
-        address: address, 
-        hashes: api
-    });
-};
-
-exports.richList = (req,res) =>{
-    if (display.richlist){
-        repository.getData().then(data=>{
-            let { richlist:{ balance, received }, distribution:{ t_1_25, t_26_50, t_51_75, t_76_100, t_101plus  }, stats } = data;
-            res.render('richlist', {
-                active: 'richlist',
-                balance: balance,
-                received: received,
-                stats: stats,
-                dista: t_1_25,
-                distb: t_26_50,
-                distc: t_51_75,
-                distd: t_76_100,
-                diste: t_101plus,
-                show_dist: richlist.distribution,
-                show_received: richlist.received,
-                show_balance: richlist.balance,
-              });
-        }).catch(err=>{
-            console.log('err',err);
-            res.redirect('/');
-        });
-    }else{
-        res.redirect('/');
-    }
-};
-
-exports.market = (req,res) =>{
-    let { market } = req.params;   
-    if (markets.enabled.indexOf(market) != -1) {
-        marketsRepository.getMarkets(market).then(data=>{
-            res.render('./markets/' + market, {
-                active: 'markets',
-                marketdata: {
-                  coin: markets.coin,
-                  exchange: markets.exchange,
-                  data: data,
-                },
-                market: market
-            });
-        }).catch(err=>{
-            res.redirect('/');
-        });
-    }else{
-        res.redirect('/');
-    }
-};
-
-const searchAddress = (req,res)=>{
-    let { search } = req.body;
-    searchRepository.getAddress(search).then(address=>{
-        if (address) {
-            res.redirect('/address/' + address.a_id);
-        } else {
-            searchRepository.getBlockHash(search).then(hash=>{
-                if (hash != 'There was an error. Check your console.') {
-                    res.redirect('/block/' + hash);
-                } else {
-                    handleError(res,null);
-                }
-            });
-        }
-    }).catch(err=>{
-        console.log('err',err);
-        res.redirect('/');
-    });
-};
-
-exports.search = (req,res) =>{
-    let { search } = req.body;
-    if(search.length === 64){
-        if(search === genesis_tx) {
-            res.redirect('/block/' + genesis_block);
-        }else{            
-            searchRepository.findTransactionById(search).then(txn=>{
-                if(txn){
-                    res.redirect('/tx/' +txn.txid);
-                }else{
-                    searchRepository.getBlockHash(search).then(hash=>{
-                        if (hash != 'There was an error. Check your console.') {
-                            res.redirect('/block/' + hash);
-                        } else {
-                            handleError(res,locale.ex_search_error);
-                        }
-                    });
-                }
-            });
-        }
-    }else{
-        searchAddress(req,res);
-    }
-};
-
-exports.address = (req,res) =>{
-    let hash = req.param('hash');
-    let count = req.param('count') || txcount;
-    searchRepository.getAddressAndTxns(hash,count).then(data=>{
-        data.active = 'address';
-        res.render('address', data);
-    }).catch(err=>{
-        handleError(res,err.message);
-    });
-};
-
-exports.reward = (req,res) =>{
-    rewardRepository.getReward().then(data=>{
-        res.render('reward', { 
-            active: 'reward', 
-            ...data
-        });
-    }).catch(err=>{
-        res.redirect('/');
-    });
-};
-
-exports.block = (req,res) =>{
-    let hash = req.param('hash');
-    blockRepository.getBlock(hash).then(data=>{        
-        if(data.txs.length>0){
-            res.render('block', { 
-                active: 'block', 
-                ...data
-            });
-        }else{
-            blockRepository.createTxs(data.block).then(data=>{                
-                res.render('block', { 
-                    active: 'block', 
-                    ...data
-                });
-            });
-        }
-    }).catch(err=>{
-        handleError(res,err.message);
-    });
-};
-
-
-exports.tx = (req,res) =>{
-    let hash = req.param('txid');
-    if(hash === genesis_tx){
-        return res.redirect('/block/'+hash);
-    }
-    txRepository.getTx(hash).then(data=>{
-        res.render('tx', { 
-            active: 'tx', 
-            ...data
-        });
-    }).catch(err=>{
-        handleError(res,err.message);
     });
 };
