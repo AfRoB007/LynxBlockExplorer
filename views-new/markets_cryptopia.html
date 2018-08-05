@@ -19,43 +19,43 @@
 						<tbody>
 							<tr>
 								<td>
-									<strong>High</strong>
+									<strong>{{translation.pages.markets.summary.columns.high}}</strong>
 								</td>
 								<td id="market_high"></td>
 							</tr>
 							<tr>
 								<td>
-									<strong>Low</strong>
+									<strong>{{translation.pages.markets.summary.columns.low}}</strong>
 								</td>
 								<td id="market_low"></td>
 							</tr>
 							<tr>
 								<td>
-									<strong>Volume</strong>
+									<strong>{{translation.pages.markets.summary.columns.volume}}</strong>
 								</td>
 								<td id="market_volume"></td>
 							</tr>
 							<tr>
 								<td>
-									<strong>Top Bid</strong>
+									<strong>{{translation.pages.markets.summary.columns.top_bid}}</strong>
                                 </td>
                                 <td id="market_top_bid"></td>
 							</tr>							
 							<tr>
 								<td>
-									<strong>Top Ask</strong>
+									<strong>{{translation.pages.markets.summary.columns.top_ask}}</strong>
                                 </td>
                                 <td id="market_top_ask"></td>
 							</tr>
 							<tr>
 								<td>
-									<strong>Last Price</strong>
+									<strong>{{translation.pages.markets.summary.columns.last_price}}</strong>
                                 </td>
                                 <td id="market_last_price"></td>
                             </tr>
                             <tr>
 								<td>
-									<strong>Change</strong>
+									<strong>{{translation.pages.markets.summary.columns.change}}</strong>
 								</td>
 								<td id="market_change"></td>
                             </tr>                            
@@ -82,14 +82,14 @@
                     <table id="buy_orders" class="table table-striped table-latests">
                         <thead>
                             <tr>
-                                <th>Price (LTC)</th>
-                                <th>Amount (LYNX)</th>
-                                <th>Total (LTC)</th>
+                                <th>{{translation.pages.markets.buy_orders.columns.price}} (LTC)</th>
+                                <th>{{translation.pages.markets.buy_orders.columns.amount}} (LYNX)</th>
+                                <th>{{translation.pages.markets.buy_orders.columns.total}} (LTC)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-center" colspan="3">Loading ...</td>
+                                <td class="text-center" colspan="3">{{translation.common.table.loading}}</td>
                             </tr>
                         </tbody>
                         <tfoot></tfoot>
@@ -101,14 +101,14 @@
                     <table id="sell_orders" class="table table-striped table-latests">
                         <thead>
                             <tr>
-                                <th>Price (LTC)</th>
-                                <th>Amount (LYNX)</th>
-                                <th>Total (LTC)</th>
+                                <th>{{translation.pages.markets.sell_orders.columns.price}} (LTC)</th>
+                                <th>{{translation.pages.markets.sell_orders.columns.amount}} (LYNX)</th>
+                                <th>{{translation.pages.markets.sell_orders.columns.total}} (LTC)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-center" colspan="3">Loading ...</td>
+                                <td class="text-center" colspan="3">{{translation.common.table.loading}}</td>
                             </tr>
                         </tbody>
                         <tfoot></tfoot>
@@ -127,16 +127,16 @@
                     <table id="history_table" class="table table-striped table-latests">
                         <thead>
                             <tr>
-                                <td>Type</td>
-                                <td>Amount (LYNX)</td>
-                                <td>Price (LTC)</td>
-                                <td>Total (LTC)</td>
-                                <td>Time Stamp</td>
+                                <td>{{translation.pages.markets.trade_history.columns.type}}</td>
+                                <td>{{translation.pages.markets.trade_history.columns.amount}} (LYNX)</td>
+                                <td>{{translation.pages.markets.trade_history.columns.price}} (LTC)</td>
+                                <td>{{translation.pages.markets.trade_history.columns.total}} (LTC)</td>
+                                <td>{{translation.pages.markets.trade_history.columns.time_stamp}}</td>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-center" colspan="5">Loading ...</td>
+                                <td class="text-center" colspan="5">{{translation.common.table.loading}}</td>
                             </tr>
                         </tbody>
                         <tfoot></tfoot>
@@ -232,12 +232,12 @@
                         _this.updatePageInfo();
                     }, 1000);
                 } else {
-                    this.selector.tbody.html('<tr><td class="text-center" colspan="5">No items found</td></tr>');
+                    this.selector.tbody.html('<tr><td class="text-center" colspan="5">{{translation.common.table.no_item_found}}</td></tr>');
                 }
             }
             this.updatePageInfo = function () {
-                var info = 'Showing ' + this.getStartIndex() + ' to ' + this.getEndIndex() + ' of ' + this.pagination
-                    .count + ' entries';
+                var info = '{{translation.common.table.pagination.showing}} ' + this.getStartIndex() + ' {{translation.common.table.pagination.to}} ' + this.getEndIndex() + ' {{translation.common.table.pagination.of}} ' + this.pagination
+                    .count + ' {{translation.common.table.pagination.entries}}';
                 this.selector.pageInfo.html(info);
             }
             this.renderBuyOrders = function(){                
@@ -256,7 +256,7 @@
                     $('#buy_orders tbody').html(rows);
                     $('#buy_orders').addClass('header-fixed');
                 }else{                    
-                    $('#buy_orders tbody').html('<tr><td class="text-center" colspan="3">No items found</td></tr>');
+                    $('#buy_orders tbody').html('<tr><td class="text-center" colspan="3">{{translation.common.table.no_item_found}}</td></tr>');
                 }
             }
             this.renderSellOrders = function(){                
@@ -275,7 +275,7 @@
                     $('#sell_orders tbody').html(rows);
                     $('#sell_orders').addClass('header-fixed');
                 }else{                    
-                    $('#sell_orders tbody').html('<tr><td class="text-center" colspan="3">No items found</td></tr>');
+                    $('#sell_orders tbody').html('<tr><td class="text-center" colspan="3">{{translation.common.table.no_item_found}}</td></tr>');
                 }
             }
             this.renderSummary = function(){

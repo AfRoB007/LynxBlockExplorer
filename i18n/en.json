@@ -17,7 +17,17 @@
         },
         "explorer" :{
             "heading": "General Information",
-            "sub_heading" : "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat."
+            "sub_heading" : "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.",
+            "columns":{
+                "btc_price": "BTC Price",
+                "usd_price": "USD Price",
+                "market_cap": "Market Cap",
+                "hashrate": "Hashrate",
+                "difficulty": "Difficulty",
+                "outstanding": "Outstanding",
+                "transactions_per_day": "Transactions Per Day",
+                "trade_volume": "Trade Volume"
+            }
         },
         "latest_blocks" :{
             "heading": "Latest Blocks",
@@ -32,27 +42,67 @@
         },
         "top_100" :{
             "richlist": {
-                "heading": "Rich List"
+                "heading": "Rich List",
+                "columns":{
+                    "rank": "Rank",
+                    "address": "Address",
+                    "amount": "Amount",
+                    "percent": "Percent"
+                }
             },
             "distribution":{
-                "heading": "Distribution"
+                "heading": "Distribution",
+                "columns":{
+                    "amount": "Amount"                    
+                }
             }
         },
         "network" :{
             "heading": "Network",
-            "sub_heading" : "This is sub sample of the network based on wallets that have connected to this node in the last 24 hours."
+            "sub_heading" : "This is sub sample of the network based on wallets that have connected to this node in the last 24 hours.",
+            "columns":{                
+                "address": "Address",
+                "protocol": "Protocol",
+                "sub_version": "Sub-version",
+                "country": "Country"
+            }
         },
         "markets" :{
-            "summary":{               
+            "summary":{
+                "columns": {
+                    "high" : "High",
+                    "low" : "Low",
+                    "volume" : "Volume",
+                    "top_bid" : "Top Bid",
+                    "top_ask" : "Top Ask",
+                    "last_price" : "Last Price",
+                    "change" : "Change"
+                }             
             },
             "buy_orders": {
-                "heading": "Buy Orders"
+                "heading": "Buy Orders",
+                "columns": {
+                    "price" : "Price",
+                    "amount" : "Amount",
+                    "total" : "Total"
+                }
             },
             "sell_orders":{
-                "heading": "Sell Orders"
+                "heading": "Sell Orders",
+                "columns": {
+                    "price" : "Price",
+                    "amount" : "Amount",
+                    "total" : "Total"
+                }
             },
             "trade_history":{
-                "heading": "Trade History"
+                "heading": "Trade History",
+                "columns": {
+                    "type" : "Type",
+                    "amount" : "Amount",
+                    "total" : "Total",
+                    "time_stamp": "Time Stamp"
+                }
             }
         },
         "address" :{
@@ -101,6 +151,7 @@
                 "of": "of",
                 "entries": "entries"
             }
-        }
+        },
+        "search_placeholder": "block, hash, transaction, etc..."
     }
 }
