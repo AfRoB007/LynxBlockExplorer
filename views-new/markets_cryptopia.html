@@ -222,12 +222,15 @@
                     }
                     setTimeout(function () {
                         _this.selector.pagination.twbsPagination({
-                            totalPages: Math.ceil(_this.pagination.count / _this.pagination
-                                .pageSize),
+                            totalPages: Math.ceil(_this.pagination.count / _this.pagination.pageSize),
                             onPageClick: function (event, page) {
                                 _this.pagination.pageIndex = page;
                                 _this.render();
-                            }
+                            },
+                            first: '{{translation.common.table.pagination.first}}',
+							prev: '{{translation.common.table.pagination.previous}}',
+							next: '{{translation.common.table.pagination.next}}',
+							last: '{{translation.common.table.pagination.last}}'
                         });
                         _this.updatePageInfo();
                     }, 1000);

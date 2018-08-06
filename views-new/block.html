@@ -18,7 +18,7 @@
                                         <a href="/block/{{block.previousblockhash}}"><i class="fa fa-arrow-left"></i></a>
                                         {{/ifNotEquals}}
                                     </td>
-                                    <td colspan="5">LYNX block: {{block.hash}}</td>
+                                    <td colspan="5">LYNX {{translation.pages.block.summary.columns.block}}: {{block.hash}}</td>
                                     <td>
                                         {{#ifNotEquals block.nextblockhash null}}
                                         <a class="pull-right" href="/block/{{block.nextblockhash}}"><i class="fa fa-arrow-right"></i></a>
@@ -26,13 +26,13 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Height</th>
-                                    <th>Difficulty</th>
-                                    <th>Confirmations</th>
-                                    <th>Size (kB)</th>
-                                    <th>Bits</th>
-                                    <th>Nonce</th>
-                                    <th>Timestamp</th>
+                                    <th>{{translation.pages.block.summary.columns.height}}</th>
+                                    <th>{{translation.pages.block.summary.columns.difficulty}}</th>
+                                    <th>{{translation.pages.block.summary.columns.confirmations}}</th>
+                                    <th>{{translation.pages.block.summary.columns.size}} (KB)</th>
+                                    <th>{{translation.pages.block.summary.columns.bits}}</th>
+                                    <th>{{translation.pages.block.summary.columns.nonce}}</th>
+                                    <th>{{translation.pages.block.summary.columns.timestamp}}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,9 +68,9 @@
                         <table class="table table-striped table-txs">
                             <thead>
                                 <tr>
-                                    <th>Hash</th>
-                                    <th>Recipients</th>
-                                    <th>Amount (LYNX)</th>
+                                    <th>{{translation.pages.block.transactions.columns.hash}}</th>
+                                    <th>{{translation.pages.block.transactions.columns.recipients}}</th>
+                                    <th>{{translation.pages.block.transactions.columns.amount}} (LYNX)</th>
                                     <th></th>
                                 </tr>
                             </thead>

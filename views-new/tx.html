@@ -24,9 +24,9 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Confirmations</th>
-                                    <th>Block Hash</th>
-                                    <th>Timestamp</th>
+                                    <th>{{translation.pages.tx.summary.columns.confirmations}}</th>
+                                    <th>{{translation.pages.tx.summary.columns.block_hash}}</th>
+                                    <th>{{translation.pages.tx.summary.columns.timestamp}}</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -54,11 +54,11 @@
                             </tr>
                             <tr>
                                 {{#ifEquals tx.vin.0.addresses 'coinbase'}}
-                                    <th colspan="2" class="text-center">Address</th>
+                                    <th colspan="2" class="text-center">{{translation.pages.tx.input.columns.address}}</th>
                                 {{/ifEquals}}
                                 {{#ifNotEquals tx.vin.0.addresses 'coinbase'}}
-                                    <th>Address</th>
-                                    <th>Amount</th>
+                                    <th>{{translation.pages.tx.input.columns.address}}</th>
+                                    <th>{{translation.pages.tx.input.columns.amount}}</th>
                                 {{/ifNotEquals}}                                                                
                             </tr>
                         </thead>
@@ -86,8 +86,8 @@
                                 <th colspan="2">{{translation.pages.tx.output.heading}}</th>
                             </tr>
                             <tr>
-                                <th>Address</th>
-                                <th>Amount (LYNX)</th>
+                                <th>{{translation.pages.tx.output.columns.address}}</th>
+                                <th>{{translation.pages.tx.output.columns.amount}} (LYNX)</th>
                             </tr>
                         </thead>
                         <tbody>

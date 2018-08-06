@@ -129,7 +129,11 @@
                                         pageSize : _this.data.pageSize
                                     };
                                     _this.load();
-                                }
+                                },
+                                first: '{{translation.common.table.pagination.first}}',
+							    prev: '{{translation.common.table.pagination.previous}}',
+							    next: '{{translation.common.table.pagination.next}}',
+							    last: '{{translation.common.table.pagination.last}}'
                             });
                             _this.updatePageInfo();
                         },1000);
