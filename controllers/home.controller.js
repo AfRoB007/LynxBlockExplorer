@@ -17,18 +17,17 @@ exports.index = (req, res, next) =>{
             connections : yield bitcoin.getConnections(),
             liteCoin : yield cryptoCompare.getLitecoin(),
             liteCoinPrice : yield cryptoCompare.getCoinPrice('LTC','USD'),
-            coin : yield cryptoCompare.getCoin(),
+            //coin : yield cryptoCompare.getCoin(),
+            blockIndex : yield db.tx.getRecentBlock(),
             coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC'),
             blockIndex : yield db.tx.getRecentBlock(),
             markets
         };
         data.usdPrice = data.liteCoinPrice * data.coinPrice;
-        data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.usdPrice;
+        //data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.usdPrice;
+        data.marketCap =  1 * data.usdPrice;
         res.render('explorer', data);
-    }).catch(err=>{
-        console.log('error in home', err);
-        next(err);
-    });    
+    }).catch(next);    
 };
 
 //latest-blocks
