@@ -122,6 +122,7 @@ app.use(function(err, req, res, next) {
         message : err.message,
         error : err
     };
+    console.log(error);
     if (env === 'production') {
         error.error = {};
     }
