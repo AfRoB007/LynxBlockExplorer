@@ -25,52 +25,52 @@
                                 <p class="name">getdifficulty</p>
                                 <p class="description">Returns the current difficulty.</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/api/getdifficulty">{{address}}/api/getdifficulty</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getdifficulty">{{baseUrl}}/api/getdifficulty</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">getconnectioncount</p>
                                 <p class="description">Returns the number of connections the block explorer has to other nodes.</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/api/getconnectioncount">{{address}}/api/getconnectioncount</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getconnectioncount">{{baseUrl}}/api/getconnectioncount</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">getblockcount</p>
                                 <p class="description">Returns the current block index.</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/api/getblockcount">{{address}}/api/getblockcount</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getblockcount">{{baseUrl}}/api/getblockcount</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">getblockhash [index]</p>
                                 <p class="description">Returns the hash of the block at ; index 0 is the genesis block.</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/api/getblockhash?index=1738013">{{address}}/api/getblockhash?index=1738013</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getblockhash?index=1738013">{{baseUrl}}/api/getblockhash?index=1738013</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">getblock [hash]</p>
                                 <p class="description">Returns information about the block with the given hash.</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/api/getblock?hash={{hashes.blockhash}}">{{address}}/api/getblock?hash={{hashes.blockhash}}</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getblock?hash={{hashes.blockhash}}">{{baseUrl}}/api/getblock?hash={{hashes.blockhash}}</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">getrawtransaction [txid] [decrypt]</p>
                                 <p class="description">Returns raw transaction representation for given transaction id. decrypt can be set to 0(false) or 1(true).</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=0">{{address}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=0</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=0">{{baseUrl}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=0</a>
                                 </p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=1">{{address}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=1</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=1">{{baseUrl}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=1</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">getnetworkhashps</p>
                                 <p class="description">Returns the current network hashrate. (hash/s)</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/api/getnetworkhashps">{{address}}/api/getnetworkhashps</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getnetworkhashps">{{baseUrl}}/api/getnetworkhashps</a>
                                 </p>
                             </li>
                         </ul>
@@ -88,39 +88,38 @@
                     <div class="doc-body">
                         <ul class="list-group">
                             <li class="list-group-item">
-                                <p class="name">getmoneysupply</p>
+                                <p class="name">money-supply</p>
                                 <p class="description">Returns current money supply</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/ext/getmoneysupply">{{address}}/ext/getmoneysupply</a>
+                                    <a target="_blank" href="{{baseUrl}}/ext/money-supply">{{baseUrl}}/ext/money-supply</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
-                                <p class="name">getdistribution</p>
+                                <p class="name">distribution (/ext/distribution)</p>
                                 <p class="description">Returns wealth distribution stats</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/ext/getdistribution">{{address}}/ext/getdistribution</a>
+                                    <a target="_blank" href="{{baseUrl}}/ext/distribution">{{baseUrl}}/ext/distribution</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
-                                <p class="name">getaddress (/ext/getaddress/hash)</p>
+                                <p class="name">address (/ext/address/hash)</p>
                                 <p class="description">Returns information for given address</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/ext/getaddress/{{hashes.address}}">{{address}}/ext/getaddress/{{hashes.address}}<a>
+                                    <a target="_blank" href="{{baseUrl}}/ext/address/{{hashes.address}}">{{baseUrl}}/ext/address/{{hashes.address}}<a>
                                 </p>
                             </li>
                             <li class="list-group-item">
-                                <p class="name">getbalance (/ext/getbalance/hash)</p>
+                                <p class="name">balance (/ext/balance/hash)</p>
                                 <p class="description">Returns current balance of given address</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/ext/getbalance/{{hashes.address}}">{{address}}/ext/getbalance/{{hashes.address}}<a>
+                                    <a target="_blank" href="{{baseUrl}}/ext/balance/{{hashes.address}}">{{baseUrl}}/ext/balance/{{hashes.address}}<a>
                                 </p>
                             </li>
                             <li class="list-group-item">
-                                <p class="name">getlasttxs (/ext/getlasttxs/count/min)</p>
-                                <p class="description">Returns last [count] transactions greater than [min]</p>
+                                <p class="name">latest-txs (/ext/latest-txs?pageIndex=1&pageSize=10)</p>                                
                                 <p class="description">Note: returned values are in satoshis</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/ext/getlasttxs/10/100">{{address}}/ext/getlasttxs/10/100</a>
+                                    <a target="_blank" href="{{baseUrl}}/ext/latest-txs?pageIndex=1&pageSize=10">{{baseUrl}}/ext/latest-txs?pageIndex=1&pageSize=10</a>
                                 </p>
                             </li>
                         </ul>
@@ -140,25 +139,25 @@
                             <li class="list-group-item">
                                 <p class="name">transaction (/tx/txid)</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/tx/{{hashes.txhash}}">{{address}}/tx/{{hashes.txhash}}</a>
+                                    <a target="_blank" href="{{baseUrl}}/tx/{{hashes.txhash}}">{{baseUrl}}/tx/{{hashes.txhash}}</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">block (/block/hash)</p>                                
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/block/{{hashes.blockhash}}">{{address}}/block/{{hashes.blockhash}}</a>
+                                    <a target="_blank" href="{{baseUrl}}/block/{{hashes.blockhash}}">{{baseUrl}}/block/{{hashes.blockhash}}</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">address (/address/hash)</p>                                
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/address/{{hashes.address}}">{{address}}/address/{{hashes.address}}<a>
+                                    <a target="_blank" href="{{baseUrl}}/address/{{hashes.address}}">{{baseUrl}}/address/{{hashes.address}}<a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">qrcode (/qr/hash)</p>                                
                                 <p class="link">
-                                    <a target="_blank" href="{{address}}/qr/{{hashes.address}}">{{address}}/qr/{{hashes.address}}<a>
+                                    <a target="_blank" href="{{baseUrl}}/qr/{{hashes.address}}">{{baseUrl}}/qr/{{hashes.address}}<a>
                                 </p>
                             </li>                            
                         </ul>

@@ -7,6 +7,7 @@ var express = require('express')
   , bodyParser = require('body-parser')
   , settings = require('./lib/settings')  
   , apiRoutes = require('./routes/api.routes')
+  , extRoutes = require('./routes/ext.routes')
   , homeRoutes = require('./routes/home.routes')  
   , locale = require('./lib/locale')
   , exphbs  = require('express-handlebars')
@@ -85,6 +86,7 @@ app.use(function(req,res,next){
 app.use('/api', bitcoinapi.app);
 app.use('/data', apiRoutes);
 app.use('/', homeRoutes);
+app.use('/ext', extRoutes);
 
 // locals
 app.set('title', settings.title);

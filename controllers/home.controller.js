@@ -1,4 +1,4 @@
-var { movement, address, api, show_sent_received, markets,
+var { movement, api, show_sent_received, markets,
     genesis_tx, genesis_block, txcount, confirmations, txcount } = require('../lib/settings');
 var marketsRepository = require('../data-access/markets.repository');
 var rewardRepository = require('../data-access/reward.repository');
@@ -253,9 +253,10 @@ exports.network = (req, res, next) =>{
 };
 
 //api
-exports.info = (req,res) =>{
+exports.info = (req,res) =>{    
+    let baseUrl = req.protocol + '://' + req.get('host');
     res.render('info', {       
-        address: address, 
+        baseUrl: baseUrl, 
         hashes: api,
         markets
     });
