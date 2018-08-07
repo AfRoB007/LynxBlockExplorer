@@ -25,7 +25,10 @@ exports.index = (req, res, next) =>{
         data.usdPrice = data.liteCoinPrice * data.coinPrice;
         data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.usdPrice;
         res.render('explorer', data);
-    }).catch(next);    
+    }).catch(err=>{
+        console.log('error in home', err);
+        next(err);
+    });    
 };
 
 //latest-blocks
