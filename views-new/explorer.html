@@ -72,10 +72,10 @@
 				<div class="item">
 					<div class="title">
 						<div class="icon"></div>
-						<h5>{{translation.pages.explorer.columns.outstanding}}</h5>
+						<h5>{{translation.pages.explorer.columns.avgBlockTime}}</h5>
 					</div>
 					<div class="text">
-						<span>216,853,789 LYNX</span>
+						<span data-toggle="tooltip" title="Average of last 1000 blocks">{{avgBlockTime}}</span>
 					</div>
 				</div>
 			</div>
@@ -104,3 +104,8 @@
 		</div>
 	</div>
 </section>
+<script type="text/javascript">
+	$(function(){
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+</script>

@@ -9,7 +9,14 @@ var { bitcoin, cryptoCompare, db, common } = require('../helpers');
 
 //index
 exports.index = (req, res, next) =>{
-    co(function* (){        
+    co(function* (){
+        let avgBlockTime = 0;
+        let min = 0.00000001;
+        let count = yield db.tx.getLastTransactionsCount(min);
+        if(count >= 1000){
+            avgBlockTime = yield db.tx.getAvgBlockTime(min);
+        }
+
         let data = {
             ... yield bitcoin.getDifficulty(),
             hashrate : yield bitcoin.getHashRate(),
@@ -20,6 +27,7 @@ exports.index = (req, res, next) =>{
             blockIndex : yield db.tx.getRecentBlock(),
             coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC'),
             blockIndex : yield db.tx.getRecentBlock(),
+            avgBlockTime,
             markets
         };
         data.usdPrice = data.liteCoinPrice * data.coinPrice;

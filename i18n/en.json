@@ -24,7 +24,7 @@
                 "market_cap": "Market Cap",
                 "hashrate": "Hashrate",
                 "difficulty": "Difficulty",
-                "outstanding": "Outstanding",
+                "avgBlockTime": "Avg Block Time",
                 "transactions_per_day": "Transactions Per Day",
                 "trade_volume": "Trade Volume"
             }

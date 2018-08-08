@@ -68,6 +68,42 @@ exports.getLastTransactionsCount = (min)=>{
     });
 };
 
+exports.getAvgBlockTime = (min, pageIndex, pageSize)=>{    
+    min = min * 100000000;
+    return new Promise((resolve,reject)=>{
+        Tx
+        .find({
+            total: {
+                $gt: min
+            }
+        })
+        .sort({_id: 'desc'})
+        .select({ "timestamp": 1 })
+        .limit(1000)
+        .lean(true)
+        .exec(function(err, items) {
+            if(err) reject(err);
+            else {
+                let timestamps = [];
+                let length = items.length;
+                for(let index = 0; index < length; index++){
+                    if((index+1) < length){
+                        let currentDate = new Date((items[index].timestamp) * 1000);
+                        let previousDate = new Date((items[index+1].timestamp) * 1000);
+                        let duration = moment.duration(moment(currentDate).diff(moment(previousDate))); 
+                        
+                        timestamps.push(duration.asMinutes());
+                    }
+                }
+                let avgBlockTime = timestamps.reduce((acc, p) => acc + p, 0)/timestamps.length;
+                avgBlockTime = Math.floor(avgBlockTime);
+                avgBlockTime += avgBlockTime>0?' mins':' min';
+                resolve(avgBlockTime);
+            }
+        });
+    });    
+};
+
 exports.findOne = (txnId)=>{
     return new Promise((resolve,reject)=>{
         Tx.findOne({ txid: txnId }, (err,data)=>{
