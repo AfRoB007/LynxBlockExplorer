@@ -15,7 +15,4 @@ router.get('/network', controller.network);
 router.get('/info', controller.info);
 router.get('/markets/:market', controller.market);
 
-// router.get('/movement', controller.movement);
-// router.get('/reward', controller.reward);
-
 module.exports = router;

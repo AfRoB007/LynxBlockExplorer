@@ -1,6 +1,4 @@
-var { movement, api, markets,
-    genesis_tx, genesis_block, txcount, confirmations, txcount } = require('../lib/settings');
-var rewardRepository = require('../data-access/reward.repository');
+var { api, markets, genesis_tx, genesis_block, txcount, confirmations, txcount } = require('../lib/settings');
 var Decimal = require('decimal.js');
 
 var co = require('co');
@@ -230,15 +228,6 @@ exports.market = (req, res, next) =>{
     }
 };
 
-exports.reward = (req, res, next) =>{    
-    rewardRepository.getReward().then(data=>{        
-        res.render('reward', { 
-            active: 'reward', 
-            ...data
-        });
-    }).catch(next);
-};
-
 //network
 exports.network = (req, res, next) =>{
     co(function* (){
@@ -257,14 +246,5 @@ exports.info = (req,res) =>{
         baseUrl: baseUrl, 
         hashes: api,
         markets
-    });
-};
-
-exports.movement = (req,res) =>{
-    res.render('movement', {
-        active: 'movement', 
-        flaga: movement.low_flag, 
-        flagb: movement.high_flag, 
-        min_amount: movement.min_amount
     });
 };
