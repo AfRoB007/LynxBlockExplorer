@@ -71,3 +71,9 @@ exports.blockConfirmationClass = function(value1, value2, options) {
     else if(value1 < (value2 / 2)) return 'bg-danger';
     return 'bg-warning';
 };
+
+exports.section = function(name, options){ 
+    if(!this._sections) this._sections = {};
+    this._sections[name] = options.fn(this); 
+    return null;
+};
