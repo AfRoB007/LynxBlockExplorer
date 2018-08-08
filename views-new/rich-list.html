@@ -92,7 +92,7 @@
 					contentType: 'application/json',
             		dataType: 'json'		
 				}).done(function(result){
-					_this.data = result;
+					_this.data = result;					
 					_this.pagination.count = _this.data.richlist.balance.length;
 					_this.render();
 					_this.makeProgress();									

@@ -140,7 +140,7 @@ const saveTx = (hash)=>{
                     //update vout address
                     let voutAddresses = yield vout.map(p=> updateAddress(p.addresses, hash, p.amount, 'vout'));
                     //calculate total
-                    let total = vout.reduce((acc, p) => acc + p.amount, 0);
+                    let total = vout.reduce((acc, p) => acc + p.amount, 0);                    
                     let newTx = yield db.tx.save({
                         txid: tx.txid,
                         vin: nvin,
@@ -148,11 +148,10 @@ const saveTx = (hash)=>{
                         total: total.toFixed(8),
                         timestamp: tx.time,
                         blockhash: tx.blockhash,
-                        blockindex: block.height,
+                        blockindex: block.height
                     });                
                     resolve(newTx);
-                }else{
-                    //reject(new Error('Block not found: ' + tx.blockhash));
+                }else{                    
                     resolve();
                 }
             }            

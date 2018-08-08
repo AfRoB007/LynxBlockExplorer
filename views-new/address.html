@@ -117,12 +117,12 @@
 				let _this = this;				
 				let { address, txs } = _this.data;
 				let sent = address.sent /100000000;
-				let received = address.received / 100000000;
+				let received = address.received / 100000000;				
 				let balance =(address.balance / 100000000).toString().replace(/(^-+)/mg, '');
 				$('#address_a_id').html(address.a_id);
 				$('#address_balance').html(balance+' LYNX');
 				$('#address_txs_count').html(txs.length);
-				$('#address_received').html(received.toFixed(4));
+				$('#address_received').html(numeral(received).format('0,0.0000'));
 
 				let table = $('.table-txs tbody');
 				let rows = '';

@@ -1,12 +1,11 @@
-var { movement, api, show_sent_received, markets,
+var { movement, api, markets,
     genesis_tx, genesis_block, txcount, confirmations, txcount } = require('../lib/settings');
-var marketsRepository = require('../data-access/markets.repository');
 var rewardRepository = require('../data-access/reward.repository');
 var Decimal = require('decimal.js');
 
 var co = require('co');
 var qr = require('qr-image');
-var { bitcoin, cryptoCompare, db } = require('../helpers');
+var { bitcoin, cryptoCompare, db, common } = require('../helpers');
 
 //index
 exports.index = (req, res, next) =>{
@@ -44,43 +43,34 @@ exports.latestBlocks = (req, res, next) =>{
 exports.block = (req, res, next) =>{    
     let hash = req.param('hash');
     co(function* (){
-        let data = {
-            blockIndex : yield db.tx.getRecentBlock(),
-            block : yield bitcoin.getBlockByHash(hash),
-            markets
-        };
+        let blockIndex = yield db.tx.getRecentBlock();
+        let block = yield bitcoin.getBlockByHash(hash);
         let txs = null;
-        if(data.block !== bitcoin.CONSOLE_ERROR && hash === genesis_block){
+        if(block !== bitcoin.CONSOLE_ERROR && hash === genesis_block){
             txs = 'GENESIS';
         }else{
-            txs = yield db.tx.findByTxnIds(data.block.tx);            
+            txs = yield db.tx.findByTxnIds(block.tx);            
+            if(txs.length===0){                
+                let txLength = block.tx.length;
+                for(let i=0; i < txLength; i++){
+                    let txnId = block.tx[i];
+                    let tx = yield db.tx.findOne(txnId);                            
+                    if(tx===null){                                
+                        yield common.saveTx(txnId);                                
+                    }
+                }                
+                txs = yield db.tx.findByTxnIds(block.tx);            
+            }
         }
-        data.block.difficultyToFixed = new Decimal(data.block.difficulty).toFixed(6);        
+        block.difficultyToFixed = new Decimal(block.difficulty).toFixed(6);       
         res.render('block', {             
-            ...data, 
+            blockIndex,
+            block,
+            markets, 
             confirmations, 
             txs
         });
     }).catch(next);
-
-    // blockRepository.getBlock(hash).then(data=>{
-    //     console.timeEnd(req.originalUrl);            
-    //     if(data.txs.length>0){
-    //         res.render('block', { 
-    //             active: 'block', 
-    //             ...data
-    //         });
-    //     }else{
-    //         blockRepository.createTxs(data.block).then(data=>{                
-    //             res.render('block', { 
-    //                 active: 'block', 
-    //                 ...data
-    //             });
-    //         });
-    //     }
-    // }).catch(err=>{
-    //     handleError(res,err.message);
-    // });
 };
 
 //address:hash

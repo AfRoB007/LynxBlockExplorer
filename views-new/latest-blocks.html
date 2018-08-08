@@ -105,7 +105,7 @@
 					let row = '<tr>';
 					row += '<td><a href="/block/'+p.blockhash+'">'+p.blockindex+'</a></td>';
 					row += '<td>'+_this._getTime(p)+'</td>';
-					row += '<td></td>';
+					row += '<td>'+p.blockTime+'</td>';
 					row += '<td>'+p.txsCount||0+'</td>';
 					row += '<td data-toggle="tooltip" title="'+_this.data.difficulty+'">'+_this.data.difficultyToFixed+'</td>';
 					row += '<td><a href="'+blockUrl+'">'+_this._getExtractedBy(p)+'</a></td>';
