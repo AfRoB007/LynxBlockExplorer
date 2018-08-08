@@ -7,6 +7,7 @@ var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var minifyInline = require('gulp-minify-inline');
 var htmlmin = require('gulp-htmlmin');
+var strip = require('gulp-strip-comments');
 
 //javascript
 gulp.task('clean:app-js', function () {
@@ -22,9 +23,10 @@ gulp.task('build:app-js', ['clean:app-js'], function () {
             './public/assets/js/jquery.twbsPagination.min.js',
             './public/assets/js/custom.js',
         ])
+        .pipe(strip())
         .pipe(sourcemaps.init())
-        .pipe(concat('site.min.js'))
-        //.pipe(uglify())
+        .pipe(uglify())
+        .pipe(concat('site.min.js'))                
         .pipe(sourcemaps.write('/'))
         .pipe(gulp.dest('./public/dist/js'));
 });
