@@ -17,7 +17,8 @@ gulp.task('build:app-js',['clean:app-js'],function(){
         './public/assets/js/jquery-2.1.0.min.js',
         './public/assets/js/popper.js',
         './public/assets/js/bootstrap.min.js',
-        './public/assets/js/jquery.twbsPagination.min.js'
+        './public/assets/js/jquery.twbsPagination.min.js',
+        './public/assets/js/custom.js',
         ])
         .pipe(sourcemaps.init())
         .pipe(concat('site.min.js'))
