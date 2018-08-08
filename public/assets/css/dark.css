@@ -963,10 +963,6 @@ header
   height:60px;
 }
 
-.header-area .main-nav .dark-logo {
-  display: none;
-}
-
 .header-area .main-nav .nav {
   float: right;
   margin-top: 30px;
@@ -1290,11 +1286,6 @@ header
   margin: 10px 0;
 }
 
-
-.header-area.header-sticky .light-logo {
-  display: none;
-}
-
 .header-area.header-sticky .nav {
   margin-top: 22px !important;
 }
@@ -1361,12 +1352,6 @@ header
   .header-area .logo {
     margin-top: 22px !important;
     margin-left: 30px;
-  }
-  .header-area .light-logo {
-    display: none !important;
-  }
-  .header-area .dark-logo {
-    display: block !important;
   }
   .header-area .menu-trigger {
     display: block !important;
