@@ -50,10 +50,12 @@ exports.address = (req, res, next) =>{
         let address = yield db.address.findOne(hash);
         if(address){            
             let addresses = address.txs.reverse().map(p=>p.addresses);
-            let txs = yield db.tx.findByTxnIds(addresses);            
+            let txs = yield db.tx.findByTxnIds(addresses);
+            let blockHash = yield db.tx.getBlockHashByAddress(hash);
             res.send({
                 success : true,
                 data :{
+                    blockHash,
                     address,
                     txs
                 }

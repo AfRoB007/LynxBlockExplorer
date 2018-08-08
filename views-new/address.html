@@ -27,7 +27,7 @@
 								<td>
 									<strong>{{translation.pages.address.summary.columns.hash}}</strong>
 								</td>
-								<td>{{hash}}</td>
+								<td id="address_blockHash"></td>
 							</tr>
 							<tr>
 								<td>
@@ -115,10 +115,11 @@
 			}
 			this.render = function(){
 				let _this = this;				
-				let { address, txs } = _this.data;
+				let { address, txs, blockHash } = _this.data;
 				let sent = address.sent /100000000;
 				let received = address.received / 100000000;				
 				let balance =(address.balance / 100000000).toString().replace(/(^-+)/mg, '');
+				$('#address_blockHash').html(blockHash);
 				$('#address_a_id').html(address.a_id);
 				$('#address_balance').html(balance+' LYNX');
 				$('#address_txs_count').html(txs.length);
