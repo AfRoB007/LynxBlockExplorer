@@ -46,19 +46,20 @@ if (settings.heavy != true) {
     'getmaxvote', 'getphase', 'getreward', 'getnextrewardestimate', 'getnextrewardwhenstr',
     'getnextrewardwhensec', 'getsupply', 'gettxoutsetinfo']);
 }
+let viewsDir = process.env.NODE_ENV==='production'?'views-min': 'views-new';
 // view engine setup
 var handlebars = exphbs.create({
     defaultLayout: 'main',
     helpers      : viewHelpers,
     extname      : '.html',
-    layoutsDir: path.join(__dirname, 'views-new','layouts'),
+    layoutsDir: path.join(__dirname, viewsDir ,'layouts'),
     partialsDir: [
-        'views-new/shared/',
-        'views-new/partials/'
+        viewsDir + '/shared/',
+        viewsDir + '/partials/'
     ]
 });
 
-app.set('views', path.join(__dirname, 'views-new'));
+app.set('views', path.join(__dirname, viewsDir));
 app.engine('html', handlebars.engine);
 app.set('view engine', 'html');
 
