@@ -1,4 +1,5 @@
 var co = require('co');
+var axios = require('axios');
 var { db } = require('./db');
 var lib = require('./lib');
 var bitcoin = require('./bitcoin');
@@ -297,9 +298,26 @@ const getDistribution = ({ richlist, stats }) => {
     return data;
 };
 
+//Access key is registered by using aruljothiparthiban@hotmail.com
+const getCountryName = (ip) => {
+    return new Promise(function (resolve, reject) {
+        axios.get('http://api.ipstack.com/' + ip + '?access_key=68c3b44d82029b3f093252a8d22fbfde')
+            .then(function (res) {
+                if(res.data.country_name){
+                    resolve(res.data.country_name);
+                }else{
+                    console.log('Unable to get country for '+ip);
+                    resolve(null);
+                }
+            })
+            .catch(reject);
+    });
+};
+
 module.exports.updateDb = updateDb;
 module.exports.updateTxnsDb = updateTxnsDb;
 module.exports.updateHeavy = updateHeavy;
 module.exports.updateMarketsDb = updateMarketsDb;
 module.exports.saveTx = saveTx;
 module.exports.getDistribution = getDistribution;
+module.exports.getCountryName = getCountryName;

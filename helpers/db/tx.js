@@ -162,7 +162,7 @@ exports.getRecentBlock = ()=>{
             if(err) reject(err);
             else {
                 if(items.length>0){
-                    resolve(items[0].blockindex);
+                    resolve(items[0]);
                 }else{
                     resolve(0);
                 }

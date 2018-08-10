@@ -47,3 +47,25 @@ exports.isAlreadyExist = (address) => {
         });
     });
 };
+
+exports.getPeersToUpdate = () => {
+    return new Promise((resolve, reject) => {
+        Peers
+            .find({
+                country : null
+            })
+            .exec(function (err, items) {
+                if (err) reject(err);
+                else resolve(items);
+            });
+    });
+};
+
+exports.update = (id, model)=>{
+    return new Promise((resolve,reject)=>{
+        Peers.update({_id : id}, model, function(err,data) {
+            if (err) reject(err);
+            else resolve(data);
+        });
+    });  
+};

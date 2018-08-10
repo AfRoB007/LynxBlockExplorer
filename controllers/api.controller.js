@@ -4,9 +4,9 @@ var { bitcoin, db, common } = require('../helpers');
 
 exports.getRecentBlock = (req, res, next)=>{
     co(function *(){        
-        let blockIndex = yield db.tx.getRecentBlock();
+        let block = yield db.tx.getRecentBlock();
         res.send({
-            blockIndex
+            blockIndex : block.blockIndex
         });
     }).catch(next);
 };
@@ -100,6 +100,25 @@ exports.connections = (req, res, next) =>{
             pageSize
         };        
         res.send(grid);
+    }).catch(next);
+};
+
+exports.updateConnections = (req, res, next) =>{       
+    co(function* (){
+        let updatedCount = 0;
+        let items = yield db.peers.getPeersToUpdate();        
+        let length = items.length;
+        for(let index=0; index < length; index++){            
+            let country = yield common.getCountryName(items[index].address);            
+            if(country){
+                items[index].country = country;
+                yield db.peers.update(items[index]._id, items[index]);
+                updatedCount++;
+            }
+        }
+        res.send({
+            message : `${updatedCount} peers updated.`
+        });
     }).catch(next);
 };
 

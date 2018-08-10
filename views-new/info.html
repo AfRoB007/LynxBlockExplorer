@@ -46,24 +46,24 @@
                                 <p class="name">getblockhash [index]</p>
                                 <p class="description">Returns the hash of the block at ; index 0 is the genesis block.</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/api/getblockhash?index=1738013">{{baseUrl}}/api/getblockhash?index=1738013</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getblockhash?index={{block.blockindex}}">{{baseUrl}}/api/getblockhash?index={{block.blockindex}}</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">getblock [hash]</p>
                                 <p class="description">Returns information about the block with the given hash.</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/api/getblock?hash={{hashes.blockhash}}">{{baseUrl}}/api/getblock?hash={{hashes.blockhash}}</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getblock?hash={{block.blockhash}}">{{baseUrl}}/api/getblock?hash={{block.blockhash}}</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">getrawtransaction [txid] [decrypt]</p>
                                 <p class="description">Returns raw transaction representation for given transaction id. decrypt can be set to 0(false) or 1(true).</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=0">{{baseUrl}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=0</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getrawtransaction?txid={{block.txid}}&decrypt=0">{{baseUrl}}/api/getrawtransaction?txid={{block.txid}}&decrypt=0</a>
                                 </p>
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=1">{{baseUrl}}/api/getrawtransaction?txid={{hashes.txhash}}&decrypt=1</a>
+                                    <a target="_blank" href="{{baseUrl}}/api/getrawtransaction?txid={{block.txid}}&decrypt=1">{{baseUrl}}/api/getrawtransaction?txid={{block.txid}}&decrypt=1</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
@@ -105,14 +105,14 @@
                                 <p class="name">address (/ext/address/hash)</p>
                                 <p class="description">Returns information for given address</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/ext/address/{{hashes.address}}">{{baseUrl}}/ext/address/{{hashes.address}}<a>
+                                    <a target="_blank" href="{{baseUrl}}/ext/address/{{block.vout.0.addresses}}">{{baseUrl}}/ext/address/{{block.vout.0.addresses}}<a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">balance (/ext/balance/hash)</p>
                                 <p class="description">Returns current balance of given address</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/ext/balance/{{hashes.address}}">{{baseUrl}}/ext/balance/{{hashes.address}}<a>
+                                    <a target="_blank" href="{{baseUrl}}/ext/balance/{{block.vout.0.addresses}}">{{baseUrl}}/ext/balance/{{block.vout.0.addresses}}<a>
                                 </p>
                             </li>
                             <li class="list-group-item">
@@ -139,25 +139,25 @@
                             <li class="list-group-item">
                                 <p class="name">transaction (/tx/txid)</p>
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/tx/{{hashes.txhash}}">{{baseUrl}}/tx/{{hashes.txhash}}</a>
+                                    <a target="_blank" href="{{baseUrl}}/tx/{{block.txid}}">{{baseUrl}}/tx/{{block.txid}}</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">block (/block/hash)</p>                                
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/block/{{hashes.blockhash}}">{{baseUrl}}/block/{{hashes.blockhash}}</a>
+                                    <a target="_blank" href="{{baseUrl}}/block/{{block.blockhash}}">{{baseUrl}}/block/{{block.blockhash}}</a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">address (/address/hash)</p>                                
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/address/{{hashes.address}}">{{baseUrl}}/address/{{hashes.address}}<a>
+                                    <a target="_blank" href="{{baseUrl}}/address/{{block.vout.0.addresses}}">{{baseUrl}}/address/{{block.vout.0.addresses}}<a>
                                 </p>
                             </li>
                             <li class="list-group-item">
                                 <p class="name">qrcode (/qr/hash)</p>                                
                                 <p class="link">
-                                    <a target="_blank" href="{{baseUrl}}/qr/{{hashes.address}}">{{baseUrl}}/qr/{{hashes.address}}<a>
+                                    <a target="_blank" href="{{baseUrl}}/qr/{{block.vout.0.addresses}}">{{baseUrl}}/qr/{{block.vout.0.addresses}}<a>
                                 </p>
                             </li>                            
                         </ul>

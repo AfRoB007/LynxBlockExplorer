@@ -240,11 +240,13 @@ exports.network = (req, res, next) =>{
 };
 
 //api
-exports.info = (req,res) =>{    
+exports.info = (req, res, next) =>{    
     let baseUrl = req.protocol + '://' + req.get('host');
-    res.render('info', {       
-        baseUrl: baseUrl, 
-        hashes: api,
-        markets
-    });
+    co(function* (){
+        let block = yield db.tx.getRecentBlock();        
+        res.render('info', {       
+            baseUrl: baseUrl, 
+            block
+        });
+    }).catch(next);     
 };

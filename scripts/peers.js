@@ -3,22 +3,13 @@ var settings = require('../lib/settings')
   , axios = require('axios')
   , co = require('co');
 
+var { common } = require('../helpers');
+
 function getPeers(){
   return new Promise(function(resolve,reject){
     axios.get('http://seed06.getlynx.io:' + settings.port+'/api/getpeerinfo')
         .then(function(res){
           resolve(res.data);
-        })
-        .catch(reject);
-  });  
-}
-
-//Access key is registered by using aruljothiparthiban@hotmail.com
-function getCountryName(ip){
-  return new Promise(function(resolve,reject){
-    axios.get('http://api.ipstack.com/' + ip+'?access_key=68c3b44d82029b3f093252a8d22fbfde')
-        .then(function(res){
-          resolve(res.data.country_name);
         })
         .catch(reject);
   });  
@@ -36,7 +27,7 @@ helpers.connect(function() {
       if(p.addr && p.subver){
         let address = p.addr.substr(0,p.addr.lastIndexOf(':')).replace('[','').replace(']','');        
         let version = p.subver.replace('/', '').replace('/', '');
-        let country = yield getCountryName(address);
+        let country = yield common.getCountryName(address);
 
         let peer = {
           address : address,
