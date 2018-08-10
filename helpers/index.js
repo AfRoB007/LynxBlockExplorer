@@ -17,15 +17,16 @@ exports.connect = (cb) => {
   var dbString = 'mongodb://';
   if (settings.dbsettings.user && settings.dbsettings.password) {
     dbString = dbString + settings.dbsettings.user;
-    dbString = dbString + ':' + settings.dbsettings.password;
+    dbString = dbString + ':' + settings.dbsettings.password + '@';
   }
-  dbString = dbString + '@' + settings.dbsettings.address;
+  dbString = dbString + settings.dbsettings.address;  
   dbString = dbString + ':' + settings.dbsettings.port;
   dbString = dbString + '/' + settings.dbsettings.database;
 
   mongoose.connect(dbString, { useNewUrlParser : true }, function (err) {
     if (err) {
-      console.log('Unable to connect to database: %s', dbString);      
+      console.log('Unable to connect to database: %s', dbString);
+      console.log(err);
       process.exit(1);
     }
     console.log('Successfully connected to MongoDB');
