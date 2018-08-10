@@ -15,10 +15,10 @@ exports.common = common;
 
 exports.connect = (cb) => {
   var dbString = 'mongodb://';
-  if (settings.dbsettings.user && settings.dbsettings.password) {
-    dbString += settings.dbsettings.user;
-    dbString += ':' + settings.dbsettings.password + '@';
-  }
+  // if (settings.dbsettings.user && settings.dbsettings.password) {
+  //   dbString += settings.dbsettings.user;
+  //   dbString += ':' + settings.dbsettings.password + '@';
+  // }
   dbString += settings.dbsettings.address;  
   dbString += ':' + settings.dbsettings.port;
   dbString += '/' + settings.dbsettings.database;
