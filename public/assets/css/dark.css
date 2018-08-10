@@ -3028,7 +3028,7 @@ footer .footer-bottom {
 }
 
 footer .footer-bottom.slim {
-  padding-top: 20px;
+  padding: 20px 0;
 }
 
 footer .footer-bottom.slim .copyright {
@@ -3056,6 +3056,35 @@ footer .footer-bottom .copyright {
   text-align: left;
   margin-top: -15px;
   margin-bottom: 50px;
+}
+
+footer .footer-bottom .footer-links{  
+  text-align: center;
+}
+
+footer .footer-bottom .footer-links ul{
+  margin:0;
+  list-style:none;  
+  display:inline-block;
+}
+
+footer .footer-bottom .footer-links ul li{
+  color: #F3F8FF;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 1.6px;
+  float: left;
+  margin-right: 5px;
+}
+footer .footer-bottom .footer-links ul li:last-child{
+  margin-right:0;
+}
+footer .footer-bottom .footer-links ul li a{
+  color: #F3F8FF;
+}
+footer .footer-bottom .footer-links ul li a:hover{
+  text-decoration:underline !important;
 }
 
 @media (max-width: 991px) {

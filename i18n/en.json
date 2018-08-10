@@ -17,7 +17,7 @@
         },
         "explorer" :{
             "heading": "General Information",
-            "sub_heading" : "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.",
+            "sub_heading" : "Lynx is an eco-friendly cryptocurrency powered by Hybrid Proof of Work that discourages mining for profit.",
             "columns":{
                 "btc_price": "BTC Price",
                 "usd_price": "USD Price",
@@ -181,7 +181,7 @@
     },    
     
     "footer":{
-        "copyright": "2018 © Lynx - Core Development"
+        "copyright": "Lynx 2018"
     },
 
     "common":{

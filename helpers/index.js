@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 var bitcoin = require('./bitcoin');
+var isPi = require('detect-rpi');
 var { db } = require('./db/index');
 var cryptoCompare = require('./cryptoCompare');
 var lib = require('./lib');
 var common = require('./common');
-
 var settings = require('../lib/settings');
 
 exports.lib = lib;
@@ -15,7 +15,8 @@ exports.common = common;
 
 exports.connect = (cb) => {
   var dbString = 'mongodb://';
-  if (settings.dbsettings.user && settings.dbsettings.password) {
+  if (settings.dbsettings.user && settings.dbsettings.password && !isPi()) {
+    console.log('Raspberry Pi'); 
     dbString += settings.dbsettings.user;
     dbString += ':' + settings.dbsettings.password + '@';
   }
