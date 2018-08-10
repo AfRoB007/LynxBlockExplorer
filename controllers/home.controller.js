@@ -21,16 +21,14 @@ exports.index = (req, res, next) =>{
             connections : yield bitcoin.getConnections(),
             liteCoin : yield cryptoCompare.getLitecoin(),
             liteCoinPrice : yield cryptoCompare.getCoinPrice('LTC','USD'),
-            //coin : yield cryptoCompare.getCoin(),
-            blockIndex : yield db.tx.getRecentBlock(),
+            coin : yield cryptoCompare.getCoin(),            
             coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC'),
-            blockIndex : yield db.tx.getRecentBlock(),
+            block : yield db.tx.getRecentBlock(),
             avgBlockTime,
             markets
         };
-        data.usdPrice = data.liteCoinPrice * data.coinPrice;
-        //data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.usdPrice;
-        data.marketCap =  1 * data.usdPrice;
+        data.usdPrice = data.liteCoinPrice * data.coinPrice * 1000;
+        data.marketCap =  Number(data.coin.General.TotalCoinSupply) * data.liteCoinPrice * data.coinPrice;        
         res.render('explorer', data);
     }).catch(next);    
 };
