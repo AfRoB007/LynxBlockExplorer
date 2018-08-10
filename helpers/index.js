@@ -16,12 +16,13 @@ exports.common = common;
 exports.connect = (cb) => {
   var dbString = 'mongodb://';
   if (settings.dbsettings.user && settings.dbsettings.password) {
-    dbString = dbString + settings.dbsettings.user;
-    dbString = dbString + ':' + settings.dbsettings.password + '@';
+    dbString += settings.dbsettings.user;
+    dbString += ':' + settings.dbsettings.password + '@';
   }
-  dbString = dbString + settings.dbsettings.address;  
-  dbString = dbString + ':' + settings.dbsettings.port;
-  dbString = dbString + '/' + settings.dbsettings.database;
+  dbString += settings.dbsettings.address;  
+  dbString += ':' + settings.dbsettings.port;
+  dbString += '/' + settings.dbsettings.database;
+  dbString += '?authSource='+ settings.dbsettings.database +'&w=1';
 
   mongoose.connect(dbString, { useNewUrlParser : true }, function (err) {
     if (err) {
