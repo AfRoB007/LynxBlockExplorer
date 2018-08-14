@@ -21,7 +21,7 @@ exports.index = (req, res, next) =>{
             connections : yield bitcoin.getConnections(),
             liteCoin : yield cryptoCompare.getLitecoin(),
             liteCoinPrice : yield cryptoCompare.getCoinPrice('LTC','USD'),
-            //coin : yield cryptoCompare.getCoin(),            
+            coin : yield cryptoCompare.getCoin(),            
             coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC'),
             block : yield db.tx.getRecentBlock(),
             avgBlockTime,
