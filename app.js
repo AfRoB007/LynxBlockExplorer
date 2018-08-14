@@ -120,11 +120,12 @@ const env = app.get('env');
 app.use(function(err, req, res, next) {      
     res.status(err.status || 500);
     // development error handler
-    // will print stacktrace    
+    // will print stacktrace
     let error = {
         message : err.message,
         error : err
     };
+    console.log('err',err);
     if (env === 'production') {
         error.error = {};
     }
