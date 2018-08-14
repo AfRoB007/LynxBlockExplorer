@@ -14,16 +14,16 @@
                         <thead>
                             <tr>
                                 <td>
-                                    {{#ifNotEquals block.previousblockhash null}}
-                                    <a href="/block/{{block.previousblockhash}}">
+                                    {{#ifNotEquals model.previousblockhash null}}
+                                    <a href="/block/{{model.previousblockhash}}">
                                         <i class="fa fa-arrow-left"></i>
                                     </a>
                                     {{/ifNotEquals}}
                                 </td>
-                                <td colspan="5">LYNX {{translation.pages.block.summary.columns.block}}: {{block.hash}}</td>
+                                <td colspan="5">LYNX {{translation.pages.block.summary.columns.block}}: {{model.hash}}</td>
                                 <td>
-                                    {{#ifNotEquals block.nextblockhash null}}
-                                    <a class="pull-right" href="/block/{{block.nextblockhash}}">
+                                    {{#ifNotEquals model.nextblockhash null}}
+                                    <a class="pull-right" href="/block/{{model.nextblockhash}}">
                                         <i class="fa fa-arrow-right"></i>
                                     </a>
                                     {{/ifNotEquals}}
@@ -40,14 +40,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class={{blockConfirmationClass block.confirmations confirmations}}>
-                                <td>{{block.height}}</td>
-                                <td>{{block.difficultyToFixed}}</td>
-                                <td>{{block.confirmations}}</td>
-                                <td>{{toKB block.size 2 }}</td>
-                                <td>{{block.bits}}</td>
-                                <td>{{block.nonce}}</td>
-                                <td>{{toUnixTime block.time}}</td>
+                            <tr class={{blockConfirmationClass model.confirmations confirmations}}>
+                                <td>{{model.height}}</td>
+                                <td>{{model.difficultyToFixed}}</td>
+                                <td>{{model.confirmations}}</td>
+                                <td>{{toKB model.size 2 }}</td>
+                                <td>{{model.bits}}</td>
+                                <td>{{model.nonce}}</td>
+                                <td>{{toUnixTime model.time}}</td>
                             </tr>
                         </tbody>
                     </table>

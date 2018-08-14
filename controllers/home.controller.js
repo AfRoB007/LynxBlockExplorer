@@ -37,7 +37,7 @@ exports.index = (req, res, next) =>{
 exports.latestBlocks = (req, res, next) =>{
     co(function* (){
         let data = {           
-            blockIndex : yield db.tx.getRecentBlock(),
+            block : yield db.tx.getRecentBlock(),
             markets
         };
         res.render('latest-blocks', data);
@@ -47,29 +47,29 @@ exports.latestBlocks = (req, res, next) =>{
 exports.block = (req, res, next) =>{    
     let hash = req.param('hash');
     co(function* (){
-        let blockIndex = yield db.tx.getRecentBlock();
-        let block = yield bitcoin.getBlockByHash(hash);
+        let block = yield db.tx.getRecentBlock();
+        let model = yield bitcoin.getBlockByHash(hash);
         let txs = null;
-        if(block !== bitcoin.CONSOLE_ERROR && hash === genesis_block){
+        if(model !== bitcoin.CONSOLE_ERROR && hash === genesis_block){
             txs = 'GENESIS';
         }else{
-            txs = yield db.tx.findByTxnIds(block.tx);            
+            txs = yield db.tx.findByTxnIds(model.tx);            
             if(txs.length===0){                
-                let txLength = block.tx.length;
+                let txLength = model.tx.length;
                 for(let i=0; i < txLength; i++){
-                    let txnId = block.tx[i];
+                    let txnId = model.tx[i];
                     let tx = yield db.tx.findOne(txnId);                            
                     if(tx===null){                                
                         yield common.saveTx(txnId);                                
                     }
                 }                
-                txs = yield db.tx.findByTxnIds(block.tx);            
+                txs = yield db.tx.findByTxnIds(model.tx);            
             }
         }
-        block.difficultyToFixed = new Decimal(block.difficulty).toFixed(6);       
+        model.difficultyToFixed = new Decimal(model.difficulty).toFixed(6);       
         res.render('block', {             
-            blockIndex,
             block,
+            model,
             markets, 
             confirmations, 
             txs
@@ -83,7 +83,7 @@ exports.address = (req, res, next) =>{
     let count = req.param('count') || txcount;
     co(function* (){
         let data = {           
-            blockIndex : yield db.tx.getRecentBlock(),
+            block : yield db.tx.getRecentBlock(),
             hash,
             markets
         };
@@ -95,12 +95,12 @@ exports.address = (req, res, next) =>{
 exports.tx = (req, res, next) =>{
     let hash = req.param('txid');
     co(function* (){
-        let blockIndex = yield db.tx.getRecentBlock();
+        let block = yield db.tx.getRecentBlock();
         let tx = yield db.tx.findOne(hash);
         if(tx){            
             let blockcount = yield bitcoin.getBlockCount();
             res.render('tx', {
-                blockIndex,
+                block,
                 tx, 
                 confirmations, 
                 blockcount,
@@ -124,7 +124,7 @@ exports.tx = (req, res, next) =>{
                     utx.blockhash = '-';
                     utx.blockindex = -1;
                     res.render('tx', {
-                        blockIndex,
+                        block,
                         tx: utx, 
                         confirmations, 
                         blockcount:-1,
@@ -136,7 +136,7 @@ exports.tx = (req, res, next) =>{
                     
                     let blockcount = yield bitcoin.getBlockCount();
                     res.render('tx', {   
-                        blockIndex,                      
+                        block,                      
                         tx: utx, 
                         confirmations, 
                         blockcount,
@@ -201,9 +201,9 @@ exports.search = (req,res)=>{
 //richlist
 exports.richList = (req, res, next) =>{
     co(function* (){
-        let blockIndex = yield db.tx.getRecentBlock();        
+        let block = yield db.tx.getRecentBlock();        
         res.render('rich-list', {                
-            blockIndex,
+            block,
             markets
         });
     }).catch(next);
@@ -214,9 +214,9 @@ exports.market = (req, res, next) =>{
     if (markets.enabled.indexOf(market) != -1) {
         co(function* (){
             let coin = yield cryptoCompare.getCoin();      
-            let blockIndex = coin.General.BlockNumber;      
+            let block = coin.General.BlockNumber;      
             res.render('markets_' + market, {                
-                blockIndex,
+                block,
                 markets,
                 market
             });
@@ -230,7 +230,7 @@ exports.market = (req, res, next) =>{
 exports.network = (req, res, next) =>{
     co(function* (){
         let data = {  
-            blockIndex : yield db.tx.getRecentBlock(),
+            block : yield db.tx.getRecentBlock(),
             markets
         };
         res.render('network', data);
