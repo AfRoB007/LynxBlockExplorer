@@ -51,17 +51,17 @@ helpers.connect(function() {
       }
     }); 
   }
+});
 
-  let server = app.listen(app.get('port'), function() {
-    debug('Express server listening on port ' + server.address().port);
-    console.log('Express server listening on port ' + server.address().port);
-  });
-  
-  process.on('exit', function(code) {
-    console.log('About to exit with code:', code);
-  });
-  
-  process.on('uncaughtException', function (err) {
-    console.log('Caught exception: ' + err);
-  });
+let server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+  console.log('Express server listening on port ' + server.address().port);
+});
+
+process.on('exit', function(code) {
+  console.log('About to exit with code:', code);
+});
+
+process.on('uncaughtException', function (err) {
+  console.log('Caught exception: ' + err);
 });
