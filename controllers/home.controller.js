@@ -15,8 +15,9 @@ exports.index = (req, res, next) =>{
             avgBlockTime = yield db.tx.getAvgBlockTime(min);
         }
 
+        let difficulty = yield bitcoin.getDifficulty();
         let data = {
-            ... yield bitcoin.getDifficulty(),
+            difficulty : difficulty.difficulty,      
             hashrate : yield bitcoin.getHashRate(),
             connections : yield bitcoin.getConnections(),
             liteCoin : yield cryptoCompare.getLitecoin(),

@@ -60,7 +60,10 @@ exports.getDifficulty = ()=>{
                     difficulty = difficulty['proof-of-stake'];
                 }
             }
-            let difficultyToFixed = new Decimal(difficulty).toFixed(6);
+            let difficultyToFixed = 0;
+            if(difficulty !== CONSOLE_ERROR){
+                difficultyToFixed = new Decimal(difficulty).toFixed(6);
+            }
             resolve({
                 difficulty,
                 difficultyHybrid,
