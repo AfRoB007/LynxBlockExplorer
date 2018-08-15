@@ -14,6 +14,9 @@ exports.formatNumber = function(value, options) {
 
 exports.toFixed = function(value, fractionDigits=2) {    
     if(typeof value === 'string'){
+        if(isNaN(value)){
+            return 0;
+        }
         return new Decimal(value).toFixed(fractionDigits);
     }
     return value.toFixed(fractionDigits);
