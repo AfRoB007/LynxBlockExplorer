@@ -19,13 +19,13 @@ const CONSOLE_ERROR = 'There was an error. Check your console.';
 
 const handleError = (uri, resolve, reject)=>{
     return (err)=>{
-        console.log(`${uri} : ${err.message}`);  
+        console.log(`${uri} : ${err.message}`);          
+        if(err.message === CONSOLE_ERROR || err.code === 'ETIMEDOUT'){
+            resolve(CONSOLE_ERROR);
+        }
         let  { status } = err.response;
         if(status === 404){
             return reject(new Error(`${BASE_URL}${uri} not found`));
-        }              
-        if(err.message === CONSOLE_ERROR || err.code === 'ETIMEDOUT'){
-            resolve(CONSOLE_ERROR);
         }else{
             reject(err);            
         }
