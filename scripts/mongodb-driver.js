@@ -26,8 +26,7 @@ if (isPi()) {
         }        
         // installed
         console.log('downgrade success');
-        console.log(options.name+'@'+options.version+' installed successfully in '+path.resolve(options.path));
-        cb();
+        console.log(options.name+'@'+options.version+' installed successfully in '+path.resolve(options.path));        
     });
 }else{
     console.log('Mongodb driver version is 5.1.5');
