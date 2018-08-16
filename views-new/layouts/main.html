@@ -40,26 +40,13 @@
 								<i class="fa fa-angle-down"></i>
 							</div>
 							<ul class="flag-list">
+								{{#each languages}}
 								<li>
-									<a href="?clang=en">
-										<img src="/dist/images/flags/en.png" alt=""><span>EN</span>
+									<a href="?clang={{this}}">
+										<img src="/dist/images/flags/{{this}}.png" alt=""><span>{{toUpperCase this}}</span>
 									</a>
 								</li>	
-								<li>
-									<a href="?clang=ru">
-										<img src="/dist/images/flags/ru.png" alt=""><span>RU</span>
-									</a>
-								</li>	
-								<li>
-									<a href="?clang=br">
-										<img src="/dist/images/flags/br.png" alt=""><span>BR</span>
-									</a>
-								</li>
-								<li>
-									<a href="?clang=nl">
-										<img src="/dist/images/flags/nl.png" alt=""><span>NL</span>
-									</a>
-								</li>
+								{{/each}}
 							</ul>
 						</div>
 						<!-- ***** Lang End ***** -->

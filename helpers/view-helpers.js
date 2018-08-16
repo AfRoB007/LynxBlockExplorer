@@ -37,6 +37,10 @@ exports.capitalize = function(value){
     return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+exports.toUpperCase = function(value){
+    return value.toUpperCase();
+}
+
 exports.toUnixTime = function(unixtime){
     var a = new Date(unixtime * 1000);
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

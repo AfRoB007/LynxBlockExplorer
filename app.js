@@ -1,5 +1,6 @@
 var express = require('express')
   , path = require('path')
+  , fs = require('fs')
   , bitcoinapi = require('./lib/middlewares/bitcoin-core')  
   , favicon = require('serve-favicon')
   , logger = require('morgan')
@@ -70,9 +71,14 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+const siteLangs = fs.readdirSync(path.join(__dirname,'i18n'))
+                .filter(p=> p.indexOf('.json') > -1)
+                .map(p=>p.substr(0,p.indexOf('.json')));
+
 app.use(i18n({
     translationsPath: path.join(__dirname, 'i18n'),
-    siteLangs: ["en", "ru", "br","nl"],
+    siteLangs: siteLangs,
     textsVarName: 'translation'
 }));
 
@@ -90,6 +96,8 @@ app.use('/', homeRoutes);
 app.use('/ext', extRoutes);
 
 // locals
+app.locals.languages = siteLangs;
+
 app.set('title', settings.title);
 app.set('symbol', settings.symbol);
 app.set('coin', settings.coin);
