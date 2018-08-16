@@ -76,6 +76,9 @@ exports = module.exports = function (opts) {
     });
 
     return function i18n(req, res, next) {
+        if(req.header('Content-Type')==='application/json'){
+            console.log('api', req.url);
+        }
         var alreadyTryCookie = false;
         var alreadyBrowser = false;
         // set textsVarName value for tests and variable recovery
@@ -137,6 +140,7 @@ exports = module.exports = function (opts) {
             console.log('else');
             if (computedLang.indexOf('-') > -1) {
                 // try extract "en" from "en-US"
+                console.log('try extract');
                 var soloLang = computedLang.split('-')[0];
                 if (soloLang in i18nTranslations) {
                     req.app.locals[textsVarName] = i18nTranslations[soloLang];

@@ -74,7 +74,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const siteLangs = fs.readdirSync(path.join(__dirname,'i18n'))
                 .filter(p=> p.indexOf('.json') > -1)
                 .map(p=>p.substr(0,p.indexOf('.json')));
-console.log('siteLangs', siteLangs);
+
 app.use(i18n({
     translationsPath: path.join(__dirname, 'i18n'),
     siteLangs: siteLangs,
