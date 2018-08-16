@@ -299,18 +299,35 @@ const getDistribution = ({ richlist, stats }) => {
 };
 
 //Access key is registered by using aruljothiparthiban@hotmail.com
-const getCountryName = (ip) => {
+const getCountry = (ip) => {
     return new Promise(function (resolve, reject) {
-        axios.get('http://api.ipstack.com/' + ip + '?access_key=68c3b44d82029b3f093252a8d22fbfde')
+        axios.get('http://api.ipstack.com/' + ip + '?access_key=d780842f33f35918a6c18fad711b1811')
             .then(function (res) {
-                if(res.data.country_name){
-                    resolve(res.data.country_name);
-                }else{
-                    console.log('Unable to get country for '+ip);
-                    resolve(null);
-                }
+                resolve(res.data);
             })
             .catch(reject);
+    });
+};
+
+
+const getCountryName = (ip)=> {
+    return new Promise(function (resolve,reject) {
+        co(function* () {            
+            let result = yield db.ipDetails.findOne(ip);
+            if(result){
+                resolve(result.country_name);
+            } else{
+                let country = yield getCountry(ip);
+                if(country && country.country_name){
+                    yield db.ipDetails.save(country);
+                    resolve(country.country_name);
+                }else{
+                    console.log(ip,country);                   
+                    resolve(null);
+                }                
+            }
+            resolve();
+        }).catch(reject);
     });
 };
 

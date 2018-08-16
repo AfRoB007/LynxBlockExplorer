@@ -5,6 +5,7 @@ var richlist = require('./rich-list');
 var markets = require('./markets');
 var address = require('./address');
 var heavy = require('./heavy');
+var ipDetails = require('./ip-details');
 
 exports.db = {
     tx,
@@ -13,5 +14,6 @@ exports.db = {
     coinStats,
     markets,
     address,
-    heavy
+    heavy,
+    ipDetails
 };
