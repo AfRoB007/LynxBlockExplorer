@@ -71,6 +71,11 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// routes
+app.use('/api', bitcoinapi.app);
+app.use('/data', apiRoutes);
+app.use('/ext', extRoutes);
+
 const siteLangs = fs.readdirSync(path.join(__dirname,'i18n'))
                 .filter(p=> p.indexOf('.json') > -1)
                 .map(p=>p.substr(0,p.indexOf('.json')));
@@ -88,11 +93,7 @@ app.use(function(req,res,next){
     next();
 });
 
-// routes
-app.use('/api', bitcoinapi.app);
-app.use('/data', apiRoutes);
 app.use('/', homeRoutes);
-app.use('/ext', extRoutes);
 
 // locals
 app.locals.languages = siteLangs;

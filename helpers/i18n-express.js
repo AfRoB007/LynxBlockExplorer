@@ -76,9 +76,7 @@ exports = module.exports = function (opts) {
     });
 
     return function i18n(req, res, next) {
-        if(req.header('Content-Type')==='application/json'){
-            console.log('api', req.url);
-        }
+        console.log('i18n', req.url);
         var alreadyTryCookie = false;
         var alreadyBrowser = false;
         // set textsVarName value for tests and variable recovery
