@@ -14,7 +14,7 @@ var express = require('express')
   , exphbs  = require('express-handlebars')
   , viewHelpers = require('./helpers/view-helpers')
   , session = require('express-session')
-  , i18n = require('./helpers/i18n-express'); //require("i18n-express");
+  , i18n = require("i18n-express");
 
 var app = express();
 
