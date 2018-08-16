@@ -93,6 +93,17 @@ exports.connections = (req, res, next) =>{
         if(req.query.pageSize){
             pageSize = parseInt(req.query.pageSize);
         }
+        // updating missing country names in peers
+        let items = yield db.peers.getPeersToUpdate();        
+        let length = items.length;
+        for(let index=0; index < length; index++){            
+            let country = yield common.getCountryName(items[index].address);            
+            if(country){
+                items[index].country = country;
+                yield db.peers.update(items[index]._id, items[index]);                
+            }
+        }
+
         let grid = {
             items : yield db.peers.getPeers(pageIndex, pageSize),
             count : yield db.peers.getPeersCount(),
