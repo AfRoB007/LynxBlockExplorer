@@ -19,9 +19,10 @@ gulp.task('build:app-js', ['clean:app-js'], function () {
     return gulp.src([
             './public/assets/js/jquery-2.1.0.min.js',
             './public/assets/js/popper.js',
-            './public/assets/js/bootstrap.min.js',
+            './public/assets/js/bootstrap.min.js',            
+            './public/assets/js/particles.js',
             './public/assets/js/jquery.twbsPagination.min.js',
-            './public/assets/js/custom.js',
+            './public/assets/js/custom.js'
         ])
         .pipe(strip())
         .pipe(sourcemaps.init())
