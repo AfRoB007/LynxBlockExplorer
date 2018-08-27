@@ -1,25 +1,23 @@
 {
     "title": "Lynx Blockchain Verkenner",
-
     "menus": {
-        "explorer" : "VERKENNER",
-        "latest_blocks" : "LAATSTE BLOKKEN",
-        "top_100" : "TOP 100",
-        "network" : "NETWERK",
-        "markets" : "MARKTEN",
+        "explorer": "VERKENNER",
+        "latest_blocks": "LAATSTE BLOK",
+        "top_100": "TOP 100",
+        "network": "NETWERK",
+        "markets": "Exchange",
         "api": "API"
     },
-
-    "pages":{
-        "layouts_main" :{
+    "pages": {
+        "layouts_main": {
             "heading": "Lynx Blockchain Verkenner",
-            "sub_heading" : "Tot en met Blok "
+            "sub_heading": "Tot en met Blok "
         },
-        "explorer" :{
+        "explorer": {
             "heading": "Algemene Informatie",
-            "sub_heading" : "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.",
-            "columns":{
-                "btc_price": "BTC Prijs",
+            "sub_heading": "?wat moet dit zijn?",
+            "columns": {
+                "transactions_waiting": "Transacties wachten",
                 "usd_price": "USD Prijs",
                 "market_cap": "Markt Cap",
                 "hashrate": "Hashrate",
@@ -29,174 +27,172 @@
                 "trade_volume": "Handels Volume"
             }
         },
-        "latest_blocks" :{
+        "latest_blocks": {
             "heading": "Laatste Blokken",
-            "columns":{
+            "columns": {
                 "block_height": "Blok Hoogte",
                 "age": "Leeftijd",
                 "block_time": "Blok Tijd",
                 "transactions": "Transacties",
                 "difficulty": "Moeilijkheidsgraad",
-                "miner_reward_address":"Miner beloning adres"
+                "miner_reward_address": "Miner beloning adres"
             }
         },
-        "top_100" :{
+        "top_100": {
             "richlist": {
-                "heading": "Rijken lijst",
-                "columns":{
+                "heading": "Rijkste adressen",
+                "columns": {
                     "rank": "Rang",
                     "address": "Adres",
                     "amount": "Hoeveelheid",
                     "percent": "Percentage"
                 }
             },
-            "distribution":{
+            "distribution": {
                 "heading": "Distributie",
-                "columns":{
-                    "amount": "Hoeveelheid"                    
+                "columns": {
+                    "amount": "Hoeveelheid"
                 }
             }
         },
-        "network" :{
+        "network": {
             "heading": "Netwerk",
-            "sub_heading" : "Dit is een voorbeeld van het netwerk op basis van portefeuilles die in de afgelopen 24 uur met deze node zijn verbonden.",
-            "columns":{                
+            "sub_heading": "Dit is een voorbeeld van het netwerk op basis van portefeuilles die in de afgelopen 24 uur met deze node zijn verbonden.",
+            "columns": {
                 "address": "Adres",
                 "protocol": "Protocol",
                 "sub_version": "Sub-versie",
                 "country": "Land"
             }
         },
-        "markets" :{
-            "summary":{
+        "markets": {
+            "summary": {
                 "columns": {
-                    "high" : "Hoog",
-                    "low" : "Laag",
-                    "volume" : "Volume",
-                    "top_bid" : "Top Bod",
-                    "top_ask" : "Top Vraag",
-                    "last_price" : "Laatste Prijs",
-                    "change" : "Verandering"
-                }             
+                    "high": "Hoog",
+                    "low": "Laag",
+                    "volume": "Volume",
+                    "top_bid": "Top Bod",
+                    "top_ask": "Top Vraag",
+                    "last_price": "Laatste Prijs",
+                    "change": "Verandering"
+                }
             },
             "buy_orders": {
-                "heading": "Koop Orders",
+                "heading": "Kooporders",
                 "columns": {
-                    "price" : "Prijs",
-                    "amount" : "Hoeveelheid",
-                    "total" : "Totaal"
+                    "price": "Prijs",
+                    "amount": "Hoeveelheid",
+                    "total": "Totaal"
                 }
             },
-            "sell_orders":{
-                "heading": "Verkoop Orders",
+            "sell_orders": {
+                "heading": "Verkooporders",
                 "columns": {
-                    "price" : "Prijs",
-                    "amount" : "Hoeveelheid",
-                    "total" : "Totaal"
+                    "price": "Prijs",
+                    "amount": "Hoeveelheid",
+                    "total": "Totaal"
                 }
             },
-            "trade_history":{
-                "heading": "Handel Historie",
+            "trade_history": {
+                "heading": "Handelshistorie",
                 "columns": {
-                    "type" : "Type",
-                    "amount" : "Hoeveelheid",
-                    "total" : "Totaal",
+                    "type": "Type",
+                    "amount": "Hoeveelheid",
+                    "total": "Totaal",
                     "time_stamp": "Tijdstempel"
                 }
             }
         },
-        "address" :{
+        "address": {
             "summary": {
                 "heading": "Details voor Adres",
-                "sub_heading": "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.",
+                "sub_heading": "wat moet dit zijn?",
                 "columns": {
-                    "address" : "Adres",
-                    "hash" : "Hash",
-                    "no_of_transactions" : "No. Transacties",
+                    "address": "Adres",
+                    "hash": "Hash",
+                    "no_of_transactions": "No. Transacties",
                     "balance": "Balans",
-                    "total_received": "Totaal Ontvangen",
-                    "final_balance": "Eind Balans"
+                    "total_received": "Totaal ontvangen",
+                    "final_balance": "Eindbalans"
                 }
             },
-            "transactions":{
+            "transactions": {
                 "heading": "Transacties",
-                "sub_heading": "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.",
+                "sub_heading": "wat moet dit zijn?",
                 "columns": {
-                    "block" : "Blok",
-                    "hash" : "Hash",
-                    "date_time" : "Datum/Tijd",
+                    "block": "Blok",
+                    "hash": "Hash",
+                    "date_time": "Datum/Tijd",
                     "amount": "Hoeveelheid",
-                    "balance": "Balans"                    
+                    "balance": "Balans"
                 }
             }
         },
-        "block" :{
+        "block": {
             "summary": {
-                "heading": "Details voor Blok",
+                "heading": "Details blok",
                 "columns": {
-                    "block" : "Blok",
-                    "height" : "Hoogte",
-                    "difficulty" : "Moeilijkheidsgraad",
-                    "confirmations" : "Confirmaties",
+                    "block": "Blok",
+                    "height": "Hoogte",
+                    "difficulty": "Moeilijkheidsgraad",
+                    "confirmations": "bevestigingen",
                     "size": "Grootte",
                     "bits": "Bits",
                     "nonce": "Nonce",
-                    "timestamp": "Tijdstempel"                
-                }             
+                    "timestamp": "Tijdstempel"
+                }
             },
-            "transactions":{
+            "transactions": {
                 "heading": "Laatste Transacties",
                 "sub_heading": "Fusce placerat pretium mauris, vel sollicitudin elit lacinia vitae. Quisque sit amet nisi erat.",
                 "columns": {
-                    "hash" : "Hash",
-                    "recipients" : "Ontvangers",
-                    "amount": "Hoeveelheid"                 
+                    "hash": "Hash",
+                    "recipients": "Ontvangers",
+                    "amount": "Hoeveelheid"
                 }
             }
         },
-        "tx" :{
+        "tx": {
             "summary": {
-                "heading": "Details voor Transactie",
+                "heading": "Details voor transactie",
                 "columns": {
-                    "confirmations" : "Confirmaties",
-                    "block_hash" : "Blok Hash",
-                    "timestamp": "Tijdstempel"                 
-                }           
+                    "confirmations": "bevestigingen",
+                    "block_hash": "Blok hash",
+                    "timestamp": "Tijdstempel"
+                }
             },
-            "input":{
-                "heading": "Input Adres",
+            "input": {
+                "heading": "Input adres",
                 "columns": {
-                    "address" : "Adres",
-                    "amount": "Hoeveelheid"                 
-                }            
+                    "address": "Adres",
+                    "amount": "Hoeveelheid"
+                }
             },
-            "output":{
+            "output": {
                 "heading": "Ontvangers",
                 "columns": {
-                    "address" : "Adres",
-                    "amount": "Hoeveelheid"                 
-                } 
+                    "address": "Adres",
+                    "amount": "Hoeveelheid"
+                }
             }
         }
-    },    
-    
-    "footer":{
+    },
+    "footer": {
         "copyright": "2018 © Lynx"
     },
-
-    "common":{
+    "common": {
         "table": {
-            "loading" : "Laden ...",
-            "no_item_found" : "Geen item gevonden",
-            "pagination":{
+            "loading": "Laden ...",
+            "no_item_found": "Geen item gevonden",
+            "pagination": {
                 "showing": "Tonen",
                 "to": "naar",
                 "of": "van",
                 "entries": "inschrijvingen",
                 "first": "Eerste",
                 "previous": "Laatste",
-				"next": "Volgende",
-				"last": "Laatste"
+                "next": "Volgende",
+                "last": "Laatste"
             }
         },
         "search_placeholder": "blok, hash, transactie, etc..."

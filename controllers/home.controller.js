@@ -20,6 +20,7 @@ exports.index = (req, res, next) =>{
             difficulty : difficulty.difficulty,      
             hashrate : yield bitcoin.getHashRate(),
             connections : yield bitcoin.getConnections(),
+            memPoolInfo : yield bitcoin.getMemPoolInfo(),
             liteCoin : yield cryptoCompare.getLitecoin(),
             liteCoinPrice : yield cryptoCompare.getCoinPrice('LTC','USD'),
             coinStats : yield db.coinStats.getCoinStats(),            
@@ -29,7 +30,8 @@ exports.index = (req, res, next) =>{
             markets
         };
         data.usdPrice = data.liteCoinPrice * data.coinPrice * 1000;
-        data.marketCap =  Number(data.coinStats.supply) * data.liteCoinPrice * data.coinPrice;        
+        data.marketCap =  Number(data.coinStats.supply) * data.liteCoinPrice * data.coinPrice;
+            
         res.render('explorer', data);
     }).catch(next);    
 };

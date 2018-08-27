@@ -261,6 +261,15 @@ exports.getNextIn = ()=>{
     });
 };
 
+exports.getMemPoolInfo = ()=>{
+    let uri = 'getmempoolinfo';
+    return new Promise((resolve,reject)=>{
+        axiosInstance.get(uri)
+        .then(handleSuccess(uri,resolve,reject))
+        .catch(handleError(uri,resolve,reject));
+    });
+};
+
 exports.getSupply =()=>{
     return new Promise((resolve,reject)=>{
         let uri = 'getsupply';

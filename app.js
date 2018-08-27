@@ -47,7 +47,7 @@ if (settings.heavy != true) {
     'getmaxvote', 'getphase', 'getreward', 'getnextrewardestimate', 'getnextrewardwhenstr',
     'getnextrewardwhensec', 'getsupply', 'gettxoutsetinfo']);
 }
-let viewsDir = process.env.NODE_ENV === 'production'?'views-min': 'views-new';
+let viewsDir = process.env.NODE_ENV === 'production'? 'views-min': 'views-new';
 // view engine setup
 var handlebars = exphbs.create({
     defaultLayout: 'main',
