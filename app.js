@@ -28,7 +28,7 @@ app.use(session({
 bitcoinapi.setWalletDetails(settings.wallet);
 if (settings.heavy != true) {
   bitcoinapi.setAccess('only', ['getinfo', 'getnetworkhashps', 'getmininginfo','getdifficulty', 'getconnectioncount',
-    'getblockcount', 'getblockhash', 'getblock', 'getrawtransaction', 'getpeerinfo', 'gettxoutsetinfo']);
+    'getblockcount', 'getblockhash', 'getblock', 'getrawtransaction', 'getpeerinfo', 'gettxoutsetinfo','getmempoolinfo']);
 } else {
   // enable additional heavy api calls
   /*
