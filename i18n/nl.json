@@ -5,7 +5,7 @@
         "latest_blocks": "LAATSTE BLOK",
         "top_100": "TOP 100",
         "network": "NETWERK",
-        "markets": "Exchange",
+        "markets": "EXCHANGE",
         "api": "API"
     },
     "pages": {
@@ -17,7 +17,7 @@
             "heading": "Algemene Informatie",
             "sub_heading": "?wat moet dit zijn?",
             "columns": {
-                "transactions_waiting": "Transacties wachten",
+                "transactions_waiting": "Niet-bevestigde transacties",
                 "usd_price": "USD Prijs",
                 "market_cap": "Markt Cap",
                 "hashrate": "Hashrate",
