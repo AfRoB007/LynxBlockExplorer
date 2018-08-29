@@ -13,18 +13,10 @@ exports.connect = (cb) => {
 
         options = {
             useNewUrlParser : true,
-            server : { 
-                socketOptions: { 
-                    keepAlive: 1, 
-                    connectTimeoutMS: 30000 
-                } 
-            },
-            replset: { 
-                socketOptions: { 
-                    keepAlive: 1, 
-                    connectTimeoutMS: 30000 
-                } 
-            }
+            keepAlive: 1, 
+            connectTimeoutMS: 30000, 
+            reconnectTries: 30, 
+            reconnectInterval: 5000
         };
     }
     dbString += settings.dbsettings.address;
