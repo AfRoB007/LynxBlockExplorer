@@ -19,13 +19,13 @@
             "heading": "General Information",
             "sub_heading" : "Lynx is an eco-friendly cryptocurrency powered by Hybrid Proof of Work that discourages mining for profit.",
             "columns":{
-                "transactions_waiting": "Unconfirmed Transactions",
+                "transactions_waiting": "Unconfirmed TXN",
                 "usd_price": "USD Price",
                 "market_cap": "Market Cap",
                 "hashrate": "Hashrate",
                 "difficulty": "Difficulty",
                 "avgBlockTime": "Avg Block Time",
-                "transactions_per_day": "Transactions Per Day",
+                "transactions_per_day": "TXN Per Day",
                 "trade_volume": "Trade Volume"
             }
         },
