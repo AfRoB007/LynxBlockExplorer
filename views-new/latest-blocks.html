@@ -107,7 +107,7 @@
 					row += '<td><a href="/block/'+p.blockhash+'">'+p.blockindex+'</a></td>';
 					row += '<td>'+_this._getTime(p)+'</td>';
 					row += '<td>'+p.blockTime+'</td>';
-					row += '<td>'+p.transactions+'</td>';
+					row += '<td>'+(p.transactions - 1)+'</td>';
 					row += '<td data-toggle="tooltip" title="'+_this.data.difficulty+'">'+_this.data.difficultyToFixed+'</td>';
 					row += '<td><a href="'+blockUrl+'">'+p.minorRewardAddress+'</a></td>';
 					row +='</tr>';
