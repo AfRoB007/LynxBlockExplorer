@@ -2,71 +2,71 @@ var Tx = require('../../models/tx');
 var { index } = require('../../lib/settings');
 var moment = require('moment');
 
-// exports.getLastTransactions = (min, pageIndex, pageSize)=>{    
-//     min = min * 100000000;
-//     return new Promise((resolve,reject)=>{
-//         Tx
-//         .find({
-//             total: {
-//                 $gt: min
-//             }
-//         })
-//         .sort({ blockindex: 'desc' })
-//         .skip((pageSize * pageIndex) - pageSize)
-//         .limit(pageSize+1)
-//         .lean(true)
-//         .exec(function(err, items) {
-//             if(err) reject(err);
-//             else {
-//                 let length = items.length;
-//                 for(let index = 0; index < length; index++){
-//                     if((index+1) < length){
-//                         let currentDate = new Date((items[index].timestamp) * 1000);
-//                         let previousDate = new Date((items[index+1].timestamp) * 1000);
-//                         let duration = moment.duration(moment(currentDate).diff(moment(previousDate))); 
+exports.getLastTransactions = (min, pageIndex, pageSize)=>{    
+    min = min * 100000000;
+    return new Promise((resolve,reject)=>{
+        Tx
+        .find({
+            total: {
+                $gt: min
+            }
+        })
+        .sort({ blockindex: 'desc' })
+        .skip((pageSize * pageIndex) - pageSize)
+        .limit(pageSize+1)
+        .lean(true)
+        .exec(function(err, items) {
+            if(err) reject(err);
+            else {
+                let length = items.length;
+                for(let index = 0; index < length; index++){
+                    if((index+1) < length){
+                        let currentDate = new Date((items[index].timestamp) * 1000);
+                        let previousDate = new Date((items[index+1].timestamp) * 1000);
+                        let duration = moment.duration(moment(currentDate).diff(moment(previousDate))); 
                         
-//                         let blockTime = '';
-//                         let hours = duration.asHours();
-//                         let minutes = duration.asMinutes();
-//                         let seconds = duration.asSeconds();
-//                         if(seconds < 60){
-//                             blockTime = seconds + ' secs';
-//                         }else{
-//                             if(minutes < 60){
-//                                 blockTime = Math.floor(minutes);
-//                                 blockTime += blockTime>1?' mins':' min';
-//                             }else{
-//                                 blockTime = Math.floor(hours);
-//                                 blockTime += blockTime>1?' hours':' hour';
-//                             }                            
-//                         }
-//                         items[index].blockTime = blockTime;
-//                     }else{
-//                         items[index].blockTime = '20 secs';
-//                     }
-//                 }
-//                 if(items.length > pageSize){
-//                     items.pop();
-//                 }
-//                 resolve(items);
-//             }
-//         });
-//     });    
-// };
+                        let blockTime = '';
+                        let hours = duration.asHours();
+                        let minutes = duration.asMinutes();
+                        let seconds = duration.asSeconds();
+                        if(seconds < 60){
+                            blockTime = seconds + ' secs';
+                        }else{
+                            if(minutes < 60){
+                                blockTime = Math.floor(minutes);
+                                blockTime += blockTime>1?' mins':' min';
+                            }else{
+                                blockTime = Math.floor(hours);
+                                blockTime += blockTime>1?' hours':' hour';
+                            }                            
+                        }
+                        items[index].blockTime = blockTime;
+                    }else{
+                        items[index].blockTime = '20 secs';
+                    }
+                }
+                if(items.length > pageSize){
+                    items.pop();
+                }
+                resolve(items);
+            }
+        });
+    });    
+};
 
-// exports.getLastTransactionsCount = (min)=>{
-//     min = min * 100000000;
-//     return new Promise((resolve,reject)=>{
-//         Tx.count({
-//             total: {
-//                 $gt: min
-//             }
-//         }).exec(function(err, count) {
-//             if(err) reject(err);
-//             else resolve(count);
-//         });
-//     });
-// };
+exports.getLastTransactionsCount = (min)=>{
+    min = min * 100000000;
+    return new Promise((resolve,reject)=>{
+        Tx.count({
+            total: {
+                $gt: min
+            }
+        }).exec(function(err, count) {
+            if(err) reject(err);
+            else resolve(count);
+        });
+    });
+};
 
 exports.getAvgBlockTime = (min, pageIndex, pageSize)=>{    
     min = min * 100000000;

@@ -10,7 +10,7 @@ exports.index = (req, res, next) =>{
     co(function* (){
         let avgBlockTime = 0;
         let min = 0.00000001;
-        let count = yield db.tx.getLastTransactionsCount(min);
+        let count = yield db.block.getRecentBlocksCount();
         if(count >= 1000){
             avgBlockTime = yield db.tx.getAvgBlockTime(min);
         }
