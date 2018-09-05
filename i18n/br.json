@@ -158,7 +158,7 @@
             "summary": {
                 "heading": "Detalhes das Transações",
                 "columns": {
-                    "confirmations" : "Confirmação",
+                    "block" : "Bloco",
                     "block_hash" : "Bloco Hash",
                     "timestamp": "Registro de Tempo"                 
                 }           

@@ -15,30 +15,20 @@ exports.latestBlocks = (req, res, next) =>{
     co(function* (){
         let pageIndex = 1;
         let pageSize = 10;
-        let min = 0.00000001;
         if(req.query.pageIndex){
             pageIndex = parseInt(req.query.pageIndex);
         }
         if(req.query.pageSize){
             pageSize = parseInt(req.query.pageSize);
         }
+        yield common.updateBlocks();  
         let grid = {            
-            items : yield db.tx.getLastTransactions(min, pageIndex, pageSize),
-            count : yield db.tx.getLastTransactionsCount(min),
+            items : yield db.block.getRecentBlocks(pageIndex, pageSize),
+            count : yield db.block.getRecentBlocksCount(),
             ... yield bitcoin.getDifficulty(),
             pageIndex,
             pageSize
         };
-        let length = grid.items.length;
-        for(let index=0; index < length; index++){
-            if(grid.items[index].vout.length>0){
-                let hash = grid.items[index].vout[0].addresses;
-                let address = yield db.address.findOne(hash);
-                if(address){
-                    grid.items[index].txsCount = address.txs.length;
-                }
-            }
-        }
         res.send(grid);
     }).catch(next);
 };

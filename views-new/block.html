@@ -20,13 +20,18 @@
                                     </a>
                                     {{/ifNotEquals}}
                                 </td>
-                                <td colspan="5">LYNX {{translation.pages.block.summary.columns.block}}: {{model.hash}}</td>
+                                <td colspan="5">LYNX {{translation.pages.block.summary.columns.block}}: {{model.hash}}</td>                                
                                 <td>
-                                    {{#ifNotEquals model.nextblockhash null}}
-                                    <a class="pull-right" href="/block/{{model.nextblockhash}}">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                    {{/ifNotEquals}}
+                                    <span class="pull-right">
+                                        <a target="_blank" class="mr-1" href="/api/getblock?hash={{model.hash}}">
+                                            <i class="fa fa-info-circle"></i>
+                                        </a>
+                                        {{#ifNotEquals model.nextblockhash null}}
+                                        <a href="/block/{{model.nextblockhash}}">
+                                            <i class="fa fa-arrow-right"></i>
+                                        </a>
+                                        {{/ifNotEquals}}
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
@@ -42,7 +47,7 @@
                         <tbody>
                             <tr class={{blockConfirmationClass model.confirmations confirmations}}>
                                 <td>{{model.height}}</td>
-                                <td>{{model.difficultyToFixed}}</td>
+                                <td data-toggle="tooltip" title="{{model.difficulty}}">{{model.difficultyToFixed}}</td>
                                 <td>{{model.confirmations}}</td>
                                 <td>{{toKB model.size 2 }}</td>
                                 <td>{{model.bits}}</td>
@@ -100,3 +105,10 @@
         </div>
     </div>
 </section>
+{{#section 'script'}}
+<script type="text/javascript">
+	$(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+{{/section}}

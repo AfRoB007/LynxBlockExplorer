@@ -158,7 +158,7 @@
             "summary": {
                 "heading": "Details for Trasnaction",
                 "columns": {
-                    "confirmations" : "Confirmations",
+                    "block" : "Block",
                     "block_hash" : "Block Hash",
                     "timestamp": "Timestamp"                 
                 }           

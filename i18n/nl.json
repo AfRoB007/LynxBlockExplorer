@@ -156,7 +156,7 @@
             "summary": {
                 "heading": "Details voor transactie",
                 "columns": {
-                    "confirmations": "bevestigingen",
+                    "block": "Blok",
                     "block_hash": "Blok hash",
                     "timestamp": "Tijdstempel"
                 }

@@ -1,5 +1,6 @@
 var coinStats = require('./coin-stats');
 var tx = require('./tx');
+var block = require('./block');
 var peers = require('./peers');
 var richlist = require('./rich-list');
 var markets = require('./markets');
@@ -9,6 +10,7 @@ var ipDetails = require('./ip-details');
 
 exports.db = {
     tx,
+    block,
     peers,
     richlist,
     coinStats,

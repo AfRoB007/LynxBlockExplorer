@@ -102,14 +102,14 @@
 				let _this = this;
 				let rows = '';
 				this.data.items.forEach(function(p,index){
-					let blockUrl = '/address/'+_this._getExtractedBy(p);
+					let blockUrl = '/address/'+p.minorRewardAddress;
 					let row = '<tr>';
 					row += '<td><a href="/block/'+p.blockhash+'">'+p.blockindex+'</a></td>';
 					row += '<td>'+_this._getTime(p)+'</td>';
 					row += '<td>'+p.blockTime+'</td>';
-					row += '<td>'+p.txsCount||0+'</td>';
+					row += '<td>'+p.transactions+'</td>';
 					row += '<td data-toggle="tooltip" title="'+_this.data.difficulty+'">'+_this.data.difficultyToFixed+'</td>';
-					row += '<td><a href="'+blockUrl+'">'+_this._getExtractedBy(p)+'</a></td>';
+					row += '<td><a href="'+blockUrl+'">'+p.minorRewardAddress+'</a></td>';
 					row +='</tr>';
 					rows += row;						
 				});
@@ -175,13 +175,6 @@
 					return interval + " minutes";
 				}
 				return Math.floor(seconds) + " seconds";
-			}			
-			this._getExtractedBy = function(p){
-				let extractedBy = '';
-				if(p.vout.length>0){
-					extractedBy = p.vout[0].addresses;
-				}
-				return extractedBy;
 			}
 		}
 		var grid = new Grid();

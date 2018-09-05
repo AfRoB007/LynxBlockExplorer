@@ -26,7 +26,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>{{translation.pages.tx.summary.columns.confirmations}}</th>
+                                <th>{{translation.pages.tx.summary.columns.block}}</th>
                                 <th>{{translation.pages.tx.summary.columns.block_hash}}</th>
                                 <th>{{translation.pages.tx.summary.columns.timestamp}}</th>
                                 <th></th>
@@ -55,7 +55,7 @@
                 <table class="table table-striped table-latests table-detail">
                     <thead>
                         <tr>
-                            <th>
+                            <th colspan="2">
                                 {{translation.pages.tx.input.heading}}
                                 <i class="pull-right fa fa-arrow-right"></i>
                             </th>
@@ -63,7 +63,8 @@
                         <tr>
                             {{#ifEquals tx.vin.0.addresses 'coinbase'}}
                             <th colspan="2" class="text-center">{{translation.pages.tx.input.columns.address}}</th>
-                            {{/ifEquals}} {{#ifNotEquals tx.vin.0.addresses 'coinbase'}}
+                            {{/ifEquals}} 
+                            {{#ifNotEquals tx.vin.0.addresses 'coinbase'}}
                             <th>{{translation.pages.tx.input.columns.address}}</th>
                             <th>{{translation.pages.tx.input.columns.amount}}</th>
                             {{/ifNotEquals}}
@@ -74,7 +75,8 @@
                         <tr>
                             {{#ifEquals this.addresses 'coinbase'}}
                             <td colspan="2" class="text-center">New Coins</td>
-                            {{/ifEquals}} {{#ifNotEquals this.addresses 'coinbase'}}
+                            {{/ifEquals}}
+                            {{#ifNotEquals this.addresses 'coinbase'}}
                             <td>
                                 <a href="/address/{{this.addresses}}">{{this.addresses}}</a>
                             </td>

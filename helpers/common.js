@@ -1,4 +1,5 @@
 var co = require('co');
+var _ = require('lodash');
 var axios = require('axios');
 var { db } = require('./db');
 var lib = require('./lib');
@@ -33,11 +34,11 @@ const updateTxnsDb =(start,end)=>{
             let length = (end - start) +1;            
             for(let index=0; index < length; index++){
                 let height = start + index;
-                if (height % 100 === 0) {
+                if (height % 10 === 0) {
                     let result = yield db.coinStats.update({
                         last: start + index - 1                        
                     });
-                    console.log(((100 * height) / length).toFixed(2), '% completed');
+                    console.log(((10 * height) / length).toFixed(2), '% completed');
                 }                    
                 let blockHash = yield bitcoin.getBlockHash(height);                             
                 if(blockHash!=='There was an error. Check your console.'){                    
@@ -331,6 +332,59 @@ const getCountryName = (ip)=> {
     });
 };
 
+const getBlocksToUpdate = function(items){
+    let blocks = [];    
+    items = _.chain(items).groupBy('blockindex').value();
+    for (let key in items) {
+        if(items[key].length>0){
+            let item = items[key][0];
+            let model = {
+                blockhash : item.blockhash,
+                blockindex : item.blockindex,
+                timestamp : item.timestamp,
+                blockTime : '',
+                transactions : items[key].length
+            };        
+            model.minorRewardAddress = item.vout[0].addresses;
+            blocks.push(model);
+        }
+    }
+    return blocks;
+};
+
+const updateBlocks = function(){
+    return new Promise(function (resolve,reject) {
+        co(function* () {            
+            let stats = yield db.coinStats.getCoinStats();
+            let block = yield db.block.getRecentBlock();
+            let startIndex = 0;
+            let endIndex = 0;        
+            if(block){
+                startIndex = block.blockindex;
+            }
+            if(stats){
+                endIndex = stats.count;
+            }
+            if(endIndex - startIndex > 0){
+                // update block                
+                let step = 100;               
+                while(endIndex - (startIndex + step) > 0){
+                    console.log(`update blocks between ${startIndex} - ${startIndex + step }`);
+                    let items = yield db.tx.getTransactions(startIndex, startIndex + step);
+                    yield db.block.insertMany(getBlocksToUpdate(items));
+                    startIndex += step;
+                }
+                if(endIndex - startIndex > 0){
+                    console.log(`update blocks between ${startIndex} - ${endIndex}`);                   
+                    let items = yield db.tx.getTransactions(startIndex, endIndex);                    
+                    yield db.block.insertMany(getBlocksToUpdate(items));                    
+                }
+            }
+            resolve(true);
+        }).catch(reject);
+    });
+}
+
 module.exports.updateDb = updateDb;
 module.exports.updateTxnsDb = updateTxnsDb;
 module.exports.updateHeavy = updateHeavy;
@@ -338,3 +392,4 @@ module.exports.updateMarketsDb = updateMarketsDb;
 module.exports.saveTx = saveTx;
 module.exports.getDistribution = getDistribution;
 module.exports.getCountryName = getCountryName;
+module.exports.updateBlocks = updateBlocks;
