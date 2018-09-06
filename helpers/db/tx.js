@@ -68,6 +68,26 @@ exports.getLastTransactionsCount = (min)=>{
     });
 };
 
+exports.getLastTwentyFourHoursCount = (min)=>{
+    min = min * 100000000;
+    let currentTimestamp = Math.round(new Date().getTime() / 1000);
+    var last24HoursTimestamp = currentTimestamp - (24 * 3600 * 1);
+
+    return new Promise((resolve,reject)=>{
+        Tx.count({
+            total: {
+                $gt: min
+            },
+            timestamp : {
+                $gte : last24HoursTimestamp
+            }
+        }).exec(function(err, count) {
+            if(err) reject(err);
+            else resolve(count);
+        });
+    });
+};
+
 exports.getAvgBlockTime = (min, pageIndex, pageSize)=>{    
     min = min * 100000000;
     return new Promise((resolve,reject)=>{

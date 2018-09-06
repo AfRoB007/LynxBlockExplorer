@@ -10,7 +10,7 @@ exports.index = (req, res, next) =>{
     co(function* (){
         let avgBlockTime = 0;
         let min = 0.00000001;
-        let count = yield db.tx.getLastTransactionsCount(min);
+        let count = yield db.tx.getLastTransactionsCount(min);        
         if(count >= 1000){
             avgBlockTime = yield db.tx.getAvgBlockTime(min);
         }
@@ -25,13 +25,14 @@ exports.index = (req, res, next) =>{
             liteCoinPrice : yield cryptoCompare.getCoinPrice('LTC','USD'),
             coinStats : yield db.coinStats.getCoinStats(),            
             coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC'),
-            block : yield db.tx.getRecentBlock(),
+            block : yield db.tx.getRecentBlock(),  
+            txnPerDay : yield db.tx.getLastTwentyFourHoursCount(min),
             avgBlockTime,
             markets
         };
         data.usdPrice = data.liteCoinPrice * data.coinPrice * 1000;
         data.marketCap =  Number(data.coinStats.supply) * data.liteCoinPrice * data.coinPrice;
-            
+                
         res.render('explorer', data);
     }).catch(next);    
 };
