@@ -1,9 +1,8 @@
 var axios = require('axios');
 const http = require('http');
 const https = require('https');
-const { JSDOM } = require("jsdom");
 
-const BASE_URL = 'https://coinmarketcap.com/currencies/lynx';
+const BASE_URL = 'https://api.coinmarketcap.com';
 
 let axiosInstance = axios.create({
     timeout : 10 * 60 * 1000,
@@ -14,14 +13,9 @@ let axiosInstance = axios.create({
 
 exports.get24HoursVolume = ()=>{
     return new Promise((resolve,reject)=>{
-        axiosInstance.get(BASE_URL).then(res=>{
-            let { document } = new JSDOM(res.data).window     
-            let span = document.querySelector('span[data-currency-volume]>span');
-            if(span){
-                resolve(Number(span.textContent));
-            }else{
-                resolve('Error in console');
-            }
+        axiosInstance.get(BASE_URL+'/v2/ticker/3099').then(res=>{
+            let { data } = res.data;
+            resolve(data.quotes.USD.volume_24h);
         }).catch(reject);
     });    
 };

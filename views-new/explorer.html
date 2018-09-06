@@ -31,7 +31,7 @@
 						<h5>{{translation.pages.explorer.columns.usd_price}} (x1000)</h5>
 					</div>
 					<div class="text">
-						<span>${{toFixed usdPrice 4}}</span>
+						<span>$ {{toFixed usdPrice 4}}</span>
 					</div>
 				</div>
 			</div>
@@ -42,7 +42,7 @@
 						<h5>{{translation.pages.explorer.columns.market_cap}}</h5>
 					</div>
 					<div class="text">
-						<span>${{formatNumber marketCap}} M</span>
+						<span>$ {{formatNumber marketCap}} M</span>
 					</div>
 				</div>
 			</div>
@@ -97,7 +97,7 @@
 						<h5>{{translation.pages.explorer.columns.trade_volume}}</h5>
 					</div>
 					<div class="text">
-						<span>$ {{tradeVolume}}</span>
+						<span>$ {{toFixed tradeVolume 4}}</span>
 					</div>
 				</div>
 			</div>
