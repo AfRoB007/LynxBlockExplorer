@@ -3,7 +3,7 @@ var Decimal = require('decimal.js');
 
 var co = require('co');
 var qr = require('qr-image');
-var { bitcoin, cryptoCompare, db, common } = require('../helpers');
+var { bitcoin, cryptoCompare, coinMarketCap, db, common } = require('../helpers');
 
 //index
 exports.index = (req, res, next) =>{
@@ -27,12 +27,13 @@ exports.index = (req, res, next) =>{
             coinPrice : yield cryptoCompare.getCoinPrice('LYNX','LTC'),
             block : yield db.tx.getRecentBlock(),  
             txnPerDay : yield db.tx.getLastTwentyFourHoursCount(min),
+            tradeVolume : yield coinMarketCap.get24HoursVolume(),
             avgBlockTime,
             markets
         };
         data.usdPrice = data.liteCoinPrice * data.coinPrice * 1000;
         data.marketCap =  Number(data.coinStats.supply) * data.liteCoinPrice * data.coinPrice;
-                
+
         res.render('explorer', data);
     }).catch(next);    
 };

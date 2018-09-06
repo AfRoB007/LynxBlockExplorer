@@ -4,7 +4,6 @@ const https = require('https');
 var settings = require('../lib/settings');
 
 const BASE_URL = 'https://www.cryptocompare.com/api/';
-//https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=LYNX&tsym=LTC
 
 let axiosInstance = axios.create({
     timeout : 10 * 60 * 1000,
@@ -36,5 +35,3 @@ exports.getCoinPrice = (fromSymbol,toSymbol)=>{
         }).catch(reject);
     });    
 };
-
-
