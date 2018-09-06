@@ -69,7 +69,6 @@ if [ -f /boot/loader ]; then
 
 		/root/LynxCI/installTest.sh testnet
 		
-
 	fi
 
 # This is the first time the script has been executed.
