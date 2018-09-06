@@ -68,6 +68,7 @@ if [ -f /boot/loader ]; then
 	else
 
 		/root/LynxCI/installTest.sh testnet
+		
 
 	fi
 
