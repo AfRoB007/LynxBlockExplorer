@@ -74,9 +74,9 @@ exports.toUnixTime = function(unixtime){
 }
 
 exports.blockConfirmationClass = function(value1, value2, options) {
-    if(value1 >= value2) return 'bg-success';
-    else if(value1 < (value2 / 2)) return 'bg-danger';
-    return 'bg-warning';
+    if(value1 >= value2) return 'text-success';
+    else if(value1 < (value2 / 2)) return 'text-danger';
+    return 'text-warning';
 };
 
 exports.section = function(name, options){ 

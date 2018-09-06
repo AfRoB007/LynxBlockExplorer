@@ -72,8 +72,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
-app.use('/api', bitcoinapi.app);
 app.use('/data', apiRoutes);
+app.set('json spaces', 2);
+app.use('/api', bitcoinapi.app);
 app.use('/ext', extRoutes);
 
 const siteLangs = fs.readdirSync(path.join(__dirname,'i18n'))
