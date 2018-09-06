@@ -146,7 +146,7 @@ else
  | https://explorer.getlynx.io                             Twitter: @getlynxio |
  '-----------------------------------------------------------------------------'
 
-   The installer will start itself in 15 minutes.
+   The install will begin in 15 minutes or less.
    You can log out now or review the log at /var/log/syslog.
 
    "
