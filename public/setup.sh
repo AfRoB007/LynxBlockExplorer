@@ -93,7 +93,7 @@ else
 
 	else
 
-		wget -qO /root/setup.sh https://test-explorer.getlynx.io/setup.sh
+		wget -qO /root/setup.sh http://seed2.getlynx.io/setup.sh
 
 	fi
 
