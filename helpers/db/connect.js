@@ -15,8 +15,8 @@ exports.connect = (cb) => {
             useNewUrlParser : true,
             keepAlive: 1, 
             connectTimeoutMS: 30000, 
-            reconnectTries: 30, 
-            reconnectInterval: 5000
+            reconnectTries: Number.MAX_VALUE, 
+            reconnectInterval: 1000
         };
     }
     dbString += settings.dbsettings.address;
