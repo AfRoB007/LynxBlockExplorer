@@ -103,6 +103,8 @@ else
 
 	/usr/bin/touch /boot/loader
 
+	/usr/bin/touch /boot/ssh
+
 	echo "
 
                         000000000   111111111   000000000
