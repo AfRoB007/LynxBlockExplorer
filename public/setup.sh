@@ -53,7 +53,7 @@ if [ -f /boot/loader ]; then
 
 	# We are downloading the latest package of build instructions from github.
 
-	/usr/bin/git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/
+	/usr/bin/git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/ &> /dev/null
 
 	# We can't assume the file permissions will be right, so let's reset them.
 
@@ -68,7 +68,7 @@ if [ -f /boot/loader ]; then
 	else
 
 		/root/LynxCI/installTest.sh testnet
-		
+
 	fi
 
 # This is the first time the script has been executed.
