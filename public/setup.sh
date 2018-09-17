@@ -51,11 +51,15 @@ if [ -f /boot/loader ]; then
 
 	/usr/bin/apt-get remove postfix apache2 -y
 
+	# Lets not assume this is the first time the script has been attempted.
+
+	/bin/rm -rf /root/LynxCI/
+
 	# We are downloading the latest package of build instructions from github.
 
-	/usr/bin/git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/ &> /dev/null
+	/usr/bin/git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/
 
-	# We can't assume the file permissions will be right, so let's reset them.
+	# We cant assume the file permissions will be right, so lets reset them.
 
 	/bin/chmod 744 -R /root/LynxCI/
 
@@ -102,6 +106,8 @@ else
 	# Create the /boot/loader file so we don't get stuck in a loop.
 
 	/usr/bin/touch /boot/loader
+
+	# This file is created for the Pi. In order for SSH to work, this file must exist.
 
 	/usr/bin/touch /boot/ssh
 
