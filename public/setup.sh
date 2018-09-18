@@ -17,20 +17,36 @@
 # SD card with the latest version of LynxCI, plugging it into your Pi and powering it one. This
 # script will support Pi 2 and 3 only please.
 
-IsProduction=N
+IsProduction="N"
 
-# Since this is the first time this loader.sh file has been executed, the /boot/loader file won't
+# Since this is the first time this setup.sh file has been executed, the /boot/setup file won't
 # exist yet, so skip to the else portion of this conditional.
 
-if [ -f /boot/loader ]; then
+if [ -f /boot/setup ]; then
+
+	# Let's execute the build script.
+
+	if [ "$IsProduction" = "Y" ]; then
+
+		/root/LynxCI/install.sh mainnet
+
+	else
+
+		/root/LynxCI/installTest.sh testnet
+
+	fi
+
+# This is the first time the script has been executed.
+
+else
 
 	# In the event that any other crontabs exist, let's purge them all.
 
 	crontab -r &> /dev/null
 
-	# Since the /boot/loader file existed, let's purge it to keep things cleaned up.
+	# Since the /boot/setup file existed, let's purge it to keep things cleaned up.
 
-	/bin/rm -rf /boot/loader
+	/bin/rm -rf /boot/setup
 
 	# Before we begin, we need to update the local repo's. Notice we aren't doing an upgrade. In some
 	# cases this bring ups prompts that need a human to make a decision and after a good bit of testing,
@@ -63,22 +79,6 @@ if [ -f /boot/loader ]; then
 
 	/bin/chmod 744 -R /root/LynxCI/
 
-	# Let's execute the build script.
-
-	if [ "$IsProduction" = "Y" ]; then
-
-		/root/LynxCI/install.sh mainnet
-
-	else
-
-		/root/LynxCI/installTest.sh testnet
-
-	fi
-
-# This is the first time the script has been executed.
-
-else
-
 	# In the event that any other crontabs exist, let's purge them all.
 
 	crontab -r &> /dev/null
@@ -103,9 +103,9 @@ else
 
 	chmod 744 /root/setup.sh
 
-	# Create the /boot/loader file so we don't get stuck in a loop.
+	# Create the /boot/setup file so we don't get stuck in a loop.
 
-	/usr/bin/touch /boot/loader
+	/usr/bin/touch /boot/setup
 
 	# This file is created for the Pi. In order for SSH to work, this file must exist.
 
