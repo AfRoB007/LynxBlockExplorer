@@ -19,99 +19,69 @@
 
 IsProduction="N"
 
-# Since this is the first time this setup.sh file has been executed, the /boot/setup file won't
-# exist yet, so skip to the else portion of this conditional.
+# In the event that any other crontabs exist, let's purge them all.
 
-if [ -f /boot/setup ]; then
+crontab -r &> /dev/null
 
-	# Let's execute the build script.
+# Since the /boot/setup file existed, let's purge it to keep things cleaned up.
 
-	if [ "$IsProduction" = "Y" ]; then
+rm -rf /boot/setup
 
-		/root/LynxCI/install.sh mainnet
+# Before we begin, we need to update the local repo's. Notice we aren't doing an upgrade. In some
+# cases this bring ups prompts that need a human to make a decision and after a good bit of testing,
+# it was determined that trying to automate that portion was unneeded. For now, the update is all
+# we need and the device will still function properly.
 
-	else
+apt-get update -y &> /dev/null
 
-		/root/LynxCI/installTest.sh testnet
+#/usr/bin/apt-get upgrade -y
 
-	fi
+# We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
+# added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
-# This is the first time the script has been executed.
+apt-get install git curl htop nano -y
+
+apt-get install git-core build-essential autoconf libtool libssl-dev libboost-all-dev libminiupnpc-dev libevent-dev libncurses5-dev pkg-config bzip2 -y
+
+# Some hosting vendors already have these installed. They aren't needed, so we are removing them
+# now. This list will probably get longer over time.
+
+apt-get remove postfix apache2 -y &> /dev/null
+
+# Lets not assume this is the first time the script has been attempted.
+
+rm -rf /root/LynxCI/
+
+# We are downloading the latest package of build instructions from github.
+
+git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/
+
+# We cant assume the file permissions will be right, so lets reset them.
+
+chmod 744 -R /root/LynxCI/
+
+# In the event that any other crontabs exist, let's purge them all.
+
+crontab -r &> /dev/null
+
+# Since this is the first time the script is run, we will create a crontab to run it again
+# in a few minute, when a quarter of the hour rolls around.
+
+if [ "$IsProduction" = "Y" ]; then
+
+	crontab -l | { cat; echo "*/5 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
 
 else
 
-	# In the event that any other crontabs exist, let's purge them all.
+	crontab -l | { cat; echo "*/5 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
 
-	crontab -r &> /dev/null
+fi
 
-	# Since the /boot/setup file existed, let's purge it to keep things cleaned up.
+# This file is created for the Pi. In order for SSH to work, this file must exist.
 
-	/bin/rm -rf /boot/setup
+touch /boot/ssh
 
-	# Before we begin, we need to update the local repo's. Notice we aren't doing an upgrade. In some
-	# cases this bring ups prompts that need a human to make a decision and after a good bit of testing,
-	# it was determined that trying to automate that portion was unneeded. For now, the update is all
-	# we need and the device will still function properly.
-
-	/usr/bin/apt-get update -y
-
-	#/usr/bin/apt-get upgrade -y
-
-	# We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
-	# added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
-
-	/usr/bin/apt-get install git curl htop nano -y
-
-	# Some hosting vendors already have these installed. They aren't needed, so we are removing them
-	# now. This list will probably get longer over time.
-
-	/usr/bin/apt-get remove postfix apache2 -y
-
-	# Lets not assume this is the first time the script has been attempted.
-
-	/bin/rm -rf /root/LynxCI/
-
-	# We are downloading the latest package of build instructions from github.
-
-	/usr/bin/git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/
-
-	# We cant assume the file permissions will be right, so lets reset them.
-
-	/bin/chmod 744 -R /root/LynxCI/
-
-	# In the event that any other crontabs exist, let's purge them all.
-
-	crontab -r &> /dev/null
-
-	# Since this is the first time the script is run, we will create a crontab to run it again
-	# in a few minute, when a quarter of the hour rolls around.
-
-	crontab -l &> /dev/null | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/setup.sh >> /var/log/syslog"; } | crontab -
-
-	# The setup script is then downloaded to the root dir and permissions are set. So when the
-	# crontab runs, the script is there and has the correct execute permissions.
-
-	if [ "$IsProduction" = "Y" ]; then
-
-		wget -qO /root/setup.sh https://explorer.getlynx.io/setup.sh
-
-	else
-
-		wget -qO /root/setup.sh https://test-explorer.getlynx.io/setup.sh
-
-	fi
-
-	chmod 744 /root/setup.sh
-
-	# Create the /boot/setup file so we don't get stuck in a loop.
-
-	/usr/bin/touch /boot/setup
-
-	# This file is created for the Pi. In order for SSH to work, this file must exist.
-
-	/usr/bin/touch /boot/ssh
-
-	echo "
+echo "
 
                         000000000   111111111   000000000
                  111111111111111111111000000000000111111111111
@@ -154,9 +124,8 @@ else
  | https://explorer.getlynx.io                             Twitter: @getlynxio |
  '-----------------------------------------------------------------------------'
 
-   The install will begin in 15 minutes or less.
+   The install will begin in 5 minutes or less.
    You can log out now or review the log at /var/log/syslog.
 
    "
 
-fi
