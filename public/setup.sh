@@ -69,11 +69,11 @@ crontab -r &> /dev/null
 
 if [ "$IsProduction" = "Y" ]; then
 
-	crontab -l | { cat; echo "*/5 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
+	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
 
 else
 
-	crontab -l | { cat; echo "*/5 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
+	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
 
 fi
 
