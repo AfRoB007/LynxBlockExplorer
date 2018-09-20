@@ -19,6 +19,8 @@
 
 IsProduction="N"
 
+echo "Updating the local operating system."
+
 # In the event that any other crontabs exist, let's purge them all.
 
 crontab -r &> /dev/null
@@ -32,25 +34,57 @@ rm -rf /boot/setup
 # it was determined that trying to automate that portion was unneeded. For now, the update is all
 # we need and the device will still function properly.
 
-apt-get update -y &> /dev/null
+apt-get update -y \
+	&> /dev/null
 
 #/usr/bin/apt-get upgrade -y
 
 # We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
-apt-get install git curl htop nano -y
-
-apt-get install git-core build-essential autoconf libtool libssl-dev libboost-all-dev libminiupnpc-dev libevent-dev libncurses5-dev pkg-config bzip2 -y
+apt-get install -y \
+	autoconf \
+	automake \
+	build-essential \
+	bzip2 \
+	cpulimit \
+	curl \
+	fail2ban \
+	g++ \
+	gcc \
+	git \
+	git-core \
+	htop \
+	libboost-all-dev \
+	libcurl4-openssl-dev \
+	libevent-dev \
+	libgmp-dev \
+	libjansson-dev \
+	libminiupnpc-dev \
+	libncurses5-dev \
+	libssl-dev \
+	libtool \
+	libz-dev \
+	make \
+	nano \
+	nodejs \
+	pkg-config \
+	software-properties-common \
+	&> /dev/null
 
 # Some hosting vendors already have these installed. They aren't needed, so we are removing them
 # now. This list will probably get longer over time.
 
-apt-get remove postfix apache2 -y &> /dev/null
+apt-get remove -y \
+	postfix \
+	apache2 \
+	&> /dev/null
 
 # Lets not assume this is the first time the script has been attempted.
 
 rm -rf /root/LynxCI/
+
+echo "Local operating system is updated."
 
 # We are downloading the latest package of build instructions from github.
 
@@ -83,34 +117,34 @@ touch /boot/ssh
 
 echo "
 
-                        000000000   111111111   000000000
-                 111111111111111111111000000000000111111111111
-              000000000000000000000000000111111111111000000000000
-           111111111111.........111111111111000000000000111111111111
-         0000000000.................0000000000..1111111111..0000000000
-       11111111............L............11111111....00000000....11111111
-     0000000..............YYY..............0000000.....1111111.....0000000
-    1111111..............NNNNNNNN...........1111111.....0000000.....1111111
-   0000000..............XXXXXXXXXXXX..........000000......111111......000000
-  1111111.............LLLLLLLLLLLLLLLLL........111111......000000......111111
-  000000.............YYYYYYYYYYYYYYYYYYYY.......000000......111111......000000
-  111111............NNNNNNNNNNNNNNNNNNNN........111111......000000......111111
-  000000........XX..XXXXXXXXXXXXXXXXX...........000000......111111......000000
-  111111.......LLL..LLLLLLLLLL..................111111......000000......111111
-  000000.......YYY...YYYYYYYYYY....YY...........000000......111111......000000
-  1111111......NNNNN...NNNNNNNNN...NN..........1111111.....0000000.....1111111
-   0000000......XXXXXX....XXXXXX...XXXXX.......000000......111111......000000
-    111111........LLLLLLLL....LL..............111111......000000......111111
-     0000000........YYYYYYYY...Y............0000000.....1111111.....0000000
-      1111111...........NNNN...............1111111.....0000000.....1111111
-        0000000............X.............0000000.....1111111.....0000000
-          111111111..................111111111...000000000...111111111
-            000000000000........000000000000.11111111111.00000000000
-              111111111111111111111111111000000000000111111111111
-                  0000000000000000000111111111111000000000000
-                        11111111   000000000   111111111
+												000000000   111111111   000000000
+								 111111111111111111111000000000000111111111111
+							000000000000000000000000000111111111111000000000000
+					 111111111111.........111111111111000000000000111111111111
+				 0000000000.................0000000000..1111111111..0000000000
+			 11111111............L............11111111....00000000....11111111
+		 0000000..............YYY..............0000000.....1111111.....0000000
+		1111111..............NNNNNNNN...........1111111.....0000000.....1111111
+	 0000000..............XXXXXXXXXXXX..........000000......111111......000000
+	1111111.............LLLLLLLLLLLLLLLLL........111111......000000......111111
+	000000.............YYYYYYYYYYYYYYYYYYYY.......000000......111111......000000
+	111111............NNNNNNNNNNNNNNNNNNNN........111111......000000......111111
+	000000........XX..XXXXXXXXXXXXXXXXX...........000000......111111......000000
+	111111.......LLL..LLLLLLLLLL..................111111......000000......111111
+	000000.......YYY...YYYYYYYYYY....YY...........000000......111111......000000
+	1111111......NNNNN...NNNNNNNNN...NN..........1111111.....0000000.....1111111
+	 0000000......XXXXXX....XXXXXX...XXXXX.......000000......111111......000000
+		111111........LLLLLLLL....LL..............111111......000000......111111
+		 0000000........YYYYYYYY...Y............0000000.....1111111.....0000000
+			1111111...........NNNN...............1111111.....0000000.....1111111
+				0000000............X.............0000000.....1111111.....0000000
+					111111111..................111111111...000000000...111111111
+						000000000000........000000000000.11111111111.00000000000
+							111111111111111111111111111000000000000111111111111
+									0000000000000000000111111111111000000000000
+												11111111   000000000   111111111
 
-  .------------------------------------------------------.dCCCCCb.  IIIIIIIIII-.
+	.------------------------------------------------------.dCCCCCb.  IIIIIIIIII-.
  | LLLLL    YYYYYY   YYYY NNNNN      NNN XXXXXXX  XXXXX dCCCCCCCCCC IIIIIIIIII |
  | \`LLL'     \`YYY.   .Y'  \`NNNN.     \`N'  \`XXXX    XX'  CCC'   'CCC    IIII    |
  |  LLL       \`YYY. .Y'    N \`NNN.    N     XXXX..XX    CCC            IIII    |
@@ -124,8 +158,8 @@ echo "
  | https://explorer.getlynx.io                             Twitter: @getlynxio |
  '-----------------------------------------------------------------------------'
 
-   The install will begin in 5 minutes or less.
-   You can log out now or review the log at /var/log/syslog.
+	 The install will begin in 15 minutes or less.
+	 You can log out now or review the log at /var/log/syslog.
 
-   "
+	 "
 
