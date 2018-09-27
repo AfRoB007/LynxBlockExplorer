@@ -89,7 +89,7 @@ echo "Local operating system is updated."
 
 # We are downloading the latest package of build instructions from github.
 
-git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/
+git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/ &> /dev/null
 
 # We cant assume the file permissions will be right, so lets reset them.
 
@@ -104,11 +104,11 @@ crontab -r &> /dev/null
 
 if [ "$IsProduction" = "Y" ]; then
 
-	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
+	crontab -l &> /dev/null | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
 
 else
 
-	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
+	crontab -l &> /dev/null | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
 
 fi
 
