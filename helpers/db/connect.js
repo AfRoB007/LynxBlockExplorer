@@ -36,5 +36,6 @@ exports.connect = (cb) => {
 };
 
 exports.disconnect = () => {
+    console.log('mongoose disconnect');
     mongoose.disconnect();
 };
