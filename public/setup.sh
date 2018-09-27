@@ -20,7 +20,7 @@
 IsProduction="N"
 
 echo "Updating the local operating system."
-echo "This might take a few minutes. Hang on..."
+echo "This might take a few minutes. Hang on...."
 
 # In the event that any other crontabs exist, let's purge them all.
 
