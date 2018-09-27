@@ -40,25 +40,27 @@ const syncLoop = (iterations, process, exit) => {
   return loop;
 };
 
-const prepare_vin = (tx)=>{  
-  return new Promise((resolve,reject)=>{
-    co(function* (){
-        let arr_vin = [];
-        let addressArray = yield tx.vin.map(p=> getInputAddresses(p,tx.vout));
+const prepare_vin = (tx) => {
+  return new Promise((resolve, reject) => {
+    co(function* () {
+      let arr_vin = [];
+      let addressArray = yield tx.vin.map(p => getInputAddresses(p, tx.vout));
+      if (addressArray.length > 0 && addressArray[0].length>0) {
         let addresses = addressArray[0];
 
-        let index = arr_vin.findIndex(p=> p.address === addresses[0].hash);
+        let index = arr_vin.findIndex(p => p.address === addresses[0].hash);
         let amount = bitcoin.convertToSatoshi(parseFloat(addresses[0].amount));
         //push to array
-        if(index===-1){                    
+        if (index === -1) {
           arr_vin.push({
-            addresses : addresses[0].hash, 
+            addresses: addresses[0].hash,
             amount
-          });          
-        }else{
+          });
+        } else {
           arr_vin[index].amount = arr_vin[index].amount + amount;
         }
-        resolve(arr_vin);
+      }
+      resolve(arr_vin);
     });
   });
 };
@@ -111,8 +113,8 @@ const getInputAddresses = (input, vout)=>{
           addresses.push({ hash: 'coinbase', amount });
           resolve(addresses);
         } else {
-          let tx = yield bitcoin.getRawTransaction(input.txid);
-          if(tx){
+          let tx = yield bitcoin.getRawTransaction(input.txid);          
+          if(tx && tx !== bitcoin.CONSOLE_ERROR){
             tx.vout.forEach(p=>{
               if (p.n == input.vout && p.scriptPubKey.addresses) {
                 addresses.push({

@@ -9,7 +9,8 @@ const BASE_URL = 'http://'+settings.wallet.host+':' + settings.port + '/api/';
 
 let axiosInstance = axios.create({
     baseURL : BASE_URL,
-    timeout : 10 * 60 * 1000,
+    //timeout : 10 * 60 * 1000,
+    timeout : 30 * 1000,
     proxy : false,
     httpAgent: new http.Agent({ keepAlive: true }),
     httpsAgent: new https.Agent({ keepAlive: true })
@@ -19,7 +20,7 @@ const CONSOLE_ERROR = 'There was an error. Check your console.';
 
 const handleError = (uri, resolve, reject)=>{
     return (err)=>{
-        console.log(`${uri} : ${err.message}`);          
+        console.log(`${uri} : ${err.message}`);
         let status = null;
         if(err.response){
             status = err.response.status;
@@ -30,6 +31,7 @@ const handleError = (uri, resolve, reject)=>{
         if(status && status === 404){
             return reject(new Error(`${BASE_URL}${uri} not found`));
         }else{
+            console.log('reject');
             reject(err);            
         }
     };

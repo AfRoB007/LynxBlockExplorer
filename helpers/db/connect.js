@@ -30,11 +30,12 @@ exports.connect = (cb) => {
             console.log(err);
             process.exit(1);
         }
-        console.log('Successfully connected to MongoDB');
+        console.log('MongoDB Connected :'+dbString);
         return cb();
     });
 };
 
 exports.disconnect = () => {
+    console.log('mongoose disconnect');
     mongoose.disconnect();
 };

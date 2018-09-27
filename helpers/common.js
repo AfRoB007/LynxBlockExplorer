@@ -34,16 +34,17 @@ const updateTxnsDb =(start,end)=>{
             let length = (end - start) +1;            
             for(let index=0; index < length; index++){
                 let height = start + index;
-                if (height % 10 === 0) {
+                console.log('height '+height+', index '+ index +': '+(index % 10));
+                if (index % 10 === 0) {
                     let result = yield db.coinStats.update({
                         last: start + index - 1                        
                     });
-                    console.log(((10 * height) / length).toFixed(2), '% completed');
+                    console.log(((10 * index) / length).toFixed(2), '% completed');
                 }                    
                 let blockHash = yield bitcoin.getBlockHash(height);                             
-                if(blockHash!=='There was an error. Check your console.'){                    
+                if(blockHash !== bitcoin.CONSOLE_ERROR){                    
                     let block = yield bitcoin.getBlockByHash(blockHash);                    
-                    if(block!=='There was an error. Check your console.'){                                           
+                    if(block !== bitcoin.CONSOLE_ERROR){                                           
                         let txLength = block.tx.length;
                         for(let i=0; i < txLength; i++){
                             let txnId = block.tx[i];
@@ -53,6 +54,12 @@ const updateTxnsDb =(start,end)=>{
                             }
                         }
                     }
+                }else{
+                    console.log(height+' error');
+                    let result = yield db.coinStats.update({
+                        last: start + index - 1                        
+                    });
+                    console.log(((10 * index) / length).toFixed(2), '% completed');
                 }
             }
             console.log('100% completed');
@@ -130,7 +137,7 @@ const saveTx = (hash)=>{
     return new Promise((resolve,reject)=>{
         co(function* (){
             let tx = yield bitcoin.getRawTransaction(hash);
-            if(tx==='There was an error. Check your console.'){
+            if(tx=== bitcoin.CONSOLE_ERROR){
                 resolve();
             }else{          
                 let block = yield bitcoin.getBlockByHash(tx.blockhash);
