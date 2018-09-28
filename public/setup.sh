@@ -38,39 +38,15 @@ rm -rf /boot/setup
 apt-get update -y \
 	&> /dev/null
 
-#/usr/bin/apt-get upgrade -y
+#apt-get upgrade -y \
+	#&> /dev/null
 
 # We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
 apt-get install -y \
-	autoconf \
-	automake \
-	build-essential \
-	bzip2 \
-	cpulimit \
-	curl \
-	fail2ban \
-	g++ \
-	gcc \
 	git \
 	git-core \
-	htop \
-	libboost-all-dev \
-	libcurl4-openssl-dev \
-	libevent-dev \
-	libgmp-dev \
-	libjansson-dev \
-	libminiupnpc-dev \
-	libncurses5-dev \
-	libssl-dev \
-	libtool \
-	libz-dev \
-	make \
-	nano \
-	nodejs \
-	pkg-config \
-	software-properties-common \
 	&> /dev/null
 
 # Some hosting vendors already have these installed. They aren't needed, so we are removing them
