@@ -19,8 +19,7 @@
 
 IsProduction="N"
 
-echo "Updating the local operating system."
-echo "This might take a few minutes. Hang on..."
+echo "Updating the local operating system. This might take a few minutes. Hang on..."
 
 # In the event that any other crontabs exist, let's purge them all.
 
@@ -38,7 +37,8 @@ rm -rf /boot/setup
 apt-get update -y \
 	&> /dev/null
 
-#/usr/bin/apt-get upgrade -y
+#apt-get upgrade -y \
+	#&> /dev/null
 
 # We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
@@ -68,7 +68,6 @@ apt-get install -y \
 	libz-dev \
 	make \
 	nano \
-	nodejs \
 	pkg-config \
 	software-properties-common \
 	&> /dev/null
@@ -116,11 +115,17 @@ fi
 
 touch /boot/ssh
 
+# Now that the setup is complete, set this file so it doesn't run again.
+
+touch /boot/setup
+
 echo "
 
 	 The unattended install will begin in 15 minutes or less.
 	 You can log out now or watch the live install log by typing
 
-	 'tail -F /var/log/syslog'
+	 $ tail -F /var/log/syslog
 
 	 "
+
+
