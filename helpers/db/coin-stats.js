@@ -19,4 +19,12 @@ exports.update = (model)=>{
     });
 };
 
-
+exports.save = (model) => {
+    return new Promise((resolve, reject) => {
+        var stats = new CoinStats(model);
+        stats.save(function (err) {
+            if (err) reject(err);
+            else resolve(stats);
+        });
+    });
+};

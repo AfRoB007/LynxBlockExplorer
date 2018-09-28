@@ -25,13 +25,18 @@ const handleError = (uri, resolve, reject)=>{
         if(err.response){
             status = err.response.status;
         }
-        if(status === null || err.message === CONSOLE_ERROR || err.code === 'ETIMEDOUT'){
+        if(err.code === 'ECONNRESET'){
+            resolve(CONSOLE_ERROR);
+        }else if(err.code === 'ETIMEDOUT'){
             resolve(CONSOLE_ERROR);
         }        
-        if(status && status === 404){
+        else if(status === null || err.message === CONSOLE_ERROR){
+            resolve(CONSOLE_ERROR);
+        }        
+        else if(status && status === 404){
             return reject(new Error(`${BASE_URL}${uri} not found`));
         }else{
-            console.log('reject');
+            console.log('reject', err.code);
             reject(err);            
         }
     };

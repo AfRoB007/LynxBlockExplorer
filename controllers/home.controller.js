@@ -65,7 +65,7 @@ exports.block = (req, res, next) =>{
                     let txnId = model.tx[i];
                     let tx = yield db.tx.findOne(txnId);                            
                     if(tx===null){                                
-                        yield common.saveTx(txnId);                                
+                        yield common.saveTx(txnId, model);                                
                     }
                 }                
                 txs = yield db.tx.findByTxnIds(model.tx);            

@@ -11,17 +11,17 @@ const updateDb = function(coin){
     return new Promise(function (resolve,reject) {
         co(function* () {
             let stats = yield db.coinStats.getCoinStats();
-            if(stats){
+            if(stats){                
                 let count = yield bitcoin.getBlockCount();   
                 let supply = yield bitcoin.getSupply();
                 let connections = yield bitcoin.getConnections();
-                let result = yield db.coinStats.update({
+                yield db.coinStats.update({
                     coin,
                     count,
                     supply,
                     connections
                 });
-                stats = yield db.coinStats.getCoinStats();
+                stats = yield db.coinStats.getCoinStats();                
             }
             resolve(stats);
         }).catch(reject);
@@ -31,41 +31,42 @@ const updateDb = function(coin){
 const updateTxnsDb =(start,end)=>{
     return new Promise(function (resolve,reject) {
         co(function* () {
-            let length = (end - start) +1;            
-            for(let index=0; index < length; index++){
-                let height = start + index;
-                console.log('height '+height+', index '+ index +': '+(index % 10));
-                if (index % 10 === 0) {
-                    let result = yield db.coinStats.update({
-                        last: start + index - 1                        
-                    });
-                    console.log(((10 * index) / length).toFixed(2), '% completed');
-                }                    
+            let errorCount = 0; 
+            let isAllUpdated = false;                
+            for(let height = start; height <= end; height++){                                    
                 let blockHash = yield bitcoin.getBlockHash(height);                             
                 if(blockHash !== bitcoin.CONSOLE_ERROR){                    
                     let block = yield bitcoin.getBlockByHash(blockHash);                    
-                    if(block !== bitcoin.CONSOLE_ERROR){                                           
+                    if(block !== bitcoin.CONSOLE_ERROR){                                                              
                         let txLength = block.tx.length;
-                        for(let i=0; i < txLength; i++){
+                        for(let i=0; i < txLength; i++){                            
                             let txnId = block.tx[i];
                             let tx = yield db.tx.findOne(txnId);                            
-                            if(tx===null){                                
-                                yield saveTx(txnId);                                
+                            if(tx===null){
+                                console.log(`${height} -- ${i}/${txLength} : ${txnId}`);
+                                yield saveTx(txnId, block);
                             }
                         }
                     }
                 }else{
-                    console.log(height+' error');
-                    let result = yield db.coinStats.update({
-                        last: start + index - 1                        
+                    console.log(height+':error');
+                    errorCount++;
+                    break;
+                }                               
+                if (height % 5 === 0) {
+                    isAllUpdated = (height === end);
+                    yield db.coinStats.update({
+                        last: height                       
                     });
-                    console.log(((10 * index) / length).toFixed(2), '% completed');
-                }
+                    console.log(`${height}/${end} completed`);
+                } 
             }
-            console.log('100% completed');
-            let result = yield db.coinStats.update({
-                last: end
-            });
+            if(errorCount === 0 && !isAllUpdated){
+                console.log(`${end}/${end} completed`);
+                yield db.coinStats.update({
+                    last: end
+                });
+            }
             let stats = yield db.coinStats.getCoinStats();       
             resolve(stats);
         }).catch(reject);
@@ -133,36 +134,31 @@ const updateMarketsDb =(market)=>{
     });
 };
 
-const saveTx = (hash)=>{
+const saveTx = (hash, block)=>{
     return new Promise((resolve,reject)=>{
         co(function* (){
             let tx = yield bitcoin.getRawTransaction(hash);
-            if(tx=== bitcoin.CONSOLE_ERROR){
+            if(tx === bitcoin.CONSOLE_ERROR){
                 resolve();
             }else{          
-                let block = yield bitcoin.getBlockByHash(tx.blockhash);
-                if(block){                                    
-                    let vin = yield lib.prepare_vin(tx);                
-                    let { vout, nvin } = yield lib.prepare_vout(tx.vout, hash, vin);               
-                    //update vin address
-                    let vinAddresses =  yield nvin.map(p=> updateAddress(p.addresses, hash, p.amount, 'vin'));                
-                    //update vout address
-                    let voutAddresses = yield vout.map(p=> updateAddress(p.addresses, hash, p.amount, 'vout'));
-                    //calculate total
-                    let total = vout.reduce((acc, p) => acc + p.amount, 0);                    
-                    let newTx = yield db.tx.save({
-                        txid: tx.txid,
-                        vin: nvin,
-                        vout: vout,
-                        total: total.toFixed(8),
-                        timestamp: tx.time,
-                        blockhash: tx.blockhash,
-                        blockindex: block.height
-                    });                
-                    resolve(newTx);
-                }else{                    
-                    resolve();
-                }
+                let vin = yield lib.prepare_vin(tx);
+                let { vout, nvin } = yield lib.prepare_vout(tx.vout, hash, vin);
+                //update vin address
+                let vinAddresses = yield nvin.map(p => updateAddress(p.addresses, hash, p.amount, 'vin'));
+                //update vout address
+                let voutAddresses = yield vout.map(p => updateAddress(p.addresses, hash, p.amount, 'vout'));
+                //calculate total
+                let total = vout.reduce((acc, p) => acc + p.amount, 0);
+                let newTx = yield db.tx.save({
+                    txid: tx.txid,
+                    vin: nvin,
+                    vout: vout,
+                    total: total.toFixed(8),
+                    timestamp: tx.time,
+                    blockhash: tx.blockhash,
+                    blockindex: block.height
+                });
+                resolve(newTx);
             }            
         }).catch(reject);
     });
