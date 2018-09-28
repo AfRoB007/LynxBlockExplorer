@@ -19,8 +19,7 @@
 
 IsProduction="N"
 
-echo "Updating the local operating system."
-echo "This might take a few minutes. Hang on..."
+echo "Updating the local operating system. This might take a few minutes. Hang on..."
 
 # In the event that any other crontabs exist, let's purge them all.
 
@@ -97,6 +96,6 @@ echo "
 	 The unattended install will begin in 15 minutes or less.
 	 You can log out now or watch the live install log by typing
 
-	 'tail -F /var/log/syslog'
+	 $ tail -F /var/log/syslog
 
 	 "
