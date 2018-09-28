@@ -99,3 +99,7 @@ echo "
 	 $ tail -F /var/log/syslog
 
 	 "
+
+# Now that the setup is complete, set this file so it doesn't run again.
+
+touch /boot/setup
