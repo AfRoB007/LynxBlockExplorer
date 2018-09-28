@@ -44,8 +44,32 @@ apt-get update -y \
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
 apt-get install -y \
+	autoconf \
+	automake \
+	build-essential \
+	bzip2 \
+	cpulimit \
+	curl \
+	fail2ban \
+	g++ \
+	gcc \
 	git \
 	git-core \
+	htop \
+	libboost-all-dev \
+	libcurl4-openssl-dev \
+	libevent-dev \
+	libgmp-dev \
+	libjansson-dev \
+	libminiupnpc-dev \
+	libncurses5-dev \
+	libssl-dev \
+	libtool \
+	libz-dev \
+	make \
+	nano \
+	pkg-config \
+	software-properties-common \
 	&> /dev/null
 
 # Some hosting vendors already have these installed. They aren't needed, so we are removing them
@@ -91,6 +115,10 @@ fi
 
 touch /boot/ssh
 
+# Now that the setup is complete, set this file so it doesn't run again.
+
+touch /boot/setup
+
 echo "
 
 	 The unattended install will begin in 15 minutes or less.
@@ -100,6 +128,4 @@ echo "
 
 	 "
 
-# Now that the setup is complete, set this file so it doesn't run again.
 
-touch /boot/setup
