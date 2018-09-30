@@ -32,8 +32,11 @@ exports.index = (req, res, next) =>{
             markets
         };
         data.usdPrice = data.liteCoinPrice * data.coinPrice * 1000;
-        data.marketCap =  Number(data.coinStats.supply) * data.liteCoinPrice * data.coinPrice;
-        
+        if(data.coinStats === null){
+            data.marketCap = 0;
+        }else{
+            data.marketCap = Number(data.coinStats.supply) * data.liteCoinPrice * data.coinPrice;
+        }        
         res.render('explorer', data);
     }).catch(next);    
 };

@@ -18,26 +18,29 @@ let axiosInstance = axios.create({
 
 const CONSOLE_ERROR = 'There was an error. Check your console.';
 
-const handleError = (uri, resolve, reject)=>{
+const handleError = (uri, resolve, reject, defaultValue)=>{
     return (err)=>{
-        console.log(`${uri} : ${err.message}`);
-        let status = null;
-        if(err.response){
-            status = err.response.status;
-        }
-        if(err.code === 'ECONNRESET'){
-            resolve(CONSOLE_ERROR);
-        }else if(err.code === 'ETIMEDOUT'){
-            resolve(CONSOLE_ERROR);
-        }        
-        else if(status === null || err.message === CONSOLE_ERROR){
-            resolve(CONSOLE_ERROR);
-        }        
-        else if(status && status === 404){
-            return reject(new Error(`${BASE_URL}${uri} not found`));
+        console.log(`${uri} : ${err.message}`);        
+        if (!defaultValue) {
+            let status = null;
+            if (err.response) {
+                status = err.response.status;
+            }
+            if (err.code === 'ECONNRESET') {
+                resolve(CONSOLE_ERROR);
+            } else if (err.code === 'ETIMEDOUT') {
+                resolve(CONSOLE_ERROR);
+            } else if (status === null || err.message === CONSOLE_ERROR) {
+                resolve(CONSOLE_ERROR);
+            } else if (status && status === 404) {
+                return reject(new Error(`${BASE_URL}${uri} not found`));
+            } else {
+                console.log('reject', err.code);
+                reject(err);
+            }
         }else{
-            console.log('reject', err.code);
-            reject(err);            
+            console.log(`Returning default value for , ${uri} : ${err.message}`);
+            resolve(defaultValue);
         }
     };
 };
@@ -79,7 +82,11 @@ exports.getDifficulty = ()=>{
                 difficultyHybrid,
                 difficultyToFixed
             });
-        }).catch(handleError(uri,resolve,reject));
+        }).catch(handleError(uri,resolve,reject, {
+            difficulty : 0,
+            difficultyHybrid : 0,
+            difficultyToFixed : 0
+        }));
     });
 };
 
@@ -273,7 +280,9 @@ exports.getMemPoolInfo = ()=>{
     return new Promise((resolve,reject)=>{
         axiosInstance.get(uri)
         .then(handleSuccess(uri,resolve,reject))
-        .catch(handleError(uri,resolve,reject));
+        .catch(handleError(uri,resolve,reject, {
+            size : CONSOLE_ERROR
+        }));
     });
 };
 
