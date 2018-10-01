@@ -44,7 +44,6 @@ apt-get update -y \
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
 apt-get install -y \
-	curl \
 	git \
 	git-core \
 	&> /dev/null
