@@ -37,9 +37,6 @@ rm -rf /boot/setup
 apt-get update -y \
 	&> /dev/null
 
-#apt-get upgrade -y \
-	#&> /dev/null
-
 # We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
