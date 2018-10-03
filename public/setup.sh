@@ -19,7 +19,7 @@
 
 IsProduction="N"
 
-echo "Updating the local operating system. This might take a few minutes. Hang on..."
+echo "Updating the local operating system. This might take a few minutes."
 
 # In case the VPS vendor doesn't have the locale set up right, (I'm looking at you, HostBRZ), run
 # this command to set the following values in a non-interactive manner. It should survive a reboot.
@@ -54,7 +54,7 @@ apt-get update -y &> /dev/null
 # We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
-apt-get install -y nano htop git git-core &> /dev/null
+apt-get install -y autoconf nano htop git git-core pkg-config build-essential libtool libncurses5-dev &> /dev/null
 
 # Some hosting vendors already have these installed. They aren't needed, so we are removing them
 # now. This list will probably get longer over time.
