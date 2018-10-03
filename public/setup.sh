@@ -24,12 +24,6 @@ echo "Updating the local operating system. This might take a few minutes."
 # In case the VPS vendor doesn't have the locale set up right, (I'm looking at you, HostBRZ), run
 # this command to set the following values in a non-interactive manner. It should survive a reboot.
 
-#export LANGUAGE=en_US.UTF-8
-#export LANG=en_US.UTF-8
-#export LC_ALL=en_US.UTF-8
-#locale-gen en_US.UTF-8
-#dpkg-reconfigure locales
-
 echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections &> /dev/null
 echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections &> /dev/null
 rm -rf "/etc/locale.gen"
