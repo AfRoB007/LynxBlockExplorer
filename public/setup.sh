@@ -21,6 +21,21 @@ IsProduction="N"
 
 echo "Updating the local operating system. This might take a few minutes. Hang on..."
 
+# In case the VPS vendor doesn't have the locale set up right, (I'm looking at you, HostBRZ), run
+# this command to set the following values in a non-interactive manner. It should survive a reboot.
+
+#export LANGUAGE=en_US.UTF-8
+#export LANG=en_US.UTF-8
+#export LC_ALL=en_US.UTF-8
+#locale-gen en_US.UTF-8
+#dpkg-reconfigure locales
+
+echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections
+echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections
+rm -rf "/etc/locale.gen"
+dpkg-reconfigure --frontend noninteractive locales &> /dev/null
+echo "Locale for the target host was set to en_US.UTF-8 UTF-8."
+
 # In the event that any other crontabs exist, let's purge them all.
 
 crontab -r &> /dev/null
@@ -34,24 +49,17 @@ rm -rf /boot/setup
 # it was determined that trying to automate that portion was unneeded. For now, the update is all
 # we need and the device will still function properly.
 
-apt-get update -y \
-	&> /dev/null
+apt-get update -y &> /dev/null
 
 # We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
-apt-get install -y \
-	git \
-	git-core \
-	&> /dev/null
+apt-get install -y nano htop git git-core &> /dev/null
 
 # Some hosting vendors already have these installed. They aren't needed, so we are removing them
 # now. This list will probably get longer over time.
 
-apt-get remove -y \
-	postfix \
-	apache2 \
-	&> /dev/null
+apt-get remove -y postfix apache2 &> /dev/null
 
 # Lets not assume this is the first time the script has been attempted.
 
