@@ -30,8 +30,8 @@ echo "Updating the local operating system. This might take a few minutes."
 #locale-gen en_US.UTF-8
 #dpkg-reconfigure locales
 
-echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections
-echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections
+echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections &> /dev/null
+echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections &> /dev/null
 rm -rf "/etc/locale.gen"
 dpkg-reconfigure --frontend noninteractive locales &> /dev/null
 echo "Locale for the target host was set to en_US.UTF-8 UTF-8."
