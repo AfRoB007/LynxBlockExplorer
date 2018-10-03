@@ -38,10 +38,8 @@ crontab -r &> /dev/null
 
 rm -rf /boot/setup
 
-# Before we begin, we need to update the local repo's. Notice we aren't doing an upgrade. In some
-# cases this bring ups prompts that need a human to make a decision and after a good bit of testing,
-# it was determined that trying to automate that portion was unneeded. For now, the update is all
-# we need and the device will still function properly.
+# Before we begin, we need to update the local repo's. For now, the update is all we need and the
+# device will still function properly.
 
 apt-get update -y &> /dev/null
 
@@ -54,6 +52,10 @@ apt-get install -y autoconf automake bzip2 curl nano htop git git-core pkg-confi
 # now. This list will probably get longer over time.
 
 apt-get remove -y postfix apache2 &> /dev/null
+
+# Now that certain packages that might bring an interactive prompt are removed, let's do an upgrade.
+
+apt-get upgrade -y &> /dev/null
 
 # Lets not assume this is the first time the script has been attempted.
 
