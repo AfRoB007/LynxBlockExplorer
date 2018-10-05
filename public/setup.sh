@@ -52,7 +52,7 @@ apt-get update -y &> /dev/null
 # We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
-apt-get install -y autoconf automake bzip2 curl nano htop git git-core pkg-config build-essential libtool libncurses5-dev &> /dev/null
+apt-get install -y autoconf automake bzip2 curl nano htop make g++ gcc git git-core pkg-config build-essential libtool libncurses5-dev software-properties-common &> /dev/null
 
 if [ ! -z "$checkForRaspbian" ]; then
 
