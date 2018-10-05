@@ -19,16 +19,22 @@
 
 IsProduction="N"
 
+checkForRaspbian=$(cat /proc/cpuinfo | grep 'Revision')
+
 echo "Updating the local operating system. This might take a few minutes."
 
-# In case the VPS vendor doesn't have the locale set up right, (I'm looking at you, HostBRZ), run
-# this command to set the following values in a non-interactive manner. It should survive a reboot.
+if [ ! -z "$checkForRaspbian" ]; then
 
-echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections &> /dev/null
-echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections &> /dev/null
-rm -rf "/etc/locale.gen"
-dpkg-reconfigure --frontend noninteractive locales &> /dev/null
-echo "Locale for the target host was set to en_US.UTF-8 UTF-8."
+	# In case the VPS vendor doesn't have the locale set up right, (I'm looking at you, HostBRZ), run
+	# this command to set the following values in a non-interactive manner. It should survive a reboot.
+
+	echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections &> /dev/null
+	echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections &> /dev/null
+	rm -rf "/etc/locale.gen"
+	dpkg-reconfigure --frontend noninteractive locales &> /dev/null
+	echo "Locale for the target host was set to en_US.UTF-8 UTF-8."
+
+fi
 
 # In the event that any other crontabs exist, let's purge them all.
 
@@ -48,10 +54,14 @@ apt-get update -y &> /dev/null
 
 apt-get install -y autoconf automake bzip2 curl nano htop git git-core pkg-config build-essential libtool libncurses5-dev &> /dev/null
 
-# Some hosting vendors already have these installed. They aren't needed, so we are removing them
-# now. This list will probably get longer over time.
+if [ ! -z "$checkForRaspbian" ]; then
 
-apt-get remove -y postfix apache2 &> /dev/null
+	# Some hosting vendors already have these installed. They aren't needed, so we are removing them
+	# now. This list will probably get longer over time.
+
+	apt-get remove -y postfix apache2 &> /dev/null
+
+fi
 
 # Now that certain packages that might bring an interactive prompt are removed, let's do an upgrade.
 
@@ -75,16 +85,35 @@ chmod 744 -R /root/LynxCI/
 
 crontab -r &> /dev/null
 
-# Since this is the first time the script is run, we will create a crontab to run it again
-# in a few minute, when a quarter of the hour rolls around.
+if [ ! -z "$checkForRaspbian" ]; then
 
-if [ "$IsProduction" = "Y" ]; then
+	# Since this is the first time the script is run, we will create a crontab to run it again
+	# in a few minute, when a quarter of the hour rolls around.
 
-	crontab -l &> /dev/null | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
+	if [ "$IsProduction" = "Y" ]; then
+
+		crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
+
+	else
+
+		crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
+
+	fi
 
 else
 
-	crontab -l &> /dev/null | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
+	# Since this is the first time the script is run, we will create a crontab to run it again
+	# in a few minute, when a quarter of the hour rolls around.
+
+	if [ "$IsProduction" = "Y" ]; then
+
+		crontab -l &> /dev/null | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
+
+	else
+
+		crontab -l &> /dev/null | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
+
+	fi
 
 fi
 
