@@ -28,17 +28,17 @@ if [ ! -z "$checkForRaspbian" ]; then
 	# In case the VPS vendor doesn't have the locale set up right, (I'm looking at you, HostBRZ), run
 	# this command to set the following values in a non-interactive manner. It should survive a reboot.
 
-	echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections &> /dev/null
-	echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections &> /dev/null
+	echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections
+	echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections
 	rm -rf "/etc/locale.gen"
-	dpkg-reconfigure --frontend noninteractive locales &> /dev/null
+	dpkg-reconfigure --frontend noninteractive locales
 	echo "Locale for the target host was set to en_US.UTF-8 UTF-8."
 
 fi
 
 # In the event that any other crontabs exist, let's purge them all.
 
-crontab -r &> /dev/null
+crontab -r
 
 # Since the /boot/setup file existed, let's purge it to keep things cleaned up.
 
@@ -47,25 +47,25 @@ rm -rf /boot/setup
 # Before we begin, we need to update the local repo's. For now, the update is all we need and the
 # device will still function properly.
 
-apt-get update -y &> /dev/null
+apt-get update -y
 
 # We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
-apt-get install -y autoconf automake bzip2 curl nano htop make g++ gcc git git-core pkg-config build-essential libtool libncurses5-dev software-properties-common &> /dev/null
+apt-get install -y autoconf automake build-essential bzip2 curl fail2ban g++ gcc git git-core htop libboost-all-dev libcurl4-openssl-dev libevent-dev libgmp-dev libjansson-dev libminiupnpc-dev libncurses5-dev libssl-dev libtool libz-dev make nano nodejs pkg-config software-properties-common
 
 if [ ! -z "$checkForRaspbian" ]; then
 
 	# Some hosting vendors already have these installed. They aren't needed, so we are removing them
 	# now. This list will probably get longer over time.
 
-	apt-get remove -y postfix apache2 &> /dev/null
+	apt-get remove -y postfix apache2
 
 fi
 
 # Now that certain packages that might bring an interactive prompt are removed, let's do an upgrade.
 
-apt-get upgrade -y &> /dev/null
+apt-get upgrade -y
 
 # Lets not assume this is the first time the script has been attempted.
 
@@ -75,45 +75,22 @@ echo "Local operating system is updated."
 
 # We are downloading the latest package of build instructions from github.
 
-git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/ &> /dev/null
+git clone https://github.com/doh9Xiet7weesh9va9th/LynxCI.git /root/LynxCI/
 
 # We cant assume the file permissions will be right, so lets reset them.
 
 chmod 744 -R /root/LynxCI/
 
-# In the event that any other crontabs exist, let's purge them all.
+# Since this is the first time the script is run, we will create a crontab to run it again
+# in a few minute, when a quarter of the hour rolls around.
 
-crontab -r &> /dev/null
+if [ "$IsProduction" = "Y" ]; then
 
-if [ ! -z "$checkForRaspbian" ]; then
-
-	# Since this is the first time the script is run, we will create a crontab to run it again
-	# in a few minute, when a quarter of the hour rolls around.
-
-	if [ "$IsProduction" = "Y" ]; then
-
-		crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
-
-	else
-
-		crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
-
-	fi
+	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
 
 else
 
-	# Since this is the first time the script is run, we will create a crontab to run it again
-	# in a few minute, when a quarter of the hour rolls around.
-
-	if [ "$IsProduction" = "Y" ]; then
-
-		crontab -l &> /dev/null | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
-
-	else
-
-		crontab -l &> /dev/null | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
-
-	fi
+	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
 
 fi
 
@@ -133,5 +110,3 @@ echo "
 	 $ tail -F /var/log/syslog
 
 	 "
-
-
