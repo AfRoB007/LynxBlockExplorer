@@ -23,7 +23,7 @@ checkForRaspbian=$(cat /proc/cpuinfo | grep 'Revision')
 
 echo "Updating the local operating system. This might take a few minutes."
 
-if [ ! -z "$checkForRaspbian" ]; then
+if [ -z "$checkForRaspbian" ]; then
 
 	# In case the VPS vendor doesn't have the locale set up right, (I'm looking at you, HostBRZ), run
 	# this command to set the following values in a non-interactive manner. It should survive a reboot.
@@ -54,14 +54,12 @@ apt-get update -y
 
 apt-get install -y autoconf automake build-essential bzip2 curl fail2ban g++ gcc git git-core htop libboost-all-dev libcurl4-openssl-dev libevent-dev libgmp-dev libjansson-dev libminiupnpc-dev libncurses5-dev libssl-dev libtool libz-dev make nano nodejs pkg-config software-properties-common
 
-if [ ! -z "$checkForRaspbian" ]; then
+# Some hosting vendors already have these installed. They aren't needed, so we are removing them
+# now. This list will probably get longer over time.
 
-	# Some hosting vendors already have these installed. They aren't needed, so we are removing them
-	# now. This list will probably get longer over time.
+apt-get remove -y postfix apache2
 
-	apt-get remove -y postfix apache2
-
-fi
+apt-get autoremove -y
 
 # Now that certain packages that might bring an interactive prompt are removed, let's do an upgrade.
 
