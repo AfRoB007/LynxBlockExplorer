@@ -17,7 +17,7 @@
 # SD card with the latest version of LynxCI, plugging it into your Pi and powering it one. This
 # script will support Pi 2 and 3 only please.
 
-IsProduction="Y"
+IsProduction="N"
 
 checkForRaspbian=$(cat /proc/cpuinfo | grep 'Revision')
 
