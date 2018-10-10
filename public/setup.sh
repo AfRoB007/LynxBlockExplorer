@@ -17,7 +17,15 @@
 # SD card with the latest version of LynxCI, plugging it into your Pi and powering it one. This
 # script will support Pi 2 and 3 only please.
 
-IsProduction="N"
+if [ "$1" = "testnet" ]; then
+
+	IsProduction="N"
+
+else
+
+	IsProduction="Y"
+
+fi
 
 checkForRaspbian=$(cat /proc/cpuinfo | grep 'Revision')
 
@@ -84,7 +92,7 @@ chmod 744 -R /root/LynxCI/
 
 if [ "$IsProduction" = "Y" ]; then
 
-	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
+	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh mainnet >> /var/log/syslog"; } | crontab -
 
 else
 
