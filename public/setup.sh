@@ -54,8 +54,6 @@ apt-get remove -y postfix apache2
 
 apt-get upgrade -y
 
-apt-get dist-upgrade -y
-
 # We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
 # added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
 
