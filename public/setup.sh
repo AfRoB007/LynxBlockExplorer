@@ -17,9 +17,13 @@
 # SD card with the latest version of LynxCI, plugging it into your Pi and powering it one. This
 # script will support Pi 2 and 3 only please.
 
-IsProduction="Y"
-
 checkForRaspbian=$(cat /proc/cpuinfo | grep 'Revision')
+
+rm -rf /boot/setup # Assume this is the first time this script is being run and purge the marker file if it exists.
+
+rm -rf /boot/ssh # Assume this is the first time this script is being run and purge the marker file if it exists.
+
+crontab -r # In the event that any other crontabs exist, let's purge them all.
 
 echo "Updating the local operating system. This might take a few minutes."
 
@@ -36,34 +40,28 @@ if [ -z "$checkForRaspbian" ]; then
 
 fi
 
-# In the event that any other crontabs exist, let's purge them all.
-
-crontab -r
-
-# Since the /boot/setup file existed, let's purge it to keep things cleaned up.
-
-rm -rf /boot/setup
-
 # Before we begin, we need to update the local repo's. For now, the update is all we need and the
 # device will still function properly.
 
 apt-get update -y
-
-# We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
-# added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
-
-apt-get install -y autoconf automake build-essential bzip2 curl fail2ban g++ gcc git git-core htop libboost-all-dev libcurl4-openssl-dev libevent-dev libgmp-dev libjansson-dev libminiupnpc-dev libncurses5-dev libssl-dev libtool libz-dev make nano nodejs pkg-config software-properties-common
 
 # Some hosting vendors already have these installed. They aren't needed, so we are removing them
 # now. This list will probably get longer over time.
 
 apt-get remove -y postfix apache2
 
-apt-get autoremove -y
-
 # Now that certain packages that might bring an interactive prompt are removed, let's do an upgrade.
 
 apt-get upgrade -y
+
+apt-get dist-upgrade -y
+
+# We need to ensure we have git for the following step. Let's not assume we already ahve it. Also
+# added a few other tools as testing has revealed that some vendors didn't have them pre-installed.
+
+apt-get install -y autoconf automake build-essential bzip2 curl fail2ban g++ gcc git git-core htop libboost-all-dev libcurl4-openssl-dev libevent-dev libgmp-dev libjansson-dev libminiupnpc-dev libncurses5-dev libssl-dev libtool libz-dev make nano nodejs pkg-config software-properties-common
+
+apt-get autoremove -y
 
 # Lets not assume this is the first time the script has been attempted.
 
@@ -82,15 +80,7 @@ chmod 744 -R /root/LynxCI/
 # Since this is the first time the script is run, we will create a crontab to run it again
 # in a few minute, when a quarter of the hour rolls around.
 
-if [ "$IsProduction" = "Y" ]; then
-
-	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
-
-else
-
-	crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/installTest.sh testnet >> /var/log/syslog"; } | crontab -
-
-fi
+crontab -l | { cat; echo "*/15 * * * *		PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /bin/sh /root/LynxCI/install.sh mainnet >> /var/log/syslog"; } | crontab -
 
 # This file is created for the Pi. In order for SSH to work, this file must exist.
 
