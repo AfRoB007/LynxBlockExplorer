@@ -20,13 +20,17 @@ exports.getRecentBlock = ()=>{
 
 exports.insertMany = (blocks)=>{
     return new Promise((resolve,reject)=>{
-        Block.insertMany(blocks, { ordered : false }, function(err,items){
-            if(err){
-                reject(err);
-            }else {      
-                resolve(items);
-            }
-        });
+        if(blocks.length>0){
+            Block.insertMany(blocks, function(err,items){
+                if(err){
+                    reject(err);
+                }else {      
+                    resolve(items);
+                }
+            });
+        }else{
+            resolve([]);
+        }
     });  
 };
 
@@ -112,6 +116,30 @@ exports.getAvgBlockTime = ()=>{
                 avgBlockTime = Math.floor(avgBlockTime);
                 avgBlockTime += avgBlockTime>0?' mins':' min';
                 resolve(avgBlockTime);
+            }
+        });
+    });    
+};
+
+exports.getBlockHashListToInsert = (blockHashList)=>{
+    return new Promise((resolve,reject)=>{
+        Block
+        .find({
+            blockhash : {
+                $in : blockHashList.map(p=>p.blockhash)
+            }
+        })
+        .select({ blockhash : 1, _id : 0})
+        .lean(true)
+        .exec(function(err, items) {
+            if(err){
+                reject(err);
+            }else {    
+                items = items.map(p=>p.blockhash);
+                blockHashList = blockHashList.filter(p=>{
+                    return !items.includes(p.blockhash);
+                });
+                resolve(blockHashList);
             }
         });
     });    

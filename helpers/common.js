@@ -374,13 +374,21 @@ const updateBlocks = function(){
                 while(endIndex - (startIndex + step) > 0){
                     console.log(`update blocks between ${startIndex} - ${startIndex + step }`);
                     let items = yield db.tx.getTransactions(startIndex, startIndex + step);
-                    yield db.block.insertMany(getBlocksToUpdate(items));
+                    let blocksToInsert = getBlocksToUpdate(items);
+                    if(blocksToInsert.length>0){
+                        blocksToInsert = yield db.block.getBlockHashListToInsert(blocksToInsert);
+                        yield db.block.insertMany(blocksToInsert);    
+                    }
                     startIndex += step;
                 }
-                if(endIndex - startIndex > 0){
+                if(endIndex - startIndex > 0){                    
                     console.log(`update blocks between ${startIndex} - ${endIndex}`);                   
-                    let items = yield db.tx.getTransactions(startIndex, endIndex);                    
-                    yield db.block.insertMany(getBlocksToUpdate(items));                    
+                    let items = yield db.tx.getTransactions(startIndex, endIndex);  
+                    let blocksToInsert = getBlocksToUpdate(items);
+                    if(blocksToInsert.length>0){
+                        blocksToInsert = yield db.block.getBlockHashListToInsert(blocksToInsert);
+                        yield db.block.insertMany(blocksToInsert);    
+                    }             
                 }
             }
             resolve(true);
