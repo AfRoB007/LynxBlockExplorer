@@ -20,7 +20,7 @@ exports.getRecentBlock = ()=>{
 
 exports.insertMany = (blocks)=>{
     return new Promise((resolve,reject)=>{
-        Block.insertMany(blocks, function(err,items){
+        Block.insertMany(blocks, { ordered : false }, function(err,items){
             if(err){
                 reject(err);
             }else {      
