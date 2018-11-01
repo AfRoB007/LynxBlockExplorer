@@ -366,7 +366,7 @@ const updateBlocks = function(){
                 startIndex = block.blockindex;
             }
             if(stats){
-                endIndex = stats.count;
+                endIndex = stats.last;
             }
             if(endIndex - startIndex > 0){
                 // update block                
