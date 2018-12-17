@@ -7,7 +7,7 @@ var { common } = require('../helpers');
 
 function getPeers(){
   return new Promise(function(resolve,reject){
-    axios.get('http://seed06.getlynx.io:' + settings.port+'/api/getpeerinfo')
+    axios.get('http://127.0.0.1:' + settings.port+'/api/getpeerinfo')
         .then(function(res){
           resolve(res.data);
         })
